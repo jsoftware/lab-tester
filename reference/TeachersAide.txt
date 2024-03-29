@@ -1,0 +1,743 @@
+─────────────────────────────────────────────────────────────
+Lab: Teacher's Aide
+Author: Kenneth E. Iverson
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── Chapter 1 PURPOSE ────────────────────────────────────────
+
+── ((1) 1 of 1) Introduction ────────────────────────────────
+We will use the computer not to further burden the accepted
+curriculum, but to provide the teacher with a simple general
+aide to help in the teaching of it.
+
+This help includes such things as evaluating results of
+exercises; showing graphs and collections of graphs; and
+coloring multiplication and other function tables to
+emphasize the patterns that occur in them.
+)
+
+── Chapter 2 FUNCTION TABLES ────────────────────────────────
+
+── ((2) 1 of 5) Bare and Bordered Tables ────────────────────
+In the following examples we will use NB. (Nota Bene) to
+append comments -- which are not treated as part of the
+preceding expression. For example:
+)
+   + table 1 2 3 4 5 NB. An addition table (with arguments)
+┌─┬──────────┐
+│+│1 2 3 4  5│
+├─┼──────────┤
+│1│2 3 4 5  6│
+│2│3 4 5 6  7│
+│3│4 5 6 7  8│
+│4│5 6 7 8  9│
+│5│6 7 8 9 10│
+└─┴──────────┘
+   
+   + bare 1 2 3 4 5  NB. A bare addition table
+2 3 4 5  6
+3 4 5 6  7
+4 5 6 7  8
+5 6 7 8  9
+6 7 8 9 10
+
+── ((2) 2 of 5) Bare and Bordered Tables (ctd) ──────────────
+ The arguments included in the
+ addition table make it easy
+ to interpret, but the bare
+ table makes it easier to
+ concentrate on the relations
+ between the sums.
+
+ We now show the use of color
+ to emphasize these relations.
+
+ Press the key
+ Esc to remove
+ the color window
+ so that you may
+ proceed to the
+ next panel.
+)
+   + bare 1 2 3 4 5
+2 3 4 5  6
+3 4 5 6  7
+4 5 6 7  8
+5 6 7 8  9
+6 7 8 9 10
+   
+   color + bare 1 2 3 4 5 NB. Color equal values alike
+
+── ((2) 3 of 5) Experiments ─────────────────────────────────
+To experiment with this facility, type the following
+expressions, pressing the Enter key to execute each of them:
+
+   - table 1 2 3 4 5 6 7
+
+   color - bare 1 2 3 4 5 6 7
+
+   1 2 3 4 5 6 7 - 4
+
+   * table 1 2 3 4 5 6 7 - 4
+
+   color * bare 1 2 3 4 5 6 7 - 4
+)
+
+── ((2) 4 of 5) Experiments (ctd) ───────────────────────────
+In the preceding panel you could have avoided typing (and
+mistyping) the entries by using the up-arrow key to move the
+cursor up to an expression, pressing enter to bring it down
+to the "input area" (where it may be modified by typing and
+by using the left and right arrows and the delete key), and
+again pressing Enter to execute it. Try this on the
+following:
+
+   i:4 NB. A list of integers from _4 to 4
+
+   color * bare i:4
+
+   < table 1 2 3 4 5 6 7      NB. A comparison table
+
+   color < bare 1 2 3 4 5 6 7 NB. Esc removes color window
+
+   = table 1 2 3 4 5 6 7
+
+   color = bare 1 2 3 4 5 6 7
+)
+
+── ((2) 5 of 5) Selecting chapters ──────────────────────────
+You may also use the Up Arrow or Page Up to review earlier
+panels, and Down Arrow or Page Down to move back down.
+
+To begin at the beginning of any chapter, click on Studio,
+then on Chapters (in the dropped menu), then on the desired
+chapter.
+)
+
+── Chapter 3 GRAMMAR ────────────────────────────────────────
+
+── ((3) 1 of 2) Mathematics as a Language ───────────────────
+Although the notation of mathematics is commonly recognized
+as a language, it is not common to examine its grammar.
+Nevertheless, it can be helpful to explore some analogies
+with English -- in the expression sin(1.57), the function sin
+performs an action upon the number 1.57, analogous to the
+action of a verb upon a noun.
+
+Moreover, in the expression + table 1 2 3 4 5, table modifies
+the verb + to produce a related verb. It is therefore
+analogous to an adverb.
+
+This simple notion of modifying a verb to produce a related
+verb (fruitful in both math and English) is often made
+difficult by introducing it very late, commonly in the
+treatment of differential equations, where it is called an
+operator (or Heaviside operator).
+
+Finally, the assignment of a name to a noun (as in Let x=3),
+is analogous to the introduction of a pronoun. To call this
+name a "variable" can be misleading, especially in a case
+such as Let pi=3.1416, where its value is clearly not
+intended to vary.
+)
+
+── ((3) 2 of 2) Assignment and Equality ─────────────────────
+In math, the distinction between the COMPARISON pi=3.1416,
+and the ASSIGNMENT of the value 3.1416 to the name pi, is
+made by writing Let pi=3.1416 for the latter. Programming
+languages simply use a similar symbol, and no Let -- (we will
+use =: and refer to it by the proper English term "copula").
+For example:
+)
+   x=:3 NB. The copula =: assigns a value to the pronoun x
+   x < 4
+1
+   x<1 2 3 4 5 6
+0 0 0 1 1 1
+   x=1 2 3 4 5 6 NB. Equality comparison
+0 0 1 0 0 0
+   x=:5          NB. Assigns a new value to the pronoun
+   x=1 2 3 4 5 6 NB. Comparison using the new value
+0 0 0 0 1 0
+   
+   x=: i: 3
+   color * bare x
+
+── Chapter 4 LITERAL ARGUMENTS ──────────────────────────────
+
+── ((4) 1 of 5) Relations ───────────────────────────────────
+It is commonly assumed that mathematics is about numbers. So
+it is, but it would be more accurate to say that math is
+about relations, and that relations are observable as
+patterns -- matters emphasized in the foregoing uses of
+numbers and tables of numbers. To emphasize this point
+further we will introduce non-numeric arguments called
+literals.
+
+We may say that MAY is the sister of AMY, but we say that
+'MAY' is an anagram of 'AMY', using quotes to indicate that
+we are speaking about two three-letter words, not about two
+girls. In the following examples we will apply the anagram
+function A. to various words:
+)
+   1 A. 'AMY' NB. An anagram, but not an English word or name
+AYM
+   0 1 2 3 4 5 A. 'AMY' NB. All six anagrams of 'AMY'
+AMY
+AYM
+MAY
+MYA
+YAM
+YMA
+   color 0 1 2 3 4 5 A. 'AMY'
+
+── ((4) 2 of 5) Number of Anagrams ──────────────────────────
+The foregoing color window illustrated why there are exactly
+3*2*1 distinct anagrams (permutations) of a list of three
+elements. We may therefore expect to see 4*3*2*1 (factorial
+4) anagrams of a four-letter word.
+
+(Click the middle button of the color window to alternately
+maximize and minimize its size.)
+)
+   !4   NB. Factorial 4 (4*3*2*1)
+24
+   
+   i.!4 NB. 24 integers beginning at 0
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+   
+   color (i.!4)A. 'OPST'
+
+── ((4) 3 of 5) Permutations ────────────────────────────────
+Having made the point of using non-numeric arguments to
+explore relations, we may now remark that the anagram
+function applies to lists of numbers as well as to lists of
+literals.
+
+Anagrams of numeric lists are commonly called permutations:
+)
+   (i.!4)A.1 2 3 4
+1 2 3 4
+1 2 4 3
+1 3 2 4
+1 3 4 2
+1 4 2 3
+1 4 3 2
+2 1 3 4
+2 1 4 3
+2 3 1 4
+2 3 4 1
+2 4 1 3
+2 4 3 1
+3 1 2 4
+3 1 4 2
+3 2 1 4
+3 2 4 1
+3 4 1 2
+3 4 2 1
+4 1 2 3
+4 1 3 2
+4 2 1 3
+4 2 3 1
+4 3 1 2
+4 3 2 1
+   
+   color (i.!4)A.1 2 3 4
+
+── ((4) 4 of 5) Orientations of Tables ──────────────────────
+The table (i.!4)A.1 2 3 4 may be more readable if "flipped on
+its diagonal" to show the rows as columns. We provide three
+functions which together provide all possible orientations of
+a table:
+)
+   t1=:- bare 1 2 3
+   t1
+0 _1 _2
+1  0 _1
+2  1  0
+   fod t1 NB. Flip on diagonal (- is non-commutative)
+ 0  1 2
+_1  0 1
+_2 _1 0
+   foh t1 NB. Flip on horizontal axis
+2  1  0
+1  0 _1
+0 _1 _2
+   fov t1 NB. Flip on vertical axis
+_2 _1 0
+_1  0 1
+ 0  1 2
+
+── ((4) 5 of 5) Selection and Subscripts ────────────────────
+Subscripts are commonly used to index lists and tables. We
+will use the function sub as illustrated below -- it uses
+indices beginning at 0 rather than at 1:
+)
+   x=:2 3 5 7 11
+   x sub 0
+2
+   x sub 2 4
+5 11
+   
+   t1 sub 1             NB. Select row
+1 0 _1
+   (fod t1) sub 1       NB. Select column
+_1 0 1
+   
+   fod (fod t1) sub 2 0 NB. Select columns
+_2 0
+_1 1
+ 0 2
+
+── Chapter 5 PLOTS ──────────────────────────────────────────
+
+── ((5) 1 of 8) Bare and Lined Plots ────────────────────────
+Graphs (or plots) are an effective way to display the results
+of a function. To use a grid x1 for plotting sin x1, we will
+write plot x1 for sin x1, as illustrated below:
+)
+   x1=:0.5*i:7
+   x1
+_3.5 _3 _2.5 _2 _1.5 _1 _0.5 0 0.5 1 1.5 2 2.5 3 3.5
+   plot x1 for sin x1
+
+── ((5) 2 of 8) Bare and Lined Plots (ctd) ──────────────────
+Finer grids may also be used. Moreover, the alternative
+function PLOT adds vertical lines from each point:
+)
+   x2=:0.1*i:30
+   
+   PLOT x2 for sin x2
+   
+   NB. The names x1 and x2 will be used repeatedly,
+   NB. and you should not assign new values to them.
+
+── ((5) 3 of 8) Multiple Plots ──────────────────────────────
+Several curves can be plotted together in various ways. For
+example, fod x1 + bare 0 1 2 3 gives a table which, when its
+sines are plotted, shows sines displaced in phase:
+)
+   fod x1 + bare 0 1 2 3 NB. "flip on diagonal" (also called "transpose")
+_3.5 _3 _2.5 _2 _1.5 _1 _0.5 0 0.5 1 1.5 2 2.5 3 3.5
+_2.5 _2 _1.5 _1 _0.5  0  0.5 1 1.5 2 2.5 3 3.5 4 4.5
+_1.5 _1 _0.5  0  0.5  1  1.5 2 2.5 3 3.5 4 4.5 5 5.5
+_0.5  0  0.5  1  1.5  2  2.5 3 3.5 4 4.5 5 5.5 6 6.5
+   
+   plot x1 for sin fod x1 + bare 0 1 2 3
+
+── ((5) 4 of 8) Multiple Plots (ctd) ────────────────────────
+Curves may also be plotted together in the manner illustrated
+below:
+)
+   >(sin x1);(cos x1);(cos x1+0.2)
+ 0.350783  _0.14112 _0.598472 _0.909297 _0.997495 _0.841471 _0.479426        0 0.479426 0.841471  0.997495  0.909297  0.598472   0.14112 _0.350783
+_0.936457 _0.989992 _0.801144 _0.416147 0.0707372  0.540302  0.877583        1 0.877583 0.540302 0.0707372 _0.416147 _0.801144 _0.989992 _0.936457
+ _0.98748 _0.942222 _0.666276 _0.227202  0.267499  0.696707  0.955336 0.980067 0.764842 0.362358 _0.128844 _0.588501 _0.904072 _0.998295   _0.8481
+   
+   plot x1 for >(sin x1);(cos x1);(cos x1+0.2)
+
+── ((5) 5 of 8) Plots Against Other Than the Grid ───────────
+The expression plot x2 for sin x2 may be said to plot sin x2
+"against" x2. Since sin x2 is normally plotted against x2, it
+appears unnecessary to include "x2 for" in the expression.
+However, sin x2 can also be plotted against other functions
+to produce unusual results:
+)
+   plot (cos x2) for (sin x2)
+
+── ((5) 6 of 8) Plots Against Other Than the Grid (ctd) ─────
+The result is a circle (as indicated by the scales on the
+plot) even though it might appear to be an ellipse. This
+appearance can be modified by clicking on the lower edge of
+the plot and holding the mouse button to drag it up or down.
+
+Incidentally, the entire graph can be moved out of the way of
+text by similarly clicking on the top bar.
+)
+
+── ((5) 7 of 8) Plots Against Other Than the Grid (ctd) ─────
+Try any other interesting cases known from mathematics. For
+example:
+)
+   plot (sin x2) for (sin 2*x2)
+
+── ((5) 8 of 8) Surface Plots ───────────────────────────────
+Corresponding points of a collection of curves can be joined
+together to form a surface. For example:
+)
+   'surface' plot sin x1 + bare 0 1 2 3 4 5 6
+
+── Chapter 6 PUZZLES ────────────────────────────────────────
+
+── ((6) 1 of 16) Puzzle 1 ───────────────────────────────────
+Certain puzzling things that occur in mathematics are due, at
+least in part, to the notation used. We will discuss a few
+examples.
+
+1. In high school algebra, why do we not use mnemonic names
+and abbreviations such as age and wgt, rather than limiting
+ourselves to single letters such as x and y?
+
+The answer is that we ruled out multi-letter names by
+adopting the "convenient" abbreviation xy for the product of
+x and y -- denoted by x*y in most programming languages. In
+other words, age would be interpreted as a*g*e, and pi as
+p*i.
+
+Since the work is limited to single-letter names, students
+may miss the important fact that algebra introduces into
+mathematics the use of NAMES, rather than the use of LETTERS.
+)
+
+── ((6) 2 of 16) Puzzle 1 (ctd) ─────────────────────────────
+Moreover, if x and y have the values 3 and 4, then it should
+be possible to write 34 or 3y or x3 for the product of x and
+y given by the case xy. Only the case 3y would be understood
+as the intended product.
+
+The important principle of the substitutability of equivalent
+values in mathematical expressions is therefore contravened
+by the convention concerning xy.
+)
+
+── ((6) 3 of 16) Puzzle 2 ───────────────────────────────────
+2. Because a*(b+c) is equivalent to (a*b)+(a*c), we say that
+multiplication "distributes" over addition.
+
+Because * is "commutative" [that is, its result remains
+unchanged if its arguments are interchanged, or "commuted"],
+(b+c)*a is also equivalent to (a*b)+(a*c). We will test these
+assertions by assigning values to the three names:
+)
+   a=:2
+   b=:3
+   c=:5
+   
+   a*(b+c)
+16
+   (a*b)+(a*c)
+16
+   
+   (b+c)*a
+16
+   (b*a)+(c*a)
+16
+
+── ((6) 4 of 16) Puzzle 2 (ctd) ─────────────────────────────
+Using % to denote "divided by", we will explore the question
+of whether division distributes over addition:
+)
+   a%(b+c)
+0.25
+   (a%b)+(a%c)
+1.06667
+   
+   (b+c)%a
+4
+   (b%a)+(c%a)
+4
+
+── ((6) 5 of 16) Puzzle 2 (ctd) ─────────────────────────────
+The first identity fails, but the second does not. This is
+sometimes addressed by saying that "division distributes to
+the left, but not to the right".
+
+More precisely, we may say that "divide and a right argument
+a" is a function of one argument (written as %&a, and read
+aloud as "divide and a" or "divide with a") that distributes
+over addition, but that the function a&% does not. For
+example:
+)
+   %&a (b+c)
+4
+   
+   (%&a b)+(%&a c)
+4
+   
+   g=: a&% NB. Assign a name to the other case
+   
+   g (b+c)
+0.25
+   
+   (g b)+(g c)
+1.06667
+
+── ((6) 6 of 16) Puzzle 2 (ctd) ─────────────────────────────
+From this it appears clearer to speak of the distributivity
+of a monadic function (one applied to a single argument) such
+as %&a, than of the distributivity of the dyadic function
+from which it may be derived.
+
+In particular, we may say that a linear function is one that
+distributes over addition -- a statement that presents a
+strong reason for the importance of linear functions.
+)
+
+── ((6) 7 of 16) Puzzle 3 ───────────────────────────────────
+3. If a list of five numbers is partitioned by taking the
+first three and dropping the first three, then the sums of
+the parts may be added to give the same result as the sum
+over the original list. For example:
+)
+   x=:1 2 3 4 5
+   3 take x
+1 2 3
+   sum 3 take x
+6
+   
+   3 drop x
+4 5
+   sum 3 drop x
+9
+   
+   (sum 3 take x)+(sum 3 drop x)
+15
+   sum x
+15
+   (sum 0 take x)+(sum 0 drop x)
+15
+
+── ((6) 8 of 16) Puzzle 3 (ctd) ─────────────────────────────
+The final example used 0 to partition x into an empty list
+and the entire list, raising the question of what meaning
+should be ascribed to the sum over an empty list.
+
+Not surprisingly, the result must be 0, because 0 is the
+"identity element" of addition, that is, a number which added
+to any x gives x An identity element of a function is also
+called its "neutral".
+
+We will now explore the corresponding case of multiplication:
+)
+   (prod 3 take x)*(prod 3 drop x)
+120
+   prod x
+120
+   (prod 0 take x)*(prod 0 drop x)
+120
+   
+   prod 0 take x
+1
+
+── ((6) 9 of 16) Puzzle 3 (ctd) ─────────────────────────────
+In this case, the product over the empty list is not 0, but 1
+-- the neutral of multiplication.
+
+This very useful inclusion and treatment of empty lists is
+not commonly made in mathematical notation.
+
+Experiment with the dyadic function min and its monadic
+counterpart minof to find the neutral of the minimum
+function. In particular, test whether it indeed behaves as a
+neutral.
+)
+
+── ((6) 10 of 16) Puzzle 3 (ctd) ────────────────────────────
+The experiments concerning the identity element of minimum
+suggest that it might be used as the DEFINITION of infinity
+(denoted here by _).
+)
+
+── ((6) 11 of 16) Puzzle 4 ──────────────────────────────────
+4. Need for the treatment of empty lists arises in many ways.
+For example, a binomial coefficient (commonly denoted by an n
+above a k with enclosing parentheses, and denoted here by
+k!n) is commonly defined by a fraction with a denominator of
+k factors -- that is: k(k-1)...(1).
+
+But what is to be made of the case k=:0, that is, a product
+over an empty list? The needed result is of course 1, as
+developed in the foregoing panels.
+)
+   n=:4
+   k=:2
+   k!n
+6
+   
+   0 1 2 3 4 5 6 ! 4
+1 4 6 4 1 0 0
+
+── ((6) 12 of 16) Puzzle 4 (ctd) ────────────────────────────
+Tables of the binomial coefficient function appear as:
+)
+   ! table 0 1 2 3 4 5 6
+┌─┬───────────────┐
+│!│0 1 2 3 4  5  6│
+├─┼───────────────┤
+│0│1 1 1 1 1  1  1│
+│1│0 1 2 3 4  5  6│
+│2│0 0 1 3 6 10 15│
+│3│0 0 0 1 4 10 20│
+│4│0 0 0 0 1  5 15│
+│5│0 0 0 0 0  1  6│
+│6│0 0 0 0 0  0  1│
+└─┴───────────────┘
+   
+   ! bare 0 1 2 3 4 5 6
+1 1 1 1 1  1  1
+0 1 2 3 4  5  6
+0 0 1 3 6 10 15
+0 0 0 1 4 10 20
+0 0 0 0 1  5 15
+0 0 0 0 0  1  6
+0 0 0 0 0  0  1
+
+── ((6) 13 of 16) Puzzle 5 ──────────────────────────────────
+5. Although x/y and 3/4 are commonly used to denote division,
+there may be little agreement about the meanings of x/y/z and
+xy/z and x/yz, because they depend on the order of execution
+in the phrases.
+
+Since 3/4 is also used to denote the fraction (or rational)
+three-quarters (as in the phrase "a 3/4 inch drill") the
+phrases 3/4/z and x/3/4 raise further questions, because a
+fraction 3/4 must be so interpreted before any division takes
+place.
+)
+
+── ((6) 14 of 16) Puzzle 5 (ctd) ────────────────────────────
+The treatment of rationals may be clarified by using 3r4 to
+denote the rational three-quarters. For example:
+)
+   z=:1 1r2 1r3 1r4 1r5 1r6
+   + table z
+┌───┬──────────────────────────────┐
+│+  │  1  1r2  1r3  1r4   1r5   1r6│
+├───┼──────────────────────────────┤
+│  1│  2  3r2  4r3  5r4   6r5   7r6│
+│1r2│3r2    1  5r6  3r4  7r10   2r3│
+│1r3│4r3  5r6  2r3 7r12  8r15   1r2│
+│1r4│5r4  3r4 7r12  1r2  9r20  5r12│
+│1r5│6r5 7r10 8r15 9r20   2r5 11r30│
+│1r6│7r6  2r3  1r2 5r12 11r30   1r3│
+└───┴──────────────────────────────┘
+   * table z
+┌───┬────────────────────────────┐
+│*  │  1  1r2  1r3  1r4  1r5  1r6│
+├───┼────────────────────────────┤
+│  1│  1  1r2  1r3  1r4  1r5  1r6│
+│1r2│1r2  1r4  1r6  1r8 1r10 1r12│
+│1r3│1r3  1r6  1r9 1r12 1r15 1r18│
+│1r4│1r4  1r8 1r12 1r16 1r20 1r24│
+│1r5│1r5 1r10 1r15 1r20 1r25 1r30│
+│1r6│1r6 1r12 1r18 1r24 1r30 1r36│
+└───┴────────────────────────────┘
+
+── ((6) 15 of 16) Puzzle 5 (ctd) ────────────────────────────
+)
+   % table z
+┌───┬───────────────────────┐
+│%  │  1 1r2 1r3 1r4 1r5 1r6│
+├───┼───────────────────────┤
+│  1│  1   2   3   4   5   6│
+│1r2│1r2   1 3r2   2 5r2   3│
+│1r3│1r3 2r3   1 4r3 5r3   2│
+│1r4│1r4 1r2 3r4   1 5r4 3r2│
+│1r5│1r5 2r5 3r5 4r5   1 6r5│
+│1r6│1r6 1r3 1r2 2r3 5r6   1│
+└───┴───────────────────────┘
+   max table z
+┌───┬─────────────────────┐
+│max│1 1r2 1r3 1r4 1r5 1r6│
+├───┼─────────────────────┤
+│  1│1   1   1   1   1   1│
+│1r2│1 1r2 1r2 1r2 1r2 1r2│
+│1r3│1 1r2 1r3 1r3 1r3 1r3│
+│1r4│1 1r2 1r3 1r4 1r4 1r4│
+│1r5│1 1r2 1r3 1r4 1r5 1r5│
+│1r6│1 1r2 1r3 1r4 1r5 1r6│
+└───┴─────────────────────┘
+   color max bare z
+
+── ((6) 16 of 16) Puzzle 5 (ctd) ────────────────────────────
+3 rem 5 gives the remainder on dividing 5 by 3. Produce and
+color a remainder table for the integer argument 0 1 2 3 4
+5.
+
+Repeat for the rational argument z. Also observe the color
+window produced by the following:
+)
+   color 3 rem 0 1 2 3 4 5 6 7 8
+
+── Chapter 7 REVIEW ─────────────────────────────────────────
+
+── ((7) 1 of 4) Names ───────────────────────────────────────
+We will begin a review by listing the names of the nouns
+(variables) and verbs (functions) used, and by entering some
+of the names to display their values (some of which you may
+remember):
+)
+   names nouns
+a       adverbs b       c       k       n       nouns   
+t1      verbs   x1      x2      z                       
+   
+   x1
+_3.5 _3 _2.5 _2 _1.5 _1 _0.5 0 0.5 1 1.5 2 2.5 3 3.5
+   
+   t1
+0 _1 _2
+1  0 _1
+2  1  0
+
+── ((7) 2 of 4) Names (ctd) ─────────────────────────────────
+Similarly, we will display the names of the verbs, and enter
+some of them to see their definitions in terms of the
+underlying language used here:
+)
+   names verbs
+PLOT  box   color cos   exp   fod   foh   for   fov   g     
+max   maxof min   minof open  prod  rem   sin   sub   sum   
+   
+   box
+<
+   
+   box x1 NB. Boxes x1
+┌────────────────────────────────────────────────────┐
+│_3.5 _3 _2.5 _2 _1.5 _1 _0.5 0 0.5 1 1.5 2 2.5 3 3.5│
+└────────────────────────────────────────────────────┘
+   
+   < x1   NB. < is equivalent to box
+┌────────────────────────────────────────────────────┐
+│_3.5 _3 _2.5 _2 _1.5 _1 _0.5 0 0.5 1 1.5 2 2.5 3 3.5│
+└────────────────────────────────────────────────────┘
+   
+   sin    NB. 1 and o. (compare with 1&% used for reciprocal)
+1&o.
+   
+   1&% 1 2 3 4 5
+1 0.5 0.333333 0.25 0.2
+   
+   1&% 1 2 3 4 5r1
+1 1r2 1r3 1r4 1r5
+   
+   cos    NB. Compare with sin
+2&o.
+
+── ((7) 3 of 4) Names (ctd) ─────────────────────────────────
+The definitions of sin (1&o.) and cos (2&o.) suggests that
+they are just two of several possible monadic functions
+derived from the dyadic function o.
+
+You may test this by entering the plots of some of the other
+cases listed below:
+
+plot x2 for 3&o. x2 NB. Tangent function
+
+plot x2 for 4&o. x2
+
+plot x2 for 5&o. x2 NB. Hyperbolic sine
+)
+
+── ((7) 4 of 4) Names (ctd) ─────────────────────────────────
+To learn more about the circle function o., press the key F1
+to display the entire vocabulary, and then click on the o.
+entry.
+
+Use the vocabulary similarly to learn more about verbs such
+as % and ^ and about adverbs such as / and & .
+)
+
+End of lab
+   

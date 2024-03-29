@@ -1,0 +1,229 @@
+ctrl+j advances
+1 of 77 in /applications/j9.5/addons/media/videolabs/head.ijt
+Lab: Video - The Head Monadic Verb - {.y
+
+Chapter: Video Requirements
+ 
+_______________________________________
+
+To run this video lab, you must have
+access to youtube.com through the
+internet.
+
+If you do not, the lab will still
+advance through the exercises, but the
+videos will not be displayed.
+
+Videos will appear as steps in the lab,
+but you will need to click play on the video
+to get it started.
+
+When you have viewed a video, click back on
+the terminal window to continue the lab.
+
+This is required because when you are
+interacting with a video, you are not
+actually interacting with the J lab.
+
+Now to prepare for the video
+_______________________________________
+   3 : 0 ''
+if.     IFQT  do. require jpath '~addons/media/videolabs/videolabjqt.ijs'
+elseif. IFJHS do. require jpath '~addons/media/videolabs/videolabjhs.ijs'
+elseif. IFJA  do. echo 'Video is not available in Android'
+elseif. IFIOS do. echo 'Video is not available for IOS at this time'
+elseif. 1     do. require jpath '~addons/media/videolabs/videolabcon.ijs' NB. Jconsole if nothing else.
+              end.
+)
+ 
+Chapter: Action of {. on Non-Empty arrays
+ 
+   display_video_ 'Szo4FNzsXa0'
+ 
+Click here and advance lab to continue
+ 
+_______________________________________
+
+Now, a chance to play with some of these
+concepts and see if the results of these
+examples meet your expectations.
+_______________________________________
+ 
+   [ A23 =. i. 2  3
+0 1 2
+3 4 5
+ 
+   $ A23
+2 3
+ 
+Can you predict the result of
+{. A23 and $ {. A23 ?
+ 
+   {. A23  NB. The first item is a row of length 3
+0 1 2
+   $ {. A23
+3
+ 
+_______________________________________
+
+Pretty much makes sense that the first
+item of a shape of 2 3 will have a
+shape of 3.
+
+Remember that we create a one item list
+using 1 {. A23 and then take the first
+item from that list using 0 { 1 {. A23
+
+Now, let's try another one.
+_______________________________________
+ 
+   [ A4 =. i. 4
+0 1 2 3
+ 
+   $ A4
+4
+ 
+Can you predict the result of
+{. A4 and $ {. A4 ?
+ 
+   {. A4
+0
+   $ {. A4 NB. Atoms have empty shape
+ 
+_______________________________________
+
+The shape of the first item is empty
+because the first item of a rank one
+array with shape 4 is an atom.
+
+What if we had a list of length 1?
+_______________________________________
+ 
+   [ A1 =. ,4
+4
+ 
+   $ A1
+1
+ 
+Can you predict the result of
+{. A1 and $ {. A1 ?
+ 
+   {. A1
+4
+   $ {. A1 NB. Atoms have empty shape
+ 
+_______________________________________
+
+Even if it is a list of length one,
+1 {. A1 will still create a list of
+length one and the first item of that
+list will be an atom with an empty shape.
+
+Play around a bit more until you are
+comfortable with these results or
+any others that you might invent. You are
+working in a fully functioning J
+environment.
+
+When you are satisfied, advance the
+lab and get ready for the next video
+which covers the case of empty shapes.
+_______________________________________
+ 
+   display_video_ 'Wup3WjZrqkI'
+ 
+_______________________________________
+
+Now we have looked at a number of
+different empty arrays, so we probably
+don't have to go over the examples you
+have just seen, but feel free to on
+your own time if you wish. I'll define
+a few for your benefit.
+_______________________________________
+ 
+   [ A0 =. 0 $ 4
+   [ A02 =. 0 2 $ 4
+   [ A20 =. 2 0 $ 4
+
+
+ 
+_______________________________________
+
+What is more interesting is whether we
+can tell if the fills have taken place
+even if there is no visible result.
+
+What about A010=. 0 1 0 $ 4
+
+We know that the result was an empty line,
+but is there any way to know if a fill was
+ever used?
+
+As a matter of fact there is, if we use the
+fit conjunction (!.) which specifies the fill
+that is used if required.
+_______________________________________
+ 
+   [ A010=. 0 1 0 $ 4
+   datatype A010 NB. Integer as expected because the 'empty' content is 4.
+integer
+   {. A010 NB. Returns an empty line as expected.
+   $ {. A010 NB. The shape of the first item is 1 0 as expected.
+1 0
+   datatype {. A010 NB. Integer as expected.
+integer
+ 
+_______________________________________
+
+But if we force a fill of a different type,
+then we can see if the type changes.
+
+We do this using the Fit Conjunction !.
+
+{.(!.a:) is a new verb based on {.
+where !. forces the fill (if required)
+to be an empty box - a:
+_______________________________________
+ 
+   {.(!.a:) A010 NB. Returns an empty line, as before
+   datatype {.(!.a:) A010 NB. But now the type has changed, so fill was used even if we could not see it!
+boxed
+ 
+Well, that pretty much wraps up this lab,
+except for a list of references where you
+can find out more in depth information about
+what you have seen.
+ 
+Chapter: References
+ 
+_______________________________________
+
+  Nuvoc Definition for Head found at https://code.jsoftware.com/wiki/Vocabulary/curlylfdot
+ J for C Programmers - Chapter 8 - Head found in Monads section at https://www.jsoftware.com/help/jforc/more_verbs.htm#_Toc191734357
+ The J Dictionary Vocabulary Definition for Head found at https://www.jsoftware.com/help/dictionary/d521.htm
+
+ Nuvoc Definition for From found at https://code.jsoftware.com/wiki/Vocabulary/curlylf#dyadic
+ J for C Programmers - Chapter 8 - More Verbs - From found in Dyads section at https://www.jsoftware.com/help/jforc/more_verbs.htm#_Toc191734356
+ The J Dictionary Vocabulary Definition for From found at https://www.jsoftware.com/help/dictionary/d520.htm
+
+ Nuvoc Definition for Take found at https://code.jsoftware.com/wiki/Vocabulary/curlylfdot#dyadic
+ J for C Programmers - Chapter 8 - More Verbs - Take found in Dyads section at https://www.jsoftware.com/help/jforc/more_verbs.htm#_Toc191734356
+ The J Dictionary Vocabulary Definition for Take found at https://www.jsoftware.com/help/dictionary/d521.htm
+
+ Nuvoc Definition for Fit Conjunction found at https://code.jsoftware.com/wiki/Vocabulary/bangdot
+ J for C Programmers - Chapter 8 - Fit Conjunction found in Dyads section at https://www.jsoftware.com/help/jforc/more_verbs.htm#_Toc191734356
+ The J Dictionary Vocabulary Definition for Fit Conjunction found at https://www.jsoftware.com/help/dictionary/d411.htm
+ _______________________________________
+ 
+_______________________________________
+
+If you would like to review any of the
+previous chapters, advance the lab then
+select the chapter you wish to review
+from the pop up message box.
+_______________________________________
+ 
+   lab ':'
+end of lab
+   

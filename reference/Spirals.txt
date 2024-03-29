@@ -1,0 +1,99 @@
+─────────────────────────────────────────────────────────────
+Lab: Spirals
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 5) LINK AND PLOT ───────────────────────────────────
+
+The function ; links its vector arguments to form a list of
+boxed vectors. Thus:
+)
+   load 'trig'
+   
+   cos 1                   NB. Cosine of  radian arguments
+0.540302
+   
+   cos 1 2 3.14
+0.540302 _0.416147 _0.999999
+   
+   cosd 0 30 45 60         NB. Cosine of degree arguments
+1 0.866025 0.707107 0.5
+   
+   (sind 0 30 45 60) ; (cosd 0 30 45 60)
+┌───────────────────────┬───────────────────────┐
+│0 0.5 0.707107 0.866025│1 0.866025 0.707107 0.5│
+└───────────────────────┴───────────────────────┘
+   
+   circle=: cosd ; sind
+   
+   circle 0 30 45 60
+┌───────────────────────┬───────────────────────┐
+│1 0.866025 0.707107 0.5│0 0.5 0.707107 0.866025│
+└───────────────────────┴───────────────────────┘
+   
+
+── (2 of 5) LINK AND PLOT (ctd) ─────────────────────────────
+
+The function circle yields coordinates of points on a unit
+circle, as may be seen in the following plot for angles from
+0 to 12 degrees:
+
+After viewing the plot, press Alt F4 to return focus from the
+plot window:
+)
+   load 'plot'
+   
+   plot circle 10 * 0 1 2 3 4 5 6 7 8 9 10 11 12
+
+── (3 of 5) INTEGER LISTS ───────────────────────────────────
+
+The function i. produces a vector of the first non-negative
+integers, as in the next example shown.
+
+Note that the plot of the circle is correct according to the
+scales of the plot, although it may appear flattened because
+of the aspect ratio of the screen.
+)
+   i. 13     NB. First 13 non-negative integers
+0 1 2 3 4 5 6 7 8 9 10 11 12
+   
+   plot circle i. 270
+
+── (4 of 5) THREE DIMENSIONS ────────────────────────────────
+
+The function:
+
+   spiral=: cosd ; sind ; %:
+
+produces tables of vectors in three dimensions, the z
+coordinate being the square root (%:) of the argument. For
+example:
+)
+   spiral=: cosd ; sind ; %:
+   
+   spiral 0 10 20 30
+┌────────────────────────────┬──────────────────────┬─────────────────────────┐
+│1 0.984808 0.939693 0.866025│0 0.173648 0.34202 0.5│0 3.16228 4.47214 5.47723│
+└────────────────────────────┴──────────────────────┴─────────────────────────┘
+   
+   plot spiral i. 1000
+
+── (5 of 5) NON-CIRCULAR SPIRALS ────────────────────────────
+
+Functions other than sine and cosine may be used. In
+particular, the exponential (^) applied to negative arguments
+can be used to produce a decaying spiral. For example:
+)
+   decay=: ^@(%&_500)
+   
+   desin=: decay * sind
+   
+   decos=: decay * cosd
+   
+   despi=: decos ; desin ; %:
+   
+   plot despi i. 1000
+
+End of lab
+   

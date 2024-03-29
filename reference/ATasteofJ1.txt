@@ -1,0 +1,399 @@
+─────────────────────────────────────────────────────────────
+Lab: A Taste of J (1)
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 35) First Steps ────────────────────────────────────
+You can use J as a calculator - just type sentences into the
+window and press Enter.
+
+J is ready for input when the message in the status bar at
+the foot of the screen displays Ready.
+
+Typically, the cursor is indented 3 spaces to distinguish
+user entries from the response of the computer, which are
+shown aligned to the left.
+
+For example, add 5 to the three numbers 10 20 30:
+)
+   5 + 10 20 30
+15 25 35
+   
+
+── (2 of 35) First Steps (ctd) ──────────────────────────────
+You are encouraged to experiment when going through labs.
+
+You can type in your own sentences, or re-enter sentences by
+moving the cursor up to the line, pressing Enter, then making
+any modifications.
+
+Try this now with the sentence 5 + 10 20 30 shown above.
+)
+
+── (3 of 35) First Steps (ctd) ──────────────────────────────
+The standard mathematical functions are + - * % ^ ^., i.e.
+plus, minus, times, divide, power and log:
+)
+   5 + 10 20 30
+15 25 35
+   
+   5 - 10 20 30
+_5 _15 _25
+   
+   5 * 10 20 30
+50 100 150
+   
+   5 % 10 20 30
+0.5 0.25 0.166667
+   
+   5 ^ 10 20 30
+9.76562e6 9.53674e13 9.31323e20
+   
+   5 ^. 10 20 30
+1.43068 1.86135 2.11328
+
+── (4 of 35) First Steps (ctd) ──────────────────────────────
+Note that the symbol for log "^." has two characters. In
+general, J functions are written with either a single
+character as in power "^", or with two characters, where the
+second character is either a period "." or colon ":".
+
+For example, *: squares its argument:
+)
+   *: 10 20 30
+100 400 900
+
+── (5 of 35) First Steps (ctd) ──────────────────────────────
+Use =: to assign names.
+
+No result is shown if a sentence is an assignment; otherwise
+the result is displayed.
+
+Note that character strings are entered using quotes:
+)
+   a=: 5
+   
+   b=: 10 20 30
+   
+   log=: ^.
+   
+   plus=: +
+   
+   square=: *:
+   
+   sum=: +/
+   
+   text=: 'hello world'
+
+── (6 of 35) First Steps (ctd) ──────────────────────────────
+We can now use the assigned names:
+)
+   a plus b
+15 25 35
+   
+   square b
+100 400 900
+   
+   sum b
+60
+   
+   c=: a plus b
+   
+   sum c
+75
+   
+   text
+hello world
+
+── (7 of 35) Data Manipulation ──────────────────────────────
+J excels at manipulating data. Let us try some examples.
+
+Define a character string t as follows:
+)
+   t=: 'earl of chatham'
+   
+   t
+earl of chatham
+
+── (8 of 35) Data Manipulation (ctd) ────────────────────────
+Count of t, i.e. number of characters in the string:
+)
+   #t
+15
+
+── (9 of 35) Data Manipulation (ctd) ────────────────────────
+Nub of t, i.e. unique characters:
+)
+   ~. t
+earl ofchtm
+
+── (10 of 35) Data Manipulation (ctd) ───────────────────────
+Count of nub of t:
+)
+   # ~. t
+11
+
+── (11 of 35) Data Manipulation (ctd) ───────────────────────
+Sort t in ascending order. "sort" is a predefined utility.
+
+The sort order is the standard ASCII alphabet, where blanks
+are sorted before other characters:
+)
+   sort t
+  aaacefhhlmort
+
+── (12 of 35) Data Manipulation (ctd) ───────────────────────
+Reverse t:
+)
+   |. t
+mahtahc fo lrae
+
+── (13 of 35) Data Manipulation (ctd) ───────────────────────
+Duplicate each letter:
+)
+   2 # t
+eeaarrll  ooff  cchhaatthhaamm
+
+── (14 of 35) Data Manipulation (ctd) ───────────────────────
+Make 3 copies of t:
+)
+   3 # ,: t
+earl of chatham
+earl of chatham
+earl of chatham
+
+── (15 of 35) Data Manipulation (ctd) ───────────────────────
+Chop t into words.
+
+Note J puts each word in a box - when something is in a box
+it is treated as a single item, even though it may contain
+several numbers or characters:
+)
+   ;: t
+┌────┬──┬───────┐
+│earl│of│chatham│
+└────┴──┴───────┘
+
+── (16 of 35) Data Manipulation (ctd) ───────────────────────
+Sort words in t:
+)
+   sort ;: t
+┌───────┬────┬──┐
+│chatham│earl│of│
+└───────┴────┴──┘
+
+── (17 of 35) Data Manipulation (ctd) ───────────────────────
+The utility "each" applies a function to each boxed item. For
+example, count the length of each word:
+)
+   # each ;: t
+┌─┬─┬─┐
+│4│2│7│
+└─┴─┴─┘
+
+── (18 of 35) Numbers ───────────────────────────────────────
+The above examples apply equally well to numbers.
+
+Other facilities are defined just for numbers. For example,
+the integer function (i.) generates numbers:
+)
+   i.10           NB. first 10 numbers
+0 1 2 3 4 5 6 7 8 9
+   
+   i.4 3          NB. first 12 numbers in a 4 by 3 table
+0  1  2
+3  4  5
+6  7  8
+9 10 11
+   
+   i.3 4 5        NB. first 60 numbers in a 3 by 4 by 5 table
+ 0  1  2  3  4
+ 5  6  7  8  9
+10 11 12 13 14
+15 16 17 18 19
+
+20 21 22 23 24
+25 26 27 28 29
+30 31 32 33 34
+35 36 37 38 39
+
+40 41 42 43 44
+45 46 47 48 49
+50 51 52 53 54
+55 56 57 58 59
+
+── (19 of 35) Numbers (ctd) ─────────────────────────────────
+The function +/ sums its argument. It is made up of + (add)
+with / (insert), meaning insert + between each item of the
+argument.
+
+So  +/ 10 20 30  means:  10 + 20 + 30.
+
+Similarly */ is "multiply insert", i.e. multiply all elements
+together.
+)
+   +/ 10 20 30
+60
+   
+   */ 10 20 30
+6000
+
+── (20 of 35) Numbers (ctd) ─────────────────────────────────
+Add up the first 10,000 positive integers:
+)
+   +/i.10001  NB. 10001 - since J starts counting at 0
+50005000
+
+── (21 of 35) Numbers (ctd) ─────────────────────────────────
+Add up i.3 4 5
+)
+   +/i.3 4 5
+ 60  63  66  69  72
+ 75  78  81  84  87
+ 90  93  96  99 102
+105 108 111 114 117
+
+── (22 of 35) Numbers (ctd) ─────────────────────────────────
+"power insert" of 10 20 30 is a big number! It exceeds the
+representation used by the machine, so J returns infinity.
+
+Can you figure out the other examples below?
+
+(Try 3 ^ 4, then take 2 to the power of this number.)
+
+The 'x' used here means "extended" and instructs J to use
+extended precision in performing the calculations, instead of
+converting to floating point.
+)
+   ^/ 10 20 30
+_
+   
+   ^/ 2 3 4
+2.41785e24
+   
+   ^/ 2 3 4x
+2417851639229258349412352
+
+── (23 of 35) Numbers (ctd) ─────────────────────────────────
+Note the "e" notation used in 2.41785e24, meaning:
+
+  2.41785 * 10^24
+
+J has other number notations that use letters:
+)
+   3b102     NB. base (102 in base 3)
+11
+   
+   3r5       NB. ratio (3 % 5)
+3r5
+   
+   3j5       NB. complex number
+3j5
+   
+   3p5       NB. Pi (3 * Pi ^ 5)
+918.059
+   
+   3x5       NB. Exponentional (3 * 2.71828... ^ 5)
+445.239
+
+── (24 of 35) Numbers (ctd) ─────────────────────────────────
+Examples:
+)
+   1p1 2p1     NB. Pi, 2 * Pi
+3.14159 6.28319
+   
+   %: -i.6     NB. square roots of minus 0 to minus 5
+0 0j1 0j1.41421 0j1.73205 0j2 0j2.23607
+
+── (25 of 35) Numbers (ctd) ─────────────────────────────────
+The function ? generates random numbers.
+
+For example, generate 20 random numbers in the range 0-99:
+)
+   ? 20#100
+62 32 90 6 38 33 9 60 28 92 29 41 68 83 79 46 60 19 73 19
+   
+   ? 20#100
+65 92 40 61 89 88 71 99 47 94 92 81 62 14 21 22 29 69 83 72
+
+── (26 of 35) Numbers (ctd) ─────────────────────────────────
+The function "load" reads in definitions from "script"
+files.
+
+For example, read in the stats functions:
+)
+   load 'stats'
+
+── (27 of 35) Numbers (ctd) ─────────────────────────────────
+Example:
+)
+   dstat ? 20#100
+sample size:         20
+minimum:              5
+maximum:             97
+median:              52
+mean:                52
+std devn:       25.7927
+skewness:     _0.209797
+kurtosis:       2.10926
+
+── (28 of 35) Numbers (ctd) ─────────────────────────────────
+normalrand generates random numbers in a normal distribution
+with mean 0 and standard deviation 1:
+)
+   normalrand 6
+_0.182228 0.902708 0.396916 1.33753 0.478193 0.466567
+   
+   dstat normalrand 10000
+sample size:       10000
+minimum:        _3.52968
+maximum:         3.75307
+median:       0.00895388
+mean:          0.0191626
+std devn:        1.00294
+skewness:      0.0140992
+kurtosis:        2.97313
+
+── (29 of 35) Numbers (ctd) ─────────────────────────────────
+Read in the trig and plot functions:
+)
+   load 'trig plot'
+
+── (30 of 35) Numbers (ctd) ─────────────────────────────────
+Try generating sines, here the arguments are in radians:
+)
+   sin i.6
+0 0.841471 0.909297 0.14112 _0.756802 _0.958924
+   
+   sin i.3 4
+        0  0.841471  0.909297  0.14112
+_0.756802 _0.958924 _0.279415 0.656987
+ 0.989358  0.412118 _0.544021 _0.99999
+
+── (31 of 35) Numbers (ctd) ─────────────────────────────────
+You can plot numbers directly. The next section plots the sin
+of i.3 4. The lines are jagged because each point is joined
+by a straight line and there are very few points.
+)
+
+── (32 of 35) Numbers (ctd) ─────────────────────────────────
+)
+   plot sin i.3 4
+
+── (33 of 35) Numbers (ctd) ─────────────────────────────────
+The next two sections plot sin 0.2 * i.30 30, first as a
+series of lines, then as a surface. This time there are
+enough data points to show smooth lines.
+)
+
+── (34 of 35) Numbers (ctd) ─────────────────────────────────
+)
+   plot sin 0.2 * i.30 30
+
+── (35 of 35) Numbers (ctd) ─────────────────────────────────
+)
+   'surface' plot sin 0.2 * i.30 30
+
+End of lab
+   

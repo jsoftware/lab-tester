@@ -1,0 +1,221 @@
+─────────────────────────────────────────────────────────────
+Lab: Rotations
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 7) ROTATIONS ───────────────────────────────────────
+The function:
+
+   length=: %:@:(+/@:*:)"1
+
+yields the length of a vector to which it is applied, first
+squaring (*:) the elements, then summing (+/) the squares,
+and finally taking the square root (%:), thus:
+)
+   length=: %:@:(+/@:*:)"1
+   
+   length 3 4
+5
+   
+   length 3 4 12
+13
+   
+
+── (2 of 7) LENGTH ──────────────────────────────────────────
+The function:
+
+   X=: +/ . *
+
+is the matrix product.
+
+If m is a matrix, and v is a vector, the result of m X v may
+differ from v in both length and direction.
+
+However, if m is a matrix whose row and column sums are of
+length 1, then the result of m X v has the same length as v
+The operation is called a rotation, and m is called a
+rotation matrix. For example:
+)
+   X=: +/ . *
+   
+   v=: 3 4
+   
+   m=: > 1 2;2 1
+   m
+1 2
+2 1
+   
+   m X v
+11 10
+   
+   length m X v
+14.8661
+   
+   length v
+5
+   
+   c=: % %: 2        NB. Reciprocal of square root of 2
+   
+   m=: > (c, c);((-c),c)
+   
+   m
+ 0.707107 0.707107
+_0.707107 0.707107
+   
+   length m          NB. Lengths of rows of m
+1 1
+   
+   |: m              NB. Transpose of m
+0.707107 _0.707107
+0.707107  0.707107
+   
+   length |: m       NB. Lengths of columns of m
+1 1
+   
+   m X v
+4.94975 0.707107
+   
+   length m X v
+5
+
+── (3 of 7) ROTATION ────────────────────────────────────────
+The function:
+
+   r=: (sind , -@:cosd) ,. (cosd , sind)
+
+produces a rotation matrix. The angle of rotation it produces
+is determined by the argument of r. For example:
+)
+   load 'trig'
+   
+   r=: (cosd , -@:sind) ,. (sind , cosd)
+   
+   m=: r 45
+   
+   m
+ 0.707107 0.707107
+_0.707107 0.707107
+   
+   m X v
+4.94975 0.707107
+   
+   y=: (r 90) X v
+   
+   y
+4 _3
+   
+   y X v       NB. 90-degree rotation produces a perpendicular vector
+1.77636e_15
+
+── (4 of 7) ROTATION MATRICES ───────────────────────────────
+If m =. r a is a rotation matrix in 2-space, then the matrix
+1 0 0,0 0,.m produces a corresponding rotation about the x
+axis in 3-space. For example:
+)
+   r 30
+0.866025      0.5
+    _0.5 0.866025
+   
+   rx30=: 1 0 0,0 0,.r 30
+   
+   rx30
+1        0        0
+0 0.866025      0.5
+0     _0.5 0.866025
+   
+   w=: 3 4 5
+   
+   rx30 X w
+3 5.9641 2.33013
+   
+   length w
+7.07107
+   
+   length rx30 X w
+7.07107
+
+── (5 of 7) ROTATION IN 3-SPACE ─────────────────────────────
+If the rows and columns of a rotation about x are permuted to
+bring the 1 to the y or z position, the result is a rotation
+about the corresponding axis. For example:
+)
+   ry45=: 1 0 2 { 1 0 2 ({"1) 1 0 0,0 0,.r 45
+   
+   rz60=: 1 2 0 { 1 2 0 ({"1) 1 0 0,0 0,.r 60
+   
+   ry45
+ 0.707107 0 0.707107
+        0 1        0
+_0.707107 0 0.707107
+   
+   ry45 X w
+5.65685 4 1.41421
+   
+   rz60
+      0.5 0.866025 0
+_0.866025      0.5 0
+        0        0 1
+   
+   rz60 X w
+4.9641 _0.598076 5
+
+── (6 of 7) ROTATION ABOUT y AND z ──────────────────────────
+The matrix product of two rotations is again a rotation, and
+a general rotation can therefore be produced as a product of
+rotations about each of the three axes. For example:
+)
+   rall=: rx30 X ry45 X rz60
+   
+   rall
+ 0.353553 0.612372 0.707107
+_0.926777 0.126826 0.353553
+ 0.126826 _0.78033 0.612372
+   
+   length rall
+1 1 1
+   
+   rall X w
+7.04568 _0.505257 0.321021
+
+── (7 of 7) PRODUCT OF ROTATIONS ────────────────────────────
+We will now define a general rotation function GR whose left
+argument is a quoted list of axes, such as "yxz" or "yz" or
+"x"or "xyxyx", and whose right argument is a list of angles
+in degrees. Thus:
+)
+   GR=: 4 : 0
+res=: (i. =/ i.) 3       NB. Initialize res as identity matrix
+p=: >0 1 2;1 0 2;1 2 0   NB. Permutations for axes
+while. 0<# x do.
+cp=. ('xyz'i.{:x){p                 NB. Current permutation
+cr=. cp {"1 cp { 1 0 0,0 0,.r {: y  NB. Current rotation
+res =. cr X res
+x=. }: x
+y=. }: y
+end.
+res
+)
+   
+   'xyz' GR 30 45 60
+ 0.353553 0.612372 0.707107
+_0.926777 0.126826 0.353553
+ 0.126826 _0.78033 0.612372
+   
+   'yx' GR 45 60
+ 0.707107 _0.612372 0.353553
+        0       0.5 0.866025
+_0.707107 _0.612372 0.353553
+   
+   'y' GR 45
+ 0.707107 0 0.707107
+        0 1        0
+_0.707107 0 0.707107
+   
+   'xyxyx' GR 1 2 3 4 5
+   0.994525 _0.0109256 0.103924
+_0.00547282   0.987708 0.156212
+  _0.104353  _0.155926 0.982241
+
+End of lab
+   

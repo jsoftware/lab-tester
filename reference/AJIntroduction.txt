@@ -1,0 +1,1855 @@
+─────────────────────────────────────────────────────────────
+Lab: A J Introduction
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── Chapter 1 J ──────────────────────────────────────────────
+
+── ((1) 1 of 16) Introduction ───────────────────────────────
+J is executable mathematical notation.
+
+The fourteen chapters of this lab illustrate its use in
+experimenting with mathematical ideas in a variety of
+topics.
+
+To clarify ideas, enter your own experiments (which you may
+do at any point).
+)
+   2+3
+5
+   x=: 2
+   y=:3
+   x+y
+5
+   
+
+── ((1) 2 of 16) Functions ──────────────────────────────────
+There is a rich set of primitives.
+)
+   2 + 3
+5
+   2 - 3
+_1
+   2 * 3
+6
+   2 % 3
+0.666667
+   2 ^ 3
+8
+   2 ^ 0.5
+1.41421
+   _2 ^ 0.5
+0j1.41421
+   2 ^. 3
+1.58496
+
+── ((1) 3 of 16) Arrays ─────────────────────────────────────
+Functions apply to arrays.
+)
+   2 + 5 6 7
+7 8 9
+   2 3 4 * 5 6 7
+10 18 28
+   2 3 4 - 5 6 7
+_3 _3 _3
+   2 3 4 % 5 6 7
+0.4 0.5 0.571429
+   2 3 % 5 6 7    NB. error because arguments do not match
+|length error in run1, executing dyad %
+|shapes 2 and 3 do not conform
+|   2 3    %5 6 7
+|[-5] 
+
+── ((1) 4 of 16) Arrays (ctd) ───────────────────────────────
+Some functions make arrays.
+
+i.n is a list of the first n integers.
+
+s $ v makes an array of shape s using the elements v
+)
+   i. 7
+0 1 2 3 4 5 6
+   1 + i. 7
+1 2 3 4 5 6 7
+   2 ^ i. 7
+1 2 4 8 16 32 64
+   (i. 7) ^ 0.5
+0 1 1.41421 1.73205 2 2.23607 2.44949
+   3 5 $ 3 1 4 2
+3 1 4 2 3
+1 4 2 3 1
+4 2 3 1 4
+   x=:3 5 $ 3 1 4 2
+   x * x
+ 9  1 16 4  9
+ 1 16  4 9  1
+16  4  9 1 16
+
+── ((1) 5 of 16) Assignment ─────────────────────────────────
+An array or function can be assigned a name by using =: (the
+copula).
+)
+   i. 7
+0 1 2 3 4 5 6
+   x=:i. 7
+   x
+0 1 2 3 4 5 6
+   x ^ 2
+0 1 4 9 16 25 36
+   power=: ^
+   x power 2
+0 1 4 9 16 25 36
+   x power 0.5
+0 1 1.41421 1.73205 2 2.23607 2.44949
+
+── ((1) 6 of 16) Monadic or Dyadic ──────────────────────────
+A function can be monadic or dyadic, depending on whether it
+applies to one argument (on the right) or to two (on the left
+and right).
+)
+   2 - 3   NB. Subtraction (dyadic)
+_1
+   -3      NB. Negation (monadic)
+_3
+   2 % 3   NB. Division
+0.666667
+   % 3     NB. Reciprocal
+0.333333
+   2 ^ 3   NB. Power
+8
+   ^0 1 2  NB. Exponential
+1 2.71828 7.38906
+
+── ((1) 7 of 16) More Primitives ────────────────────────────
+The primitive functions include + - * % as well as ^ (power),
+^. (log), > (greater than), >. (greater-of, or maximum), +.
+(or/GCD), *. (and/LCM), | (residue or modulo), etc.
+
+All of these can be monadic or dyadic, and apply to arrays.
+)
+   2 ^ 3 4 5 6
+8 16 32 64
+   2 ^ 0.5 3 _5
+1.41421 8 0.03125
+   _2 ^ 0.5 6 7
+0j1.41421 64 _128
+   
+   0 0 1 1 +. 0 1 0 1
+0 1 1 1
+   2 3 4 5 +. 10 20 30 40
+2 1 2 5
+   2 3 4 5 *. 10 20 30 40
+10 60 60 40
+   
+   2 3 4 5 | 10 20 30 40
+0 2 2 0
+   2 3 4 5 <. 10 20 30 40
+2 3 4 5
+   2 3 4 5 >. 10 20 30 40
+10 20 30 40
+
+── ((1) 8 of 16) Insert ─────────────────────────────────────
+Adverbs modify verbs (functions) to produce new verbs.
+
+For example, the adverb / inserts its verb argument between
+the items of its argument.
+
+Thus, +/ is summation and */ is product. These are the "big
+sigma" and "big pi" of conventional notation. Moreover, / can
+be applied to any function: >./ is maximum, <./ is minimum,
++./ is or or GCD, *./ is and or LCM, etc.
+)
+   x=: 1 + i. 7
+   x
+1 2 3 4 5 6 7
+   +/ x
+28
+   */ x
+5040
+   >./ x
+7
+   <./ x
+1
+   +./ x
+1
+   *./ x
+420
+
+── ((1) 9 of 16) Table ──────────────────────────────────────
+If f is a verb (function), then f/ is a verb, and, like any
+other verb, it can be monadic or dyadic. The monadic meaning
+is "insert". The dyadic meaning is "table", that is, a
+function table.
+
+Function tables are a good way to organize systematic
+experimentation on unfamiliar functions.
+)
+   x=:i.9
+   x
+0 1 2 3 4 5 6 7 8
+   x +/ x
+0 1  2  3  4  5  6  7  8
+1 2  3  4  5  6  7  8  9
+2 3  4  5  6  7  8  9 10
+3 4  5  6  7  8  9 10 11
+4 5  6  7  8  9 10 11 12
+5 6  7  8  9 10 11 12 13
+6 7  8  9 10 11 12 13 14
+7 8  9 10 11 12 13 14 15
+8 9 10 11 12 13 14 15 16
+   x */ x
+0 0  0  0  0  0  0  0  0
+0 1  2  3  4  5  6  7  8
+0 2  4  6  8 10 12 14 16
+0 3  6  9 12 15 18 21 24
+0 4  8 12 16 20 24 28 32
+0 5 10 15 20 25 30 35 40
+0 6 12 18 24 30 36 42 48
+0 7 14 21 28 35 42 49 56
+0 8 16 24 32 40 48 56 64
+   x </ x
+0 1 1 1 1 1 1 1 1
+0 0 1 1 1 1 1 1 1
+0 0 0 1 1 1 1 1 1
+0 0 0 0 1 1 1 1 1
+0 0 0 0 0 1 1 1 1
+0 0 0 0 0 0 1 1 1
+0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0 0
+   x >/ x
+0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 0 0 0
+1 1 0 0 0 0 0 0 0
+1 1 1 0 0 0 0 0 0
+1 1 1 1 0 0 0 0 0
+1 1 1 1 1 0 0 0 0
+1 1 1 1 1 1 0 0 0
+1 1 1 1 1 1 1 0 0
+1 1 1 1 1 1 1 1 0
+   x >./ x
+0 1 2 3 4 5 6 7 8
+1 1 2 3 4 5 6 7 8
+2 2 2 3 4 5 6 7 8
+3 3 3 3 4 5 6 7 8
+4 4 4 4 4 5 6 7 8
+5 5 5 5 5 5 6 7 8
+6 6 6 6 6 6 6 7 8
+7 7 7 7 7 7 7 7 8
+8 8 8 8 8 8 8 8 8
+   x <./ x
+0 0 0 0 0 0 0 0 0
+0 1 1 1 1 1 1 1 1
+0 1 2 2 2 2 2 2 2
+0 1 2 3 3 3 3 3 3
+0 1 2 3 4 4 4 4 4
+0 1 2 3 4 5 5 5 5
+0 1 2 3 4 5 6 6 6
+0 1 2 3 4 5 6 7 7
+0 1 2 3 4 5 6 7 8
+   x +./ x
+0 1 2 3 4 5 6 7 8
+1 1 1 1 1 1 1 1 1
+2 1 2 1 2 1 2 1 2
+3 1 1 3 1 1 3 1 1
+4 1 2 1 4 1 2 1 4
+5 1 1 1 1 5 1 1 1
+6 1 2 3 2 1 6 1 2
+7 1 1 1 1 1 1 7 1
+8 1 2 1 4 1 2 1 8
+   x *./ x
+0 0  0  0  0  0  0  0  0
+0 1  2  3  4  5  6  7  8
+0 2  2  6  4 10  6 14  8
+0 3  6  3 12 15  6 21 24
+0 4  4 12  4 20 12 28  8
+0 5 10 15 20  5 30 35 40
+0 6  6  6 12 30  6 42 24
+0 7 14 21 28 35 42  7 56
+0 8  8 24  8 40 24 56  8
+   x |/ x
+0 1 2 3 4 5 6 7 8
+0 0 0 0 0 0 0 0 0
+0 1 0 1 0 1 0 1 0
+0 1 2 0 1 2 0 1 2
+0 1 2 3 0 1 2 3 0
+0 1 2 3 4 0 1 2 3
+0 1 2 3 4 5 0 1 2
+0 1 2 3 4 5 6 0 1
+0 1 2 3 4 5 6 7 0
+
+── ((1) 10 of 16) Table (ctd) ───────────────────────────────
+The Hilbert matrix is a simple function on the addition
+table. As shown below, its pattern is more apparent in the
+extended precision (rational) domain.
+
+Although Hilbert matrices are notoriously unstable under
+inversion, the matrix inverse (%.) gives an exact integer
+result (as shown below):
+)
+   x=:i.7
+   x +/ x
+0 1 2 3  4  5  6
+1 2 3 4  5  6  7
+2 3 4 5  6  7  8
+3 4 5 6  7  8  9
+4 5 6 7  8  9 10
+5 6 7 8  9 10 11
+6 7 8 9 10 11 12
+   % 1 + x +/ x
+       1      0.5 0.333333     0.25       0.2  0.166667  0.142857
+     0.5 0.333333     0.25      0.2  0.166667  0.142857     0.125
+0.333333     0.25      0.2 0.166667  0.142857     0.125  0.111111
+    0.25      0.2 0.166667 0.142857     0.125  0.111111       0.1
+     0.2 0.166667 0.142857    0.125  0.111111       0.1 0.0909091
+0.166667 0.142857    0.125 0.111111       0.1 0.0909091 0.0833333
+0.142857    0.125 0.111111      0.1 0.0909091 0.0833333 0.0769231
+   
+   y=:i.7x   NB. The final x gives extended precision
+   H=:% 1 + y +/ y
+   H
+  1 1r2 1r3  1r4  1r5  1r6  1r7
+1r2 1r3 1r4  1r5  1r6  1r7  1r8
+1r3 1r4 1r5  1r6  1r7  1r8  1r9
+1r4 1r5 1r6  1r7  1r8  1r9 1r10
+1r5 1r6 1r7  1r8  1r9 1r10 1r11
+1r6 1r7 1r8  1r9 1r10 1r11 1r12
+1r7 1r8 1r9 1r10 1r11 1r12 1r13
+   %. H
+    49    _1176      8820    _29400      48510     _38808     12012
+ _1176    37632   _317520   1128960   _1940400    1596672   _504504
+  8820  _317520   2857680 _10584000   18711000  _15717240   5045040
+_29400  1128960 _10584000  40320000  _72765000   62092800 _20180160
+ 48510 _1940400  18711000 _72765000  133402500 _115259760  37837800
+_38808  1596672 _15717240  62092800 _115259760  100590336 _33297264
+ 12012  _504504   5045040 _20180160   37837800  _33297264  11099088
+
+── ((1) 11 of 16) Table (ctd) ───────────────────────────────
+The "triangle" of Pascal is an example of a function table,
+based on the binomial coefficient function ! .
+
+An advantage of treating it as a table rather than as a
+triangle is that matrix operations (such as matrix inverse)
+can be applied to it.
+)
+   x=: i. 7
+   x !/ x
+1 1 1 1 1  1  1
+0 1 2 3 4  5  6
+0 0 1 3 6 10 15
+0 0 0 1 4 10 20
+0 0 0 0 1  5 15
+0 0 0 0 0  1  6
+0 0 0 0 0  0  1
+   m=: x !/ x
+   %. m       NB. The alternating binomial coefficients
+1 _1  1 _1  1  _1   1
+0  1 _2  3 _4   5  _6
+0  0  1 _3  6 _10  15
+0  0  0  1 _4  10 _20
+0  0  0  0  1  _5  15
+0  0  0  0  0   1  _6
+0  0  0  0  0   0   1
+   +/ m
+1 2 4 8 16 32 64
+   +/ %. m
+1 0 0 0 0 0 0
+
+── ((1) 12 of 16) Prefix ────────────────────────────────────
+Prefix is another adverb. f\ applies f to the prefixes of the
+argument.
+
+The monad < (box) is helpful in understanding prefix.
+)
+   x=: 1+i.7
+   x
+1 2 3 4 5 6 7
+   +/\ x    NB. Subtotals
+1 3 6 10 15 21 28
+   <\ x
+┌─┬───┬─────┬───────┬─────────┬───────────┬─────────────┐
+│1│1 2│1 2 3│1 2 3 4│1 2 3 4 5│1 2 3 4 5 6│1 2 3 4 5 6 7│
+└─┴───┴─────┴───────┴─────────┴───────────┴─────────────┘
+   
+   */\ x    NB. Progressive products
+1 2 6 24 120 720 5040
+   <./\ x
+1 1 1 1 1 1 1
+   >./\ x
+1 2 3 4 5 6 7
+   +./\ x
+1 1 1 1 1 1 1
+   *./\ x
+1 2 6 12 60 60 420
+
+── ((1) 13 of 16) Permutations ──────────────────────────────
+The dyadic function x{y indexes y by x If p is a permutation
+p, then p{y permutes y by p.
+)
+   p=:9 ?. 9    NB. A random permutation
+   p
+0 5 8 3 4 1 7 6 2
+   p { p
+0 1 2 3 4 5 6 7 8
+   p { p { p
+0 5 8 3 4 1 7 6 2
+   6 9$p
+0 5 8 3 4 1 7 6 2
+0 5 8 3 4 1 7 6 2
+0 5 8 3 4 1 7 6 2
+0 5 8 3 4 1 7 6 2
+0 5 8 3 4 1 7 6 2
+0 5 8 3 4 1 7 6 2
+   {/ 6 9$p
+0 1 2 3 4 5 6 7 8
+   {/\ 6 9$p
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+
+── ((1) 14 of 16) Permutations (ctd) ────────────────────────
+{/ (m,#p) $ p inserts { between m copies of the permutation,
+and computes the m-th power of p.
+
+The corresponding prefixes, {/\ (m,#p) $ p, are the
+successive powers of p.
+)
+   p
+0 5 8 3 4 1 7 6 2
+   p{p
+0 1 2 3 4 5 6 7 8
+   p{p{p
+0 5 8 3 4 1 7 6 2
+   
+   {/ 6 9 $ p
+0 1 2 3 4 5 6 7 8
+   
+   {/\6 9 $ p
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+0 5 8 3 4 1 7 6 2
+0 1 2 3 4 5 6 7 8
+
+── ((1) 15 of 16) Permutations (ctd) ────────────────────────
+C. p computes the cycles of the permutation p. The Least
+Common Multiple (*./) of the cycle lengths is the order of
+the subgroup generated by p.
+)
+   p
+0 5 8 3 4 1 7 6 2
+   C. p
+┌─┬─┬─┬───┬───┬───┐
+│0│3│4│5 1│7 6│8 2│
+└─┴─┴─┴───┴───┴───┘
+   #&> C. p
+1 1 1 2 2 2
+   *./ #&> C. p
+2
+
+── ((1) 16 of 16) Selecting topics ──────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 2 Patterns: color ────────────────────────────────
+
+── ((2) 1 of 11) Addition Table ─────────────────────────────
+The pattern seen in an addition table can be emphasized by
+producing a window in which equal values in the table are
+assigned the same color.
+)
+   require 'plot viewmat'
+   color =: viewmat
+   x=:i. 5
+   x +/ x
+0 1 2 3 4
+1 2 3 4 5
+2 3 4 5 6
+3 4 5 6 7
+4 5 6 7 8
+   color x +/ x
+
+── ((2) 2 of 11) Subtraction Table ──────────────────────────
+)
+   x -/ x       NB. Subtraction table
+0 _1 _2 _3 _4
+1  0 _1 _2 _3
+2  1  0 _1 _2
+3  2  1  0 _1
+4  3  2  1  0
+   color x -/ x
+
+── ((2) 3 of 11) Multiplication Table ───────────────────────
+When applied to a list of positive and negative integers, the
+multiplication table provides an interesting pattern.
+)
+   pn=: i: _3
+   pn
+3 2 1 0 _1 _2 _3
+   pn */ pn
+ 9  6  3 0 _3 _6 _9
+ 6  4  2 0 _2 _4 _6
+ 3  2  1 0 _1 _2 _3
+ 0  0  0 0  0  0  0
+_3 _2 _1 0  1  2  3
+_6 _4 _2 0  2  4  6
+_9 _6 _3 0  3  6  9
+   color pn */ pn
+
+── ((2) 4 of 11) Multiplication Table (ctd) ─────────────────
+The monad * is called the "signum" or "sign" function. When
+applied to a multiplication table, it shows the pattern of
+positive and negative results produced by multiplication.
+)
+   pn
+3 2 1 0 _1 _2 _3
+   *pn
+1 1 1 0 _1 _1 _1
+   * pn */ pn
+ 1  1  1 0 _1 _1 _1
+ 1  1  1 0 _1 _1 _1
+ 1  1  1 0 _1 _1 _1
+ 0  0  0 0  0  0  0
+_1 _1 _1 0  1  1  1
+_1 _1 _1 0  1  1  1
+_1 _1 _1 0  1  1  1
+   color * pn */ pn
+
+── ((2) 5 of 11) Remainder Table ────────────────────────────
+3 | 5 gives the "remainder" or "residue" on dividing 3 into
+5. Study the following remainder table and (before advancing
+to the next panel), try to predict the appearance of coloring
+the 2-residue of the addition table given by 2 | (i.8) +/
+(i.8).
+)
+   y=: 1 + i. 6
+   y |/ y
+0 0 0 0 0 0
+1 0 1 0 1 0
+1 2 0 1 2 0
+1 2 3 0 1 2
+1 2 3 4 0 1
+1 2 3 4 5 0
+   color y |/ y
+
+── ((2) 6 of 11) Checkerboard ───────────────────────────────
+)
+   2 | (i.8) +/ (i.8)
+0 1 0 1 0 1 0 1
+1 0 1 0 1 0 1 0
+0 1 0 1 0 1 0 1
+1 0 1 0 1 0 1 0
+0 1 0 1 0 1 0 1
+1 0 1 0 1 0 1 0
+0 1 0 1 0 1 0 1
+1 0 1 0 1 0 1 0
+   
+   color 2 | (i.8) +/ (i.8)
+
+── ((2) 7 of 11) Fractals ───────────────────────────────────
+Residues of binomial coefficient tables provide examples of
+fractals (which "replicate according to their own pattern").
+
+This is illustrated in this and the next three panels.
+)
+   2 | (i.2) !/ (i.2)
+1 1
+0 1
+   
+   color 2 | (i.2) !/ (i.2)
+
+── ((2) 8 of 11) Fractals (ctd) ─────────────────────────────
+)
+   2 | (i.4) !/ (i.4)
+1 1 1 1
+0 1 0 1
+0 0 1 1
+0 0 0 1
+   
+   color 2 | (i.4) !/ (i.4)
+
+── ((2) 9 of 11) Fractals (ctd) ─────────────────────────────
+)
+   2 | (i.16) !/ (i.16)
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1
+0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1
+0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1
+0 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1
+0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1
+0 0 0 0 0 0 1 1 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 1
+0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 1
+0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1
+0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1
+0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+   
+   color 2 | (i.16) !/ (i.16)
+
+── ((2) 10 of 11) Fractals (ctd) ────────────────────────────
+)
+   3 | (i.16) !/ (i.16)
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0 1 2 0 1 2 0 1 2 0 1 2 0 1 2 0
+0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0
+0 0 0 1 1 1 2 2 2 0 0 0 1 1 1 2
+0 0 0 0 1 2 0 2 1 0 0 0 0 1 2 0
+0 0 0 0 0 1 0 0 2 0 0 0 0 0 1 0
+0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 1 2 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0 0 0 1 2 0 1 2 0
+0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0
+0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 2
+0 0 0 0 0 0 0 0 0 0 0 0 0 1 2 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+   
+   color 3 | (i.16) !/ (i.16)
+
+── ((2) 11 of 11) Fractals (ctd) ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 3 Patterns: Plots ────────────────────────────────
+
+── ((3) 1 of 5) Simple plot ─────────────────────────────────
+The square function (*:) applied to a list x may be plotted
+against its argument as follows:
+)
+   require'plot'
+   
+   x=: i.5
+   y=: *: x
+   
+   x;y
+┌─────────┬──────────┐
+│0 1 2 3 4│0 1 4 9 16│
+└─────────┴──────────┘
+   
+   plot x;y
+
+── ((3) 2 of 5) Stick and Line Plot ─────────────────────────
+A plot that shows vertical lines to the argument axis may be
+produced similarly as follows.
+)
+   PLOT=: 'stick,line'&plot
+   
+   PLOT x;y
+
+── ((3) 3 of 5) Stick and Line Plot (ctd) ───────────────────
+Combined plots of two or more functions are produced as
+follows.
+)
+   z=: %: x  NB. Square root
+   
+   x;>y;z
+┌─────────┬──────────────────────┐
+│0 1 2 3 4│0 1       4       9 16│
+│         │0 1 1.41421 1.73205  2│
+└─────────┴──────────────────────┘
+   
+   PLOT x;>y;z
+
+── ((3) 4 of 5) Stick and Line Plot (ctd) ───────────────────
+The sine and cosine functions may be plotted as follows.
+)
+   sin=: 1&o.
+   cos=: 2&o.
+   x=: 0.1 * i: 21
+   x
+_2.1 _2 _1.9 _1.8 _1.7 _1.6 _1.5 _1.4 _1.3 _1.2 _1.1 _1 _0.9 _0.8 _0.7 _0.6 _0.5 _0.4 _0.3 _0.2 _0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2 2.1
+   
+   PLOT x;>(sin x);(cos x)
+
+── ((3) 5 of 5) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 4 Patterns: Variation ────────────────────────────
+
+── ((4) 1 of 4) Introduction ────────────────────────────────
+More general patterns may be observed by comparing successive
+items produced in applying a function to a systematic list
+argument.
+
+Items may be compared in various ways, notably by subtraction
+and by division.
+)
+   ] x=:i. 8        NB. The identity function ] displays x
+0 1 2 3 4 5 6 7
+   ] y=: x ^ 2
+0 1 4 9 16 25 36 49
+   ] z=: 2 ^ x
+1 2 4 8 16 32 64 128
+   
+   }. y             NB. Drop first of y
+1 4 9 16 25 36 49
+   }: y             NB. Drop last of y
+0 1 4 9 16 25 36
+   (}. y) - (}: y)  NB. Subtraction of adjacent items of y
+1 3 5 7 9 11 13
+   (}. z) % (}: z)  NB. Ratio of adjacent items of z
+2 2 2 2 2 2 2
+
+── ((4) 2 of 4) Differences and ratios ──────────────────────
+We now define functions called dif and rat to perform these
+comparisons.
+)
+   dif=: }. - }:
+   rat=: }. % }:
+   
+   dif y
+1 3 5 7 9 11 13
+   dif dif y
+2 2 2 2 2 2
+   
+   rat z
+2 2 2 2 2 2 2
+   rat rat z
+1 1 1 1 1 1
+   dif rat z
+0 0 0 0 0 0
+   
+   c=:x*x*x  NB. cube
+   dif c
+1 7 19 37 61 91 127
+   dif dif c
+6 12 18 24 30 36
+   dif dif dif c
+6 6 6 6 6
+
+── ((4) 3 of 4) Differences and ratios (ctd) ────────────────
+f ^: n is "f to the power n", that is, n applications of the
+function f.
+)
+   q=:x*x*x*x*x
+   q
+0 1 32 243 1024 3125 7776 16807
+   dif dif q
+30 180 570 1320 2550 4380
+   dif ^:2 q
+30 180 570 1320 2550 4380
+   
+   dif ^: 0 1 2 3 4 5 6 q
+  0   1  32  243 1024 3125 7776 16807
+  1  31 211  781 2101 4651 9031     0
+ 30 180 570 1320 2550 4380    0     0
+150 390 750 1230 1830    0    0     0
+240 360 480  600    0    0    0     0
+120 120 120    0    0    0    0     0
+  0   0   0    0    0    0    0     0
+
+── ((4) 4 of 4) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 5 Series ─────────────────────────────────────────
+
+── ((5) 1 of 4) Introduction ────────────────────────────────
+In the list a=: 1 3 5 7 9 11, the expression 2{a selects the
+item with the value 5, and 2 is said to be its "index".
+
+The function f=: >:@+: gives each element of a as a function
+of its index, and is said to define the "series" a. This is
+true only for arguments in the list i.#a, but if we assume
+(or assert) that f applies to every index, then it is said to
+define an "infinite" series.
+)
+   a=: 1 3 5 7 9 11
+   2{a
+5
+   7{a
+   
+   f=:>:@+:  NB. >: is increment, and +: is double
+   f 2
+5
+   f 7
+15
+   f i.20
+1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39
+
+── ((5) 2 of 4) Determining a defining function ─────────────
+Using the list b=: 0 _2 _4 0 16 50 108 we can define a
+function for the corresponding series. We will use repeated
+application of the difference function dif=:}.-}: to obtain
+the coefficients for the falling factorial polynomial
+ffp=:p.!._1. These matters will be discussed more fully in a
+subsequent chapter on polynomials.
+)
+   b=:0 _2 _4 0 16 50 108
+   dif=:}.-}:
+   dif^:0 1 2 3 4 b
+ 0 _2 _4  0 16 50 108
+_2 _2  4 16 34 58   0
+ 0  6 12 18 24  0   0
+ 6  6  6  6  0  0   0
+ 0  0  0  0  0  0   0
+   c=:0 _2 0 6 0       NB. First column of table of differences
+   ]ncoeff=: c % !i.#c NB. Normalized coefficients
+0 _2 0 1 0
+   ffp=:p.!._1         NB. Falling factorial polynomial
+   ncoeff ffp i.7      NB. Reproduces b
+0 _2 _4 0 16 50 108
+   f=: ncoeff&ffp      NB. A function that defines (and extends) the series
+   f i. 15
+0 _2 _4 0 16 50 108 196 320 486 700 968 1296 1690 2156
+
+── ((5) 3 of 4) Determining a defining function (ctd) ───────
+ Try further examples, as illustrated below.
+)
+   b=: 3+(i.7)^5
+   b
+3 4 35 246 1027 3128 7779
+   dif^:(i.7) b
+  3   4  35  246 1027 3128 7779
+  1  31 211  781 2101 4651    0
+ 30 180 570 1320 2550    0    0
+150 390 750 1230    0    0    0
+240 360 480    0    0    0    0
+120 120   0    0    0    0    0
+  0   0   0    0    0    0    0
+   
+   c=: {."1 dif^:(i.7) b
+   c
+3 1 30 150 240 120 0
+   
+   (c%!i.#c) ffp i.10
+3 4 35 246 1027 3128 7779 16810 32771 59052
+
+── ((5) 4 of 4) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 6 Polynomials ────────────────────────────────────
+
+── ((6) 1 of 9) Introduction ────────────────────────────────
+The expression 2*x^3 is a monomial (single name), and a sum
+of monomials is a polynomial.
+
+The expression c p. x is a polynomial with "coefficients" c.
+)
+   x=:5
+   x^3
+125
+   2*x^3
+250
+   
+   x=:0 1 2 3 4 5
+   2*x^3
+0 2 16 54 128 250
+   
+   c=:3 1 4 2
+   c p. x
+3 10 37 96 199 358
+   (3*x^0)+(1*x^1)+(4*x^2)+(2*x^3)
+3 10 37 96 199 358
+
+── ((6) 2 of 9) Introduction (ctd) ──────────────────────────
+Polynomials are important for a number of reasons:
+
+1. A sum of polynomials is a polynomial 2. A product of
+polynomials is a polynomial 3. The derivative of a polynomial
+is a polynomial 4. The integral of a polynomial is a
+polynomial 5. Polynomials serve to approximate many
+functions, such as
+   sine, cosine, and exponential.
+)
+   c=:1 3 3 1
+   d=:4 3 2 1
+   e=:1 2 1
+   (c p. x)+(d p. x)
+5 18 53 122 237 410
+   (c+d) p. x
+5 18 53 122 237 410
+   (c p. x)*(e p. x)
+1 32 243 1024 3125 7776
+   1 5 10 10 5 1 p. x
+1 32 243 1024 3125 7776
+   
+   (1%!i.10) p. x
+1 2.71828 7.38871 20.0634 54.1541 143.689
+   ^ x
+1 2.71828 7.38906 20.0855 54.5982 148.413
+
+── ((6) 3 of 9) Sums and products ───────────────────────────
+Since (e,0) p. x is equivalent to e p. x, coefficients that
+differ in number of items can be added as illustrated below.
+
+Moreover, the coefficients of a product can be obtained from
+the multiplication table by using the adverb /. to sum its
+diagonals.
+)
+   c+(e,0)
+2 5 4 1
+   ((e,0) p. x) = (e p. x)
+1 1 1 1 1 1
+   c */ e
+1 2 1
+3 6 3
+3 6 3
+1 2 1
+   </. c */ e   NB. Box diagonals
+┌─┬───┬─────┬─────┬───┬─┐
+│1│2 3│1 6 3│3 6 1│3 2│1│
+└─┴───┴─────┴─────┴───┴─┘
+   +//. c */ e  NB. Sum diagonals
+1 5 10 10 5 1
+   (1 5 10 10 5 1 p. x) = ((c p. x) * (e p. x))
+1 1 1 1 1 1
+
+── ((6) 4 of 9) Derivatives and Integrals ───────────────────
+The derivative of a polynomial is obtained by multiplying
+each monomial by its exponent, and reducing the exponent by
+1.
+
+Equivalently, the coefficients of the derivative of c p. x
+are obtained by multiplying c by the exponents i.#c, and
+dropping the first item.
+)
+   c
+1 3 3 1
+   i.#c
+0 1 2 3
+   c * i. # c
+0 3 6 3
+   der=:}. c * i. # c NB. Coefficients of derivative
+   der
+3 6 3
+   require 'plot'
+   PLOT=:'stick,line'&plot
+   PLOT x;>(c p. x);(der p. x)
+
+── ((6) 5 of 9) Derivatives and Integrals (ctd) ─────────────
+Conversely, the coefficients of the integral of c p. x are
+obtained by dividing c by 1+i.#c, and appending a leading
+constant of integration (for which we will use 20).
+)
+   c
+1 3 3 1
+   1+i.#c
+1 2 3 4
+   c % 1+i.#c
+1 1.5 1 0.25
+   int=: 20 , c % 1+i.#c
+   int
+20 1 1.5 1 0.25
+   PLOT x;>(c p. x);(int p. x)
+
+── ((6) 6 of 9) Derivatives and Integrals (ctd) ─────────────
+We now define functions DER and INT for the derivative and
+integration of coefficients.
+)
+   DER=:}.@(]*i.@#)
+   
+   INT=:[,(] % >:@i.@#@]) NB. >: is the "increment" function
+   
+   DER c
+3 6 3
+   
+   20 INT c
+20 1 1.5 1 0.25
+   
+   DER 20 INT c
+1 3 3 1
+
+── ((6) 7 of 9) Derivatives and Integrals (ctd) ─────────────
+If ce is a list of coefficients that approximates the
+exponential, then DER ce is approximately equal to ce.
+)
+   ce=:1 % ! i. 7
+   ce
+1 1 0.5 0.166667 0.0416667 0.00833333 0.00138889
+   ce p. 0 1 2 3 4
+1 2.71806 7.35556 19.4125 48.5556
+   ^ 0 1 2 3 4
+1 2.71828 7.38906 20.0855 54.5982
+   
+   DER ce
+1 1 0.5 0.166667 0.0416667 0.00833333
+   
+   DER DER ce
+1 1 0.5 0.166667 0.0416667
+   
+   1 INT ce
+1 1 0.5 0.166667 0.0416667 0.00833333 0.00138889 0.000198413
+
+── ((6) 8 of 9) Falling Factorial ───────────────────────────
+The falling factorial function is related to the power
+function, obtained as a "variant" of it by using ^ !. _1.
+
+The falling factorial polynomial ffp=: p. !. _1 (used in the
+chapter on series) is a polynomial based on the falling
+factorial rather than the power.
+)
+   x=:5
+   e=:4
+   x^e
+625
+   x*x*x*x
+625
+   
+   ff=: ^!._1  NB. Falling factorial function
+   x ff e
+120
+   (x-0)*(x-1)*(x-2)*(x-3)
+120
+   */(x-i.e)
+120
+
+── ((6) 9 of 9) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 7 Binomial Coefficients ──────────────────────────
+
+── ((7) 1 of 5) Introduction ────────────────────────────────
+Matrix products and inverses of binomial coefficient tables
+give interesting results.
+)
+   ]bct=: (i.7) !/ (i.7)
+1 1 1 1 1  1  1
+0 1 2 3 4  5  6
+0 0 1 3 6 10 15
+0 0 0 1 4 10 20
+0 0 0 0 1  5 15
+0 0 0 0 0  1  6
+0 0 0 0 0  0  1
+   ]abct=: %. bct NB. Inverse gives alternating binomial coefficients
+1 _1  1 _1  1  _1   1
+0  1 _2  3 _4   5  _6
+0  0  1 _3  6 _10  15
+0  0  0  1 _4  10 _20
+0  0  0  0  1  _5  15
+0  0  0  0  0   1  _6
+0  0  0  0  0   0   1
+   +/bct          NB. Column sums
+1 2 4 8 16 32 64
+   2^i.7
+1 2 4 8 16 32 64
+   +/abct         NB. Not all zeros
+1 0 0 0 0 0 0
+
+── ((7) 2 of 5) Matrix Products of bct ──────────────────────
+)
+   mp=: +/ . * NB. Matrix product function
+   bct mp abct
+1 0 0 0 0 0 0
+0 1 0 0 0 0 0
+0 0 1 0 0 0 0
+0 0 0 1 0 0 0
+0 0 0 0 1 0 0
+0 0 0 0 0 1 0
+0 0 0 0 0 0 1
+   bct mp bct
+1 2 4  8 16 32  64
+0 1 4 12 32 80 192
+0 0 1  6 24 80 240
+0 0 0  1  8 40 160
+0 0 0  0  1 10  60
+0 0 0  0  0  1  12
+0 0 0  0  0  0   1
+   bct mp bct mp bct
+1 3 9 27  81 243  729
+0 1 6 27 108 405 1458
+0 0 1  9  54 270 1215
+0 0 0  1  12  90  540
+0 0 0  0   1  15  135
+0 0 0  0   0   1   18
+0 0 0  0   0   0    1
+
+── ((7) 3 of 5) Identities ──────────────────────────────────
+Since the matrix products of abc are sums of products of
+binomial coefficients, any independent expression that gives
+these "powers" of bct yields a host of identities concerning
+binomial coefficients.
+)
+   bct4=:bct mp bct mp bct mp bct
+   
+   bct4       NB. What is the developing pattern?
+1 4 16 64 256 1024 4096
+0 1  8 48 256 1280 6144
+0 0  1 12  96  640 3840
+0 0  0  1  16  160 1280
+0 0  0  0   1   20  240
+0 0  0  0   0    1   24
+0 0  0  0   0    0    1
+   
+   bct4 % bct NB. pattern clarified by element-by-element division
+1 4 16 64 256 1024 4096
+0 1  4 16  64  256 1024
+0 0  1  4  16   64  256
+0 0  0  1   4   16   64
+0 0  0  0   1    4   16
+0 0  0  0   0    1    4
+0 0  0  0   0    0    1
+
+── ((7) 4 of 5) Identities (ctd) ────────────────────────────
+We can now use a subtraction table as an exponent to give a
+result equal to bct4 (the fourth "power" of bct).
+)
+   ]st=: - (i.7) -/ (x: i.7)
+ 0  1  2  3  4  5 6
+_1  0  1  2  3  4 5
+_2 _1  0  1  2  3 4
+_3 _2 _1  0  1  2 3
+_4 _3 _2 _1  0  1 2
+_5 _4 _3 _2 _1  0 1
+_6 _5 _4 _3 _2 _1 0
+   4 ^ st
+     1      4    16   64  256 1024 4096
+   1r4      1     4   16   64  256 1024
+  1r16    1r4     1    4   16   64  256
+  1r64   1r16   1r4    1    4   16   64
+ 1r256   1r64  1r16  1r4    1    4   16
+1r1024  1r256  1r64 1r16  1r4    1    4
+1r4096 1r1024 1r256 1r64 1r16  1r4    1
+   bct * 4 ^ st NB. Enter bct4 to compare with this result
+1 4 16 64 256 1024 4096
+0 1  8 48 256 1280 6144
+0 0  1 12  96  640 3840
+0 0  0  1  16  160 1280
+0 0  0  0   1   20  240
+0 0  0  0   0    1   24
+0 0  0  0   0    0    1
+
+── ((7) 5 of 5) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 8 Geometry ───────────────────────────────────────
+
+── ((8) 1 of 13) Tables of coordinates ──────────────────────
+A 4-by-3 table can be used to represent coordinates of the 4
+vertices of a tetrahedron in 3-space, and an n-by-2 table
+represents the n vertices of a polygon.
+)
+   ]tri=:>0 0;7 4;3 0 NB. Base length 3 and altitude 4
+0 0
+7 4
+3 0
+   tri,.0.5           NB. Border with column of halves
+0 0 0.5
+7 4 0.5
+3 0 0.5
+   det=:-/ . *        NB. Determinant function
+   det tri,.0.5       NB. Signed area (<0 vertices in clockwise order)
+_6
+   
+   area=: det@(,.&0.5)NB. Define area function
+   area tri
+_6
+
+── ((8) 2 of 13) Area of triangle ───────────────────────────
+Analysis of this use of the determinant for triangles (and
+tetrahedrons) may be found in Klein "Elementary Mathematics
+From an Advanced Viewpoint".
+
+Because areas of triangles are signed, the area of any
+polygon can be obtained by adding lines to triangulate it,
+and summing the areas.
+)
+   ]cctri=:0 2 1{tri NB. Counterclockwise triangle
+0 0
+3 0
+7 4
+   
+   area cctri
+6
+
+── ((8) 3 of 13) Regular pentagon ───────────────────────────
+A regular pentagon is obtained by appying the cos and sin to
+angles at intervals of 2r5p1 (two-fifths of pi), and
+displayed by applying plot to the boxed x and y coordinates.
+)
+   cos=:2&o.
+   sin=:1&o.
+   ]pent=:(cos,.sin) 2r5p1 * i. 5
+        1         0
+ 0.309017  0.951057
+_0.809017  0.587785
+_0.809017 _0.587785
+ 0.309017 _0.951057
+   require 'plot'
+   |:pent    NB. Transpose table
+1 0.309017 _0.809017 _0.809017  0.309017
+0 0.951057  0.587785 _0.587785 _0.951057
+   ;/|: pent NB. Box rows (columns of pent)
+┌───────────────────────────────────────┬───────────────────────────────────────┐
+│1 0.309017 _0.809017 _0.809017 0.309017│0 0.951057 0.587785 _0.587785 _0.951057│
+└───────────────────────────────────────┴───────────────────────────────────────┘
+   (fix=: ;/@|:) pent
+┌───────────────────────────────────────┬───────────────────────────────────────┐
+│1 0.309017 _0.809017 _0.809017 0.309017│0 0.951057 0.587785 _0.587785 _0.951057│
+└───────────────────────────────────────┴───────────────────────────────────────┘
+   plot fix pent
+
+── ((8) 4 of 13) Regular pentagon (ctd) ─────────────────────
+The missing line from the last vertex to the first can be
+provided as follows.
+)
+   0 1 2 3 4 0{pent
+        1         0
+ 0.309017  0.951057
+_0.809017  0.587785
+_0.809017 _0.587785
+ 0.309017 _0.951057
+        1         0
+   
+   plot fix 0 1 2 3 4 0{pent
+
+── ((8) 5 of 13) Improper polygon ───────────────────────────
+An interchange of indices 1 and 2 illustrates the possibility
+of an"improper polygon" whose sides cross.
+)
+   0 2 1 3 4 0{pent
+        1         0
+_0.809017  0.587785
+ 0.309017  0.951057
+_0.809017 _0.587785
+ 0.309017 _0.951057
+        1         0
+   
+   plot fix 0 2 1 3 4 0{pent
+
+── ((8) 6 of 13) Triangulation ──────────────────────────────
+The pentagon may be triangulated as follows:
+)
+   plot fix 0 1 2 3 4 0 2 0 3 0 4{pent
+
+── ((8) 7 of 13) Area of pentagon ───────────────────────────
+These triangulated components of the pentagon can be selected
+and boxed, and their areas can be determined, as follows:
+)
+   ]bt=: (0 1 2{pent);(0 2 3{pent);(0 3 4{pent)
+┌──────────────────┬───────────────────┬───────────────────┐
+│        1        0│        1         0│        1         0│
+│ 0.309017 0.951057│_0.809017  0.587785│_0.809017 _0.587785│
+│_0.809017 0.587785│_0.809017 _0.587785│ 0.309017 _0.951057│
+└──────────────────┴───────────────────┴───────────────────┘
+   
+   area&> bt
+0.657164 1.06331 0.657164
+   
+   +/ area&> bt NB. Total area of pentagon
+2.37764
+
+── ((8) 8 of 13) Area of concave pentagon ───────────────────
+Although the function area gives signed results according to
+the clockwise or counter-clockwise order of the vertices,
+these areas are all of the same sign.
+
+This occurs because pent is a convex polygon, and the
+significance of signed areas is not apparent. We will make it
+so by using a concave polygon, obtained by multiplying the
+second vertex of pent by zero.
+)
+   ]concave=: 1 0 1 1 1*pent
+        1         0
+        0         0
+_0.809017  0.587785
+_0.809017 _0.587785
+ 0.309017 _0.951057
+   plot fix 0 1 2 3 4 0{concave
+
+── ((8) 9 of 13) Area of concave pentagon (ctd) ─────────────
+The boxed coordinates of the triangular components of the
+concave pentagon are obtained as shown below. Their areas are
+not all of the same sign, but sum to give its total area.
+)
+   ]btc=: (0 1 2{concave);(0 2 3{concave);(0 3 4{concave)
+┌──────────────────┬───────────────────┬───────────────────┐
+│        1        0│        1         0│        1         0│
+│        0        0│_0.809017  0.587785│_0.809017 _0.587785│
+│_0.809017 0.587785│_0.809017 _0.587785│ 0.309017 _0.951057│
+└──────────────────┴───────────────────┴───────────────────┘
+   
+   area&> btc
+_0.293893 1.06331 0.657164
+   
+   +/area&> btc
+1.42658
+
+── ((8) 10 of 13) Displacement and side length ──────────────
+The displacement from one vertex to the next can be obtained
+by rotating the table of vertices up by one place, and
+subtracting from it the original table.
+)
+   tri
+0 0
+7 4
+3 0
+   1 |. tri
+7 4
+3 0
+0 0
+   (1 |. tri)-tri
+ 7  4
+_4 _4
+_3  0
+   
+   disp=: 1&|. - ]
+   disp tri
+ 7  4
+_4 _4
+_3  0
+
+── ((8) 11 of 13) Displacement and side length (ctd) ────────
+The lengths of the sides can then be obtained from these
+displacements as the square root of the sum of the squares.
+)
+   length=: %:@(+/)@(]*])"1
+   
+   ]sides=:length disp tri
+8.06226 5.65685 3
+
+── ((8) 12 of 13) Heron's formula ───────────────────────────
+Heron's formula for the (unsigned) area of a triangle is the
+square root of the product of the semiperimeter with the
+semiperimeter less each of the sides.
+)
+   sp=: %&2 @ (+/)
+   sp sides
+8.35956
+   
+   (sp , sp - ]) sides
+8.35956 0.297298 2.7027 5.35956
+   */ (sp , sp - ]) sides
+36
+   %: */(sp , sp - ]) sides
+6
+   area tri NB. Compare with signed area
+_6
+   
+   Heron=: %: @ (*/) @ (sp , sp - ])
+   Heron sides
+6
+
+── ((8) 13 of 13) Selecting topics ──────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 9 Slope and Rate of Change ───────────────────────
+
+── ((9) 1 of 5) Introduction ────────────────────────────────
+The rate of change of a function is an important attribute:
+for example, the rate of change of the sine is the cosine,
+the rate of change of the exponential is itself, and the rate
+of change of the nth power is n times the (n-1)th power.
+
+Although the instantaneous rate of change at a point may be
+difficult to determine, the average rate of change over a
+non-zero interval i is straightforward.
+)
+   f=: 3:*]*]        NB. three times the square
+   x=:0 1 2 3 4 5
+   i=:0.1
+   f x
+0 3 12 27 48 75
+   f x+i
+0.03 3.63 13.23 28.83 50.43 78.03
+   (f x+i)-(f x)     NB. Rise over interval
+0.03 0.63 1.23 1.83 2.43 3.03
+   ((f x+i)-(f x))%i NB. Average rate of change
+0.3 6.3 12.3 18.3 24.3 30.3
+
+── ((9) 2 of 5) Slope ───────────────────────────────────────
+We use the term "slope" for the average rate of change,
+because the graph of a function at intervals of i exhibits
+the average rate of change as the slopes of the lines
+connecting successive points.
+)
+   require'plot'
+   PLOT=:'stick,line'&plot
+   i*i.20
+0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9
+   f i*i.20
+0 0.03 0.12 0.27 0.48 0.75 1.08 1.47 1.92 2.43 3 3.63 4.32 5.07 5.88 6.75 7.68 8.67 9.72 10.83
+   PLOT f i*i.20
+
+── ((9) 3 of 5) Slope (ctd) ─────────────────────────────────
+For a small interval the average slope approaches the slope
+AT each point, a result that is called the derivative of the
+function.
+)
+   smi=:0.001
+   PLOT f smi*i.100
+
+── ((9) 4 of 5) Slope (ctd) ─────────────────────────────────
+The derivative (the slope AT a point) should be given by a
+zero interval, but this is the meaningless division of a zero
+rise by a zero interval.
+
+However, the case of a power function can be analyzed to give
+a simple meaningful result. For example, the cube function
+applied to x+i gives
+
+  (x*x*x)+(3*x*x*i)+(3*x*i*i)+(i*i*i)
+
+ Sutraction of the cube of x gives:
+
+  (3*x*x*i)+(3*x*i*i)+(i*i*i)
+
+ which can be divided by i to yield:
+
+  (3*x*x)+(3*x*i)+(i*i)
+
+ Since i is zero, the last two terms can be dropped to yield
+ 3*x*x (that is, three x squared, or formally, 3:*]*]) for
+the slope with  zero interval.
+)
+
+── ((9) 5 of 5) Selecting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 10 Theorems and proofs ───────────────────────────
+
+── ((10) 1 of 8) Theorems ───────────────────────────────────
+A theorem is an assertion that one expression L,the left
+limb, is equivalent to another R, and may be expressed as the
+function T=. L -: R . A theorem may also be called a
+tautology, a function that yields 1 (true) for any argument.
+For example:
+)
+   L=: +/@i.             NB. Sum of integers
+   
+   R=: (] * ] - 1:) % 2:
+   
+   T=: L -: R
+   
+   (T ; L ; R ; i.) 6
+┌─┬──┬──┬───────────┐
+│1│15│15│0 1 2 3 4 5│
+└─┴──┴──┴───────────┘
+
+── ((10) 2 of 8) Theorems (ctd) ─────────────────────────────
+We can also assign the name n to the right argument function
+] to allow a function such as R1 to be written more readably
+for a beginner. Thus:
+)
+   n=: ]
+   
+   R=: (n*n-1:)%2:
+   
+   R 6
+15
+
+── ((10) 3 of 8) Proofs ─────────────────────────────────────
+A proof is a sequence of equivalent expressions that lead in
+justifiable steps from a left limb to a right. We will write
+one expression below another to assert that it is equivalent
+to the one above it, possibly annotating it with the
+justification to provide a formal proof:
+
+  L        NB. Theorem 1
+
+  +/@i.    NB. Definition of L
+)
+
+── ((10) 4 of 8) Proofs (ctd) ───────────────────────────────
+The foregoing proof can be illuminated by entering each
+expression followed by an argument, and observing that each
+gives the same result. Any mis-step in a proof will likely
+show an anomolous result.
+
+An expression can be conveniently entered by moving the
+cursor up to it, pressing enter to bring it to the input
+area, modifying it by inserting the argument, and then
+pressing enter. Moreover, partial expressions may be entered
+to observe their results. Thus:
+)
+   L 6
+15
+   
+   +/@i. 6
+15
+   
+   +/@|.@i.6 NB. Sum is associative  and commutative (|. reverses)
+15
+   
+   (((+/@i.)+(+/@|.@i.)) % 2:)6  NB. Half sum of equal quantities
+15
+   
+   R 6
+15
+   
+   (i. + |.@i.) 6 NB. To show that this is indeed a list of n-1
+5 5 5 5 5 5
+
+── ((10) 5 of 8) Proofs (ctd) ───────────────────────────────
+How would you express the second step (+/@|.@i.6) in
+conventional notation (without English or arm-waving).
+Remember that Sigma from 5 to 0 is a sum over an empty list)
+
+Reproduce other of the proofs in pure conventional notation.
+)
+
+── ((10) 6 of 8) Proofs (ctd) ───────────────────────────────
+The following is a similar proof that the sum of the first n
+odd integers equals the square of n:
+
+  (odds=: 1: + 2: * i.)        NB. First odd integers
+
+  +/@(1: + 2: * i.)            NB. Sum of odds
+
+  (n + +/@(2: * i.))           NB. Sum of n ones is n
+
+  (n + 2: * +/@i.)             NB. Sum of twice is twice sum
+
+  (n + 2: * (n * n - 1:) % 2:) NB. Result of preceding
+theorem
+
+  (n + n * n - 1:)             NB. Simple algebra
+
+  (n * n)                      NB. Simple algebra
+
+  *:                           NB. Definition of square
+)
+
+── ((10) 7 of 8) Induction ──────────────────────────────────
+An inductive proof is based (explicitly or implicitly) on a
+recursive definition of a function. Recursive definition is
+treated in the next chapter.
+)
+
+── ((10) 8 of 8) Selcting topics ────────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 11 Recursion ─────────────────────────────────────
+
+── ((11) 1 of 7) Introduction ───────────────────────────────
+If a function recurs in the expression that defines it, the
+function is said to be recursively defined. Such a definition
+must be supplemented by a definition for some specific
+argument, using an expression that does not make use of the
+function being defined.
+
+For example, the factorial of the argument j may be defined
+by j * f j-1 (or more formally by ] * f@<:), supplemented by
+the definition 1: (the constant function 1) for the case j=:
+0. Thus:
+)
+   f=: 1:`(]*f@<:) @. *
+   
+   f 5
+120
+   
+   f"0 i. 6 NB. The function f is applied to each rank-0 cell
+1 1 2 6 24 120
+
+── ((11) 2 of 7) Introduction (ctd) ─────────────────────────
+In the foregoing definition, the signum function * yields 0
+if the argument is zero, and 1 if it is greater than zero.
+
+Consequently, the agenda @. chooses the last element of the
+gerund 1:`(]*f@<:) each time until the argument (repeatedly
+decremented by <:) becomes zero, in which case it chooses the
+constant function 1:, thus terminating the process.
+
+Alternatively, the imposition of zero rank could be
+incorporated in the recursive definition:
+)
+   f=: 1:`(]*f@<:) @. * " 0
+   
+   f i. 6
+1 1 2 6 24 120
+
+── ((11) 3 of 7) Introduction (ctd) ─────────────────────────
+The reference to f within the definition works only because
+the name f is assigned to the function defined; we may
+instead use the symbol $: for self-reference to define an
+anonymous function to which any name may be assigned:
+)
+   1:`(]*$:@<:) @. * " 0 i. 6
+1 1 2 6 24 120
+   
+   factorial=: 1:`(]*$:@<:) @. * " 0
+   
+   factorial i. 6
+1 1 2 6 24 120
+
+── ((11) 4 of 7) Quicksort ──────────────────────────────────
+Quicksort is an interesting example of the use of recursion:
+the basic procedure is the segregation of the items of an
+argument list according to whether they are less than the
+leading item, equal to it, or greater than it.
+
+This procedure is applied recursively to the segregated
+lists, repeating as long as the argument has more than one
+item.
+)
+   y=: 52 9 65 41 70 91 52 76 26 4 73 32 63
+   
+   less=:    ([ < {.) # ]
+   equal=:   ([ = {.) # ]
+   greater=: ([ > {.) # ]
+   
+   less y
+9 41 26 4 32
+   (less;equal;greater) y
+┌────────────┬─────┬─────────────────┐
+│9 41 26 4 32│52 52│65 70 91 76 73 63│
+└────────────┴─────┴─────────────────┘
+   
+   qs=: ]`($:@less, equal, $:@greater) @. (# > 1:)
+   
+   qs y
+4 9 26 32 41 52 52 63 65 70 73 76 91
+
+── ((11) 5 of 7) Quicksort (ctd) ────────────────────────────
+Details of the action of the recursive definition of
+quicksort can be analyzed as illustrated below.
+)
+   seg=: less;equal;greater
+   y
+52 9 65 41 70 91 52 76 26 4 73 32 63
+   seg y
+┌────────────┬─────┬─────────────────┐
+│9 41 26 4 32│52 52│65 70 91 76 73 63│
+└────────────┴─────┴─────────────────┘
+   > {. seg y       NB. Select and open first (less-than)box
+9 41 26 4 32
+   seg > {. seg y   NB. Segregate "less-than" list
+┌─┬─┬────────┐
+│4│9│41 26 32│
+└─┴─┴────────┘
+   ; seg > {. seg y NB. Raze the boxed list
+4 9 41 26 32
+   
+   > {: seg y       NB. Select and open last (greater-than) list
+65 70 91 76 73 63
+   seg > {: seg y
+┌──┬──┬───────────┐
+│63│65│70 91 76 73│
+└──┴──┴───────────┘
+
+── ((11) 6 of 7) Quicksort (ctd) ────────────────────────────
+Continuation may lead to empty boxes.
+)
+   seg y
+┌────────────┬─────┬─────────────────┐
+│9 41 26 4 32│52 52│65 70 91 76 73 63│
+└────────────┴─────┴─────────────────┘
+   
+   > {. seg y
+9 41 26 4 32
+   seg > {. seg y
+┌─┬─┬────────┐
+│4│9│41 26 32│
+└─┴─┴────────┘
+   
+   > {. seg > {. seg y
+4
+   seg > {. seg > {. seg y
+┌┬─┬┐
+││4││
+└┴─┴┘
+   
+   ; seg > {. seg > {. seg y
+4
+
+── ((11) 7 of 7) Selecting topics ───────────────────────────
+This is the end of this chapter. To continue with the next
+chapter, advance as usual. But to select any other chapter,
+click on Chapters under the Studio menu.
+)
+
+── Chapter 12 Permutations and Anagrams ─────────────────────
+
+── ((12) 1 of 8) Introduction ───────────────────────────────
+A permutation (re-ordering) of the letters of a word is
+called an anagram, and may be performed by the anagram
+function denoted by A. -- an anagram may or may not be an
+English word.
+)
+   w=:'ART'
+   2 A. w
+RAT
+   4 A. w
+TAR
+   !# w  NB. The number of anagrams (permutations) of w
+6
+   i.!#w NB. The indices of all !3 anagrams of w
+0 1 2 3 4 5
+   (i.!#w) A. w
+ART
+ATR
+RAT
+RTA
+TAR
+TRA
+
+── ((12) 2 of 8) Introduction (ctd) ─────────────────────────
+The list to be permuted may be numbers, and the result may be
+used to index any list of the correct number of items.
+)
+   ]top=: (i.6)A.0 1 2 NB. Table of permutations
+0 1 2
+0 2 1
+1 0 2
+1 2 0
+2 0 1
+2 1 0
+   
+   top { 'ART'
+ART
+ATR
+RAT
+RTA
+TAR
+TRA
+
+── ((12) 3 of 8) Introduction (ctd) ─────────────────────────
+The right argument may be any list of items, such as a boxed
+list of words.
+)
+   ]boxedlist=:'zero';'one';'two'
+┌────┬───┬───┐
+│zero│one│two│
+└────┴───┴───┘
+   
+   top{boxedlist
+┌────┬────┬────┐
+│zero│one │two │
+├────┼────┼────┤
+│zero│two │one │
+├────┼────┼────┤
+│one │zero│two │
+├────┼────┼────┤
+│one │two │zero│
+├────┼────┼────┤
+│two │zero│one │
+├────┼────┼────┤
+│two │one │zero│
+└────┴────┴────┘
+
+── ((12) 4 of 8) Introduction (ctd) ─────────────────────────
+This indexed list can also be produced by direct use of A.
+and the two equivalent results will be displayed side-by-side
+(separated by a boxed empty list provided by a:).
+)
+   (top { boxedlist) ,. a: ,. ((i.6) A. boxedlist)
+┌────┬────┬────┬┬────┬────┬────┐
+│zero│one │two ││zero│one │two │
+├────┼────┼────┼┼────┼────┼────┤
+│zero│two │one ││zero│two │one │
+├────┼────┼────┼┼────┼────┼────┤
+│one │zero│two ││one │zero│two │
+├────┼────┼────┼┼────┼────┼────┤
+│one │two │zero││one │two │zero│
+├────┼────┼────┼┼────┼────┼────┤
+│two │zero│one ││two │zero│one │
+├────┼────┼────┼┼────┼────┼────┤
+│two │one │zero││two │one │zero│
+└────┴────┴────┴┴────┴────┴────┘
+
+── ((12) 5 of 8) Introduction (ctd) ─────────────────────────
+(i.!4) A. 0 1 2 3 (or (i.!4) A. 'ABCD') produces a complete
+permutation table of order 4. Coloring this table gives a
+pattern that "shows why" there are 4*3*2*1 (that is, !4)
+permutations of order 4.
+
+The color window is better if expanded (by clicking in the
+middle tiny square at upper right of the window).
+)
+   require 'viewmat'
+   color=:viewmat
+   
+   color (i.!4) A. 'ABCD'
+
+── ((12) 6 of 8) Introduction (ctd) ─────────────────────────
+A list (such as p=: 3 0 4 1 2 5) that is a permutation of its
+indices is called a permutation vector, and p&{ is the
+corresponding permutation function.
+
+This permutation can also be prescribed by stating that
+position 3 receives the item from position 1, that that
+position receives from position 0, and that (completing the
+cycle) receives from position 3; further that position 4
+receives from 2, which receives from 4; and position 5 (a
+cycle of one) remains in place.
+
+A boxed list of this cycle representation is given by the
+function C. .
+)
+   p=: 3 0 4 1 2 5
+   p&{ 'ABCDEF'
+DAEBCF
+   
+   C. p
+┌─────┬───┬─┐
+│3 1 0│4 2│5│
+└─────┴───┴─┘
+   
+   (C. p)&C. 'ABCDEF'
+DAEBCF
+
+── ((12) 7 of 8) Introduction (ctd) ─────────────────────────
+We now box each row of the table p4 of permutations of order
+4, append to the result the cycle representations of p4, and
+transpose the whole for easier reading. Only the first 10
+values are shown.
+)
+   10 {. p4=: (i.!4) A. i.4
+0 1 2 3
+0 1 3 2
+0 2 1 3
+0 2 3 1
+0 3 1 2
+0 3 2 1
+1 0 2 3
+1 0 3 2
+1 2 0 3
+1 2 3 0
+   
+   |: 10 {. (<"1 p4=: (i.!4) A. i.4) ,. (C. p4)
+┌───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┬───────┐
+│0 1 2 3│0 1 3 2│0 2 1 3│0 2 3 1│0 3 1 2│0 3 2 1│1 0 2 3│1 0 3 2│1 2 0 3│1 2 3 0│
+├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┤
+│0      │0      │0      │0      │0      │0      │1 0    │1 0    │2 0 1  │3 0 1 2│
+├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┤
+│1      │1      │2 1    │3 1 2  │3 2 1  │2      │2      │3 2    │3      │       │
+├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┤
+│2      │3 2    │3      │       │       │3 1    │3      │       │       │       │
+├───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┼───────┤
+│3      │       │       │       │       │       │       │       │       │       │
+└───────┴───────┴───────┴───────┴───────┴───────┴───────┴───────┴───────┴───────┘
+
+── ((12) 8 of 8) Introduction (ctd) ─────────────────────────
+This is the end of the lab.
+)
+
+End of lab
+   

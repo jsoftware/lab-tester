@@ -1,0 +1,493 @@
+─────────────────────────────────────────────────────────────
+Lab: Sparse Arrays
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 17) Overview ───────────────────────────────────────
+Sparse arrays provide a compact and efficient storage form
+for very large arrays where most elements are zero or some
+other "sparse element". The sparse array represention does
+not store extra copies of the sparse element. J primitives
+work directly on sparse arrays.
+
+The verb $. converts between sparse and dense representations
+of arrays.
+)
+
+── (2 of 17) Overview (ctd) ─────────────────────────────────
+A sparse array has a single sparse element, plus an array of
+other values and a matrix of their corresponding indices.
+
+The sparse attribute can be assigned to axes individually.
+Non-sparse axes are known as dense axes.
+
+The index matrix has entries for the sparse axes, and the
+values array has entries for the dense axes.
+
+A scalar is always dense.
+)
+
+── (3 of 17) $. ─────────────────────────────────────────────
+The verb $. creates and manipulates sparse arrays.
+
+For example, "1 $. shape" creates a sparse array of the given
+shape, with all axes sparse, and a sparse element of 0. Here,
+we create a sparse array of shape:
+
+    100 x 1,000 x 10,000    (1e9 elements)
+
+Note that this array is too large to be represented normally.
+To see this, trying entering:
+
+   T=: 100 1000 10000 $ 0
+)
+   S=: 1 $. 100 1000 1000
+   
+   $S           NB. shape of S
+100 1000 1000
+
+── (4 of 17) Display ────────────────────────────────────────
+The default display of a sparse array shows only the
+non-sparse values.
+
+Since none have yet been assigned, the display is empty.
+)
+   S            NB. display S (empty)
+   
+   +/ , S       NB. sum all elements of S
+0
+
+── (5 of 17) Sparse Element ─────────────────────────────────
+The sparse element is set as appropriate, for example if you
+add a scalar to an array, the sparse element is incremented
+by that scalar.
+)
+   T=: S + 4    NB. add 4 to each element of S
+                NB. sets sparse element of result to 4
+   
+   T            NB. display is still empty
+   
+   +/ , T       NB. sum is non-zero
+4e8
+   
+   3 $. T       NB. query sparse element
+4
+
+── (6 of 17) Amend ──────────────────────────────────────────
+Now lets amend S with some non-sparse data. The display shows
+the index matrix and the corresponding value cells.
+
+Since all axes are sparse, the index matrix has 3 columns
+(one for each axis), and the values array has a scalar value
+for each row.
+)
+     [dat=: 100+i.6
+100 101 102 103 104 105
+   
+     [ndx=: ?.6#,:$S
+94 956 9908
+ 6 585 1148
+66 196 7076
+59 633  672
+63 801 5789
+52 117 2620
+   
+      S=: dat (<"1 ndx)} S
+   
+      S       NB. shows index matrix and values array
+ 6 585 1148 │ 101
+52 117 2620 │ 105
+59 633  672 │ 103
+63 801 5789 │ 104
+66 196 7076 │ 102
+94 956 9908 │ 100
+
+── (7 of 17) Index Matrix ───────────────────────────────────
+The following examples use entries in the index matrix to
+index S directly:
+)
+   S
+ 6 585 1148 │ 101
+52 117 2620 │ 105
+59 633  672 │ 103
+63 801 5789 │ 104
+66 196 7076 │ 102
+94 956 9908 │ 100
+   
+   (<38 519 8309) { S
+0
+   
+   [ndx=: 4 $. S         NB. get the index matrix
+ 6 585 1148
+52 117 2620
+59 633  672
+63 801 5789
+66 196 7076
+94 956 9908
+   
+   [T=: (<"1 ndx) { S    NB. T is a 6-element sparse vector
+0 │ 101
+1 │ 105
+2 │ 103
+3 │ 104
+4 │ 102
+5 │ 100
+   
+   $T
+6
+
+── (8 of 17) Array Operations ───────────────────────────────
+Some typical array operations:
+)
+   67 { S
+   
+   +/"1 S
+ 6 585 │ 101
+52 117 │ 105
+59 633 │ 103
+63 801 │ 104
+66 196 │ 102
+94 956 │ 100
+   
+   |: S
+ 672 633 59 │ 103
+1148 585  6 │ 101
+2620 117 52 │ 105
+5789 801 63 │ 104
+7076 196 66 │ 102
+9908 956 94 │ 100
+   
+   S * S
+ 6 585 1148 │ 10201
+52 117 2620 │ 11025
+59 633  672 │ 10609
+63 801 5789 │ 10816
+66 196 7076 │ 10404
+94 956 9908 │ 10000
+
+── (9 of 17) To Dense ───────────────────────────────────────
+For the next few sections, we will work with a much smaller
+sparse array, so that we can easily compare sparse and dense
+representations.
+
+The monad $. converts a dense array to sparse, and the
+inverse $. ^:_1 converts a sparse array to dense
+)
+   [A=: (1=?.2 3 4$4) * ?.2 3 4$100
+ 0 0  0  0
+85 0  0  0
+ 0 0 33  0
+
+ 0 1 89  0
+17 0  9 65
+57 0 29 77
+   
+   [S=: $. A
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │ 17
+1 1 2 │  9
+1 1 3 │ 65
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   todense=: $. ^:_1
+   
+   todense S
+ 0 0  0  0
+85 0  0  0
+ 0 0 33  0
+
+ 0 1 89  0
+17 0  9 65
+57 0 29 77
+
+── (10 of 17) Add Scalar ────────────────────────────────────
+Adding a scalar to S changes the sparse element. This is
+noticeable when you display the dense representation of the
+array:
+)
+   S + 1
+0 1 0 │ 86
+0 2 2 │ 34
+1 0 1 │  2
+1 0 2 │ 90
+1 1 0 │ 18
+1 1 2 │ 10
+1 1 3 │ 66
+1 2 0 │ 58
+1 2 2 │ 30
+1 2 3 │ 78
+   
+   todense S + 1
+ 1 1  1  1
+86 1  1  1
+ 1 1 34  1
+
+ 1 2 90  1
+18 1 10 66
+58 1 30 78
+
+── (11 of 17) Sparse Axes ───────────────────────────────────
+The sparse attribute can be assigned to axes individually.
+
+The index matrix has one column for each sparse axis; the
+values array has one item for each dense axis.
+)
+   S              NB. all axes are sparse
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │ 17
+1 1 2 │  9
+1 1 3 │ 65
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   (2;1 2) $. S   NB. set axes 1 2 as sparse (0 is dense)
+0 1 │  0  1
+0 2 │  0 89
+1 0 │ 85 17
+1 2 │  0  9
+1 3 │  0 65
+2 0 │  0 57
+2 2 │ 33 29
+2 3 │  0 77
+   
+   (2;2) $. S     NB. set axis 2 as sparse (0 and 1 are dense)
+0 │  0 85  0
+  │  0 17 57
+  │         
+1 │  0  0  0
+  │  1  0  0
+  │         
+2 │  0  0 33
+  │ 89  9 29
+  │         
+3 │  0  0  0
+  │  0 65 77
+   
+   (2;'') $. S    NB. set no axes as sparse (all are dense)
+ │  0 0  0  0
+ │ 85 0  0  0
+ │  0 0 33  0
+ │           
+ │  0 1 89  0
+ │ 17 0  9 65
+ │ 57 0 29 77
+
+── (12 of 17) Sparse Element ────────────────────────────────
+The sparse element can be reassigned. Note that this does not
+change the non-sparse values in the array.
+)
+   S                 NB. display S
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │ 17
+1 1 2 │  9
+1 1 3 │ 65
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   T=: (3;1) $. S    NB. T is S with a sparse element of 1
+   
+   T                 NB. same display as S
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │ 17
+1 1 2 │  9
+1 1 3 │ 65
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   (todense S) ; todense T
+┌──────────┬──────────┐
+│ 0 0  0  0│ 1 1  1  1│
+│85 0  0  0│85 1  1  1│
+│ 0 0 33  0│ 1 1 33  1│
+│          │          │
+│ 0 1 89  0│ 1 1 89  1│
+│17 0  9 65│17 1  9 65│
+│57 0 29 77│57 1 29 77│
+└──────────┴──────────┘
+
+── (13 of 17) Sparse Axes ───────────────────────────────────
+If an operation on a sparse array changes a non-sparse value
+into the sparse element, it nevertheless is still stored as a
+non-sparse value. This is for efficiency reasons - since
+otherwise after every operation, the system would have to
+check for new sparse values, and if necessary, rebuild the
+index and value arrays.
+
+The operation "8 $. array" rebuilds the sparse array.
+)
+   T=: 0 (<1;1)} S
+   
+   (todense S) ; todense T
+┌──────────┬──────────┐
+│ 0 0  0  0│ 0 0  0  0│
+│85 0  0  0│85 0  0  0│
+│ 0 0 33  0│ 0 0 33  0│
+│          │          │
+│ 0 1 89  0│ 0 1 89  0│
+│17 0  9 65│ 0 0  0  0│
+│57 0 29 77│57 0 29 77│
+└──────────┴──────────┘
+   
+   S
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │ 17
+1 1 2 │  9
+1 1 3 │ 65
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   T                NB. T has non-sparse values of 0
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 1 0 │  0
+1 1 2 │  0
+1 1 3 │  0
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+   
+   T=: 8 $. T       NB. rebuild T
+   
+   T
+0 1 0 │ 85
+0 2 2 │ 33
+1 0 1 │  1
+1 0 2 │ 89
+1 2 0 │ 57
+1 2 2 │ 29
+1 2 3 │ 77
+
+── (14 of 17) Efficiency ────────────────────────────────────
+When applying a dyadic scalar verb, if one array has sparse
+axes SX and the other has sparse axes SY, then the result has
+sparse axes of the union of SX and SY.
+)
+   [T=: (2;0) $. S     NB. T is S with sparse axis 0
+0 │  0 0  0  0
+  │ 85 0  0  0
+  │  0 0 33  0
+  │           
+1 │  0 1 89  0
+  │ 17 0  9 65
+  │ 57 0 29 77
+   
+   [U=: (2;2) $. S     NB. U is S with sparse axis 2
+0 │  0 85  0
+  │  0 17 57
+  │         
+1 │  0  0  0
+  │  1  0  0
+  │         
+2 │  0  0 33
+  │ 89  9 29
+  │         
+3 │  0  0  0
+  │  0 65 77
+   
+   [W=: T + U          NB. W has sparse axes 0 and 2
+0 0 │   0 170   0
+0 2 │   0   0  66
+1 0 │   0  34 114
+1 1 │   2   0   0
+1 2 │ 178  18  58
+1 3 │   0 130 154
+   
+   2 $. W
+0 2
+
+── (15 of 17) Efficiency (ctd) ──────────────────────────────
+In the examples used so far, S was either an array so large
+(with 1e9 elements) that it could not be represented as a
+dense array, or a small array for which the sparse
+representation would not be worthwhile.
+
+In general, there is a trade-off between the memory usage and
+CPU efficiency of sparse and dense representations.
+
+In the following example, S is a sparse array with 1 million
+elements, of which 6 are non-sparse. The sparse
+representation is much more efficient than the dense
+representation:
+)
+   S=: <. 1 $. 10 100 1000  NB. S is an integer array
+   
+   dat=: 100+i.6
+   
+   ndx=: ?.(#dat)#,:$S
+   
+   S=: dat (<"1 ndx)} S
+   
+   T=: todense S
+   
+   ($ 3!:1 S) ; ($ 3!:1 T)   NB. internal storage size
+┌───┬───────┐
+│480│8000056│
+└───┴───────┘
+   
+   timespacex=: 6!:2 , 7!:2@]
+   
+   (timespacex '+/ ,S') ; (timespacex '+/ ,T')
+┌─────────┬─────────────┐
+│2e_6 2368│0.000793 1280│
+└─────────┴─────────────┘
+
+── (16 of 17) Summary ───────────────────────────────────────
+Here is the same example, where there are now 100,000
+non-sparse elements:
+)
+   S=: <. 1 $. 10 100 1000
+   
+   dat=: 100+i.1e5
+   
+   ndx=: ?.(#dat)#,:$S
+   
+   S=: dat (<"1 ndx)} S
+   
+   T=: todense S
+   
+   ($ 3!:1 S) ; ($ 3!:1 T)
+┌───────┬───────┐
+│3044704│8000056│
+└───────┴───────┘
+   
+   (timespacex '+/ ,S') ; (timespacex '+/ ,T')
+┌────────────────┬─────────────┐
+│0.000742 3.148e6│0.000599 1280│
+└────────────────┴─────────────┘
+
+── (17 of 17) Summary (ctd) ─────────────────────────────────
+Sparse arrays are useful when you have large arrays, with
+most values being a common "sparse element". Ordinary J
+primitives work directly on sparse arrays. The $. verb
+converts to and from the sparse representation.
+
+For more information about sparse arrays, see the entry for
+$. in the Vocabulary Help.
+)
+
+End of lab
+   

@@ -1,0 +1,39 @@
+─────────────────────────────────────────────────────────────
+Lab: Area
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 1) Area of a triangle ──────────────────────────────
+
+ Enter t1 to display the table of coordinates
+ of a triangle, and enter PLOT t1 to plot it.
+ Estimate the area from the plot. Then enter
+ t1,.0.5 to border the table with a column of
+ halves, and det t1,0.5 to get the magnitude
+ of the determinant of the resulting square
+ matrix. This is the exact area.
+
+ See Klein, "Elementary Mathematics From An
+ Advanced Viewpoint" for a discussion of
+ the method.
+
+ Repeat with other triangles t2 and t3 and so
+ on, after pressing the Esc key to remove the
+ plot window. Thus:
+)
+   t1
+1 6
+4 2
+3 1
+   PLOT t1
+   t1,.0.5
+1 6 0.5
+4 2 0.5
+3 1 0.5
+   det t1,.0.5
+3.5
+   
+
+End of lab
+   

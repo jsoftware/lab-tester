@@ -1,0 +1,857 @@
+─────────────────────────────────────────────────────────────
+Lab: Mathematical Roots of J
+Author: Roger K. W. Hui Kenneth E. Iverson
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 26) INTRODUCTION ───────────────────────────────────
+This lab shows how mathematical ideas and notation were
+adopted (or adapted) in J, and why such adaptations were
+made.
+)
+
+── (2 of 26) ASSIGNMENT AND COMPARISON ──────────────────────
+           ASSIGNMENT                 COMPARISON
+
+ ENGLISH	     x is 3          x less than 3     x equals 3
+
+ MATH         Let x=3         x<3               x=3
+
+ C            x=3             x<3               x==3
+
+ APL          x←3             x<3               x=3
+
+ J            x=:3            x<3               x=3
+
+_______________________
+
+
+ ENGLISH      cube function
+
+ MATH         cube(x) = x3
+
+ APL          ∇ z←cube X
+             [1] Z←X*3 ∇
+
+ J            cube =: ^&3
+)
+
+── (3 of 26) CONSTANTS ──────────────────────────────────────
+
+          FUNCTION EXPRESSION           CONSTANT
+
+ ENGLISH   3 plus 4 tenths
+ MATH      3 + 4/10                      3.4
+ APL       3 + 4{divide}10               3.4
+ J         3 + 4%10                      3.4
+
+-------------------------------------------------------------
+ ENGLISH   3 plus 4 imaginary
+ MATH      3 + 4i
+ APL       3 + 4{times}{negative}1*0.5   3j4
+ J         3 + 4*_1^0.5                  3j4
+
+ -------------------------------------------------------------
+ ENGLISH   Eulers Number
+           1
+ MATH      e                             e
+ APL       *1
+ J         ^1                            1x1
+
+-------------------------------------------------------------
+ ENGLISH   Pi
+ MATH      Pi{times}1                    Pi
+ APL       {circle}1
+ J         o.1                           1p1
+ )
+
+  
+
+── (4 of 26) CONSTANT FUNCTIONS ─────────────────────────────
+
+        Function  1st derivative   2nd der     3rd der
+
+          3          2
+ MATH	x         3x               6x          6
+
+ J       ^&3       3:*^&2           6:*^&1      6:
+)
+   y=: 4
+   ! y
+24
+   6:y
+6
+   
+   6"_ y
+6
+   4 5 6"_ y
+4 5 6
+   'abcd'"_ y
+abcd
+
+── (5 of 26) OPERATORS ──────────────────────────────────────
+ENGLISH An operator applies to a function, or
+        functions, to produce a new function,
+        much as an adverb applies to a verb to
+        produce a new verb. We will illustrate
+        by compositions.
+
+ MATH	f{jot}g
+
+    J    f&g   f&.g   f@g
+         And   Dual   Atop
+)
+   ^. 10 2      NB. Natural logs
+2.30259 0.693147
+   10 -&^. 2    NB. Diff of logs
+1.60944
+   10 -&.^. 2   NB. Dual of - wrt log
+5
+   ^ 10 -&^. 2  NB. Inv log of diff
+5
+   10 ^. 2      NB. Base 10 log of 2
+0.30103
+   10 -@^. 2    NB. - of base10 log
+_0.30103
+   
+   x=. 3 1 4 1 5 9
+   |. x         NB. Reverse
+9 5 1 4 1 3
+   +/\ & |. x   NB. Partial sums of reverse
+9 14 15 19 20 23
+   +/\ &. |. x  NB. Dual of partial sums wrt reverse
+23 20 19 15 14 9
+   |. +/\ |. x
+23 20 19 15 14 9
+
+── (6 of 26) AMBIVALENCE ────────────────────────────────────
+In math, the expression a-b denotes subtraction, and the
+expression -b denotes negation.  We therefore say that the
+function denoted by - is ambivalent, its use as subtraction
+or negation being determined by context. A few of the
+ambivalent primitives in J are:
+
+          MONADIC           DYADIC
+
+ +        Conjugate         Plus
+ -        Negation          Subtraction
+ *        Signum            Times
+ %        Reciprocal        Divide
+ ^        Exponential       Power
+
+In J, all functions are ambivalent, including those derived
+from other functions by the application of operators.  For
+example:
+)
+   a=: 0 1 2 3 4
+   +/ a       NB. Plus over a (sum)
+10
+   a +/ a     NB. Plus table
+0 1 2 3 4
+1 2 3 4 5
+2 3 4 5 6
+3 4 5 6 7
+4 5 6 7 8
+
+── (7 of 26) FORK ───────────────────────────────────────────
+
+ ENGLISH	Sum of functions f and g           +
+                                          /   \
+                                         f     g
+                                         |     |
+                                         x     x
+
+  MATH  f + g
+
+   J	f + g
+)
+   h=: ! + *:
+   h 4
+40
+   d=: 2 3 4
+   h d
+6 15 40
+   q=: ! , *:
+   q 4
+24 16
+   q d
+2 6 24 4 9 16
+   mean=: +/ % #
+   center=: ] - mean
+   (] ; mean ; center ; ] - +/ % #) d
+┌─────┬─┬──────┬──────┐
+│2 3 4│3│_1 0 1│_1 0 1│
+└─────┴─┴──────┴──────┘
+
+── (8 of 26) ARRAYS, CELLS, and ITEMS ───────────────────────
+)
+   [a=: i.2 3 4
+ 0  1  2  3
+ 4  5  6  7
+ 8  9 10 11
+
+12 13 14 15
+16 17 18 19
+20 21 22 23
+   <"2 a           NB. Rank 2 cell, 2-cell, Items of 3-cell
+┌─────────┬───────────┐
+│0 1  2  3│12 13 14 15│
+│4 5  6  7│16 17 18 19│
+│8 9 10 11│20 21 22 23│
+└─────────┴───────────┘
+   <"1 a           NB. 1-cells, Items of 2-cells
+┌───────────┬───────────┬───────────┐
+│0 1 2 3    │4 5 6 7    │8 9 10 11  │
+├───────────┼───────────┼───────────┤
+│12 13 14 15│16 17 18 19│20 21 22 23│
+└───────────┴───────────┴───────────┘
+   <"0 a           NB. 0-cells, Atoms
+┌──┬──┬──┬──┐
+│0 │1 │2 │3 │
+├──┼──┼──┼──┤
+│4 │5 │6 │7 │
+├──┼──┼──┼──┤
+│8 │9 │10│11│
+└──┴──┴──┴──┘
+
+┌──┬──┬──┬──┐
+│12│13│14│15│
+├──┼──┼──┼──┤
+│16│17│18│19│
+├──┼──┼──┼──┤
+│20│21│22│23│
+└──┴──┴──┴──┘
+
+── (9 of 26) ARRAYS, CELLS, and ITEMS (ctd) ─────────────────
+)
+   [a=: i.2 3 4
+ 0  1  2  3
+ 4  5  6  7
+ 8  9 10 11
+
+12 13 14 15
+16 17 18 19
+20 21 22 23
+   <"_1 a          NB. _1 cells of a, Items of a
+┌─────────┬───────────┐
+│0 1  2  3│12 13 14 15│
+│4 5  6  7│16 17 18 19│
+│8 9 10 11│20 21 22 23│
+└─────────┴───────────┘
+   v=: 0 1 2 3 4 5
+   <"_1 v          NB. _1 cells of v, Items of v
+┌─┬─┬─┬─┬─┬─┐
+│0│1│2│3│4│5│
+└─┴─┴─┴─┴─┴─┘
+
+── (10 of 26) FUNCTION RANK ─────────────────────────────────
+)
+   d=: 2 3 4
+   a=: d $ 'ABCDEFGHIJKLMNOPQRSTUVWX'
+   (] ; |. ; |."3 ; |."2 ; |."1 ; |."0) a
+┌────┬────┬────┬────┬────┬────┐
+│ABCD│MNOP│MNOP│IJKL│DCBA│ABCD│
+│EFGH│QRST│QRST│EFGH│HGFE│EFGH│
+│IJKL│UVWX│UVWX│ABCD│LKJI│IJKL│
+│    │    │    │    │    │    │
+│MNOP│ABCD│ABCD│UVWX│PONM│MNOP│
+│QRST│EFGH│EFGH│QRST│TSRQ│QRST│
+│UVWX│IJKL│IJKL│MNOP│XWVU│UVWX│
+└────┴────┴────┴────┴────┴────┘
+   i. d
+ 0  1  2  3
+ 4  5  6  7
+ 8  9 10 11
+
+12 13 14 15
+16 17 18 19
+20 21 22 23
+   i."0 d
+0 1 0 0
+0 1 2 0
+0 1 2 3
+
+── (11 of 26) FUNCTION TABLES ───────────────────────────────
+
+ ENGLISH  Table of binomial coefficients;
+          column c of row r gives the number of ways of
+          choosing c things from r.
+
+ MATH     Pascals Triangle
+
+         1
+         1 1
+         1 2 1
+         1 3 3 1
+         1 4 6 4 1
+         1 5 10 10 5 1
+
+J
+)
+   i=: 0 1 2 3 4 5
+   bc=: i !~/i
+   bc ; (%. bc); (+/"1 bc)
+┌─────────────┬─────────────────┬─────────────┐
+│1 0  0  0 0 0│ 1  0   0  0  0 0│1 2 4 8 16 32│
+│1 1  0  0 0 0│_1  1   0  0  0 0│             │
+│1 2  1  0 0 0│ 1 _2   1  0  0 0│             │
+│1 3  3  1 0 0│_1  3  _3  1  0 0│             │
+│1 4  6  4 1 0│ 1 _4   6 _4  1 0│             │
+│1 5 10 10 5 1│_1  5 _10 10 _5 1│             │
+└─────────────┴─────────────────┴─────────────┘
+   
+   rou=: ^@(0j2p1"_ * i. % ])    NB. roots of unity
+   r=: rou 7
+   r
+1 0.62349j0.781831 _0.222521j0.974928 _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928 0.62349j_0.781831
+   
+   */~ r         NB. multiplication table
+                  1    0.62349j0.781831  _0.222521j0.974928  _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928   0.62349j_0.781831
+   0.62349j0.781831  _0.222521j0.974928  _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928   0.62349j_0.781831      1j_3.13242e_16
+ _0.222521j0.974928  _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928   0.62349j_0.781831      1j_2.64338e_16    0.62349j0.781831
+ _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928   0.62349j_0.781831      1j_2.22095e_16    0.62349j0.781831  _0.222521j0.974928
+_0.900969j_0.433884 _0.222521j_0.974928   0.62349j_0.781831      1j_2.48176e_16    0.62349j0.781831  _0.222521j0.974928  _0.900969j0.433884
+_0.222521j_0.974928   0.62349j_0.781831       1j_2.8146e_16    0.62349j0.781831  _0.222521j0.974928  _0.900969j0.433884 _0.900969j_0.433884
+  0.62349j_0.781831      1j_3.31869e_16    0.62349j0.781831  _0.222521j0.974928  _0.900969j0.433884 _0.900969j_0.433884 _0.222521j_0.974928
+   
+   r i. */~ r
+0 1 2 3 4 5 6
+1 2 3 4 5 6 0
+2 3 4 5 6 0 1
+3 4 5 6 0 1 2
+4 5 6 0 1 2 3
+5 6 0 1 2 3 4
+6 0 1 2 3 4 5
+   
+   7&|@+/~ i.7   NB. addition modulo 7
+0 1 2 3 4 5 6
+1 2 3 4 5 6 0
+2 3 4 5 6 0 1
+3 4 5 6 0 1 2
+4 5 6 0 1 2 3
+5 6 0 1 2 3 4
+6 0 1 2 3 4 5
+
+── (12 of 26) FUNCTION POWERS ───────────────────────────────
+ ENGLISH	Applying a function n times is called the
+         nth power of the function
+
+ MATH     x  = x       x  = f x        x  = f x
+          0            1      0        n      n-1
+
+ J       f^:n
+)
+   x=: 0
+   cos=: 2&o.
+   
+   cos 0
+1
+   cos cos 0
+0.540302
+   
+   cos ^: 0 1 2 3 4 x
+0 1 0.540302 0.857553 0.65429
+   
+   y=: cos ^: _ x
+   
+   y
+0.739085
+   y = cos y
+1
+   
+   ]z=: cos ^: _1 x=: _0.5 0 0.5 0.75 1
+2.0944 1.5708 1.0472 0.722734 0
+   
+   cos z
+_0.5 6.12323e_17 0.5 0.75 1
+
+── (13 of 26) FUNCTION POWERS (ctd) ─────────────────────────
+)
+   f=: -:@(+ 1000&%)    NB. halve of x plus 1000 divided by x
+   
+   f 1
+500.5
+   
+   f f 1
+251.249
+   
+   f^:(i.2 5) 1
+      1   500.5 251.249 127.615 67.7253
+41.2454 32.7453  31.642 31.6228 31.6228
+   
+   ] y=: f^:(_) 1
+31.6228
+   
+   y*y
+1000
+   
+   1000-y*y
+0
+
+── (14 of 26) FUNCTION POWERS (ctd) ─────────────────────────
+)
+   SG=: 1 : '~.@(, ,/@(u/~))^:_'   NB. subgroup
+   
+   f=: 7&|@*      NB. multiplication modulo 7
+   
+   f SG 2         NB. subgroup generated by 4
+2 4 1
+   
+   f/~ f SG 2     NB. group table of subgroup
+4 1 2
+1 2 4
+2 4 1
+   
+   f SG 3         NB. subgroup generated by 3
+3 2 6 4 5 1
+   
+   f SG 2 3       NB. subgroup generated by 2 and 3
+2 3 4 6 1 5
+   
+   p=: (1|.i.5),: (<0 1) C. i.5
+   
+   p              NB. two permutations
+1 2 3 4 0
+1 0 2 3 4
+   
+   $ {"1 SG p     NB. subgroup generated by the two permutations
+120 5
+
+── (15 of 26) FUNCTION POWERS (ctd) ─────────────────────────
+f^:g y is equivalent to f^:(g y) y  In particular, if g is a
+proposition, f^:g y applies f to y or not according to
+whether g y is true.
+)
+   f=: |.@(|/\)
+   
+   g=: *@{.
+   
+   f^:g y=: 32 44
+12 32
+   
+   f^:g^:(i.5) y
+32 44
+12 32
+ 8 12
+ 4  8
+ 0  4
+   
+   f^:g^:_ y
+0 4
+   
+   +./y
+4
+   
+   f=: {: ,: {. - {: * <.@%&{./
+   
+   g=: *@{.@{:
+   
+   f^:g^:_ y,.=i.2
+4 _4  3
+0 11 _8
+   
+   _4 3 +/ .* y   NB. GCD as a linear combination of original arg
+4
+   
+   <"2 f^:g^:(i.6) y,.=i.2
+┌──────┬──────┬───────┬────────┬───────┬───────┐
+│32 1 0│44 0 1│32  1 0│12 _1  1│8  3 _2│4 _4  3│
+│44 0 1│32 1 0│12 _1 1│ 8  3 _2│4 _4  3│0 11 _8│
+└──────┴──────┴───────┴────────┴───────┴───────┘
+
+── (16 of 26) FUNCTION POWERS (ctd) ─────────────────────────
+ ENGLISH   A function that "undoes" the effect of a function
+
+            -1 MATH      f
+
+ J         f^:_1
+)
+   I=: ^:_1       NB. Inverse operator
+   
+   cos I 0
+1.5708
+   
+   ^I 1x1 1x2     NB. Natural log
+1 2
+   
+   ^ ^I 1x1 1x2   NB. Exponential of log
+2.71828 7.38906
+   
+   cube=: ^&3
+   
+   cube I 27 64 100
+3 4 4.64159
+
+── (17 of 26) FUNCTION DUALS ────────────────────────────────
+ ENGLISH	If a function f is applied to the result of a
+         function g, and the inverse of g is then
+         applied, the entire process is a function
+         called the dual of f with respect to g
+
+          -1 MATH    g   f g
+
+    J    f &. g
+)
+   'a b'=: 0 0 1 1 ; 0 1 0 1
+   
+   a *. b     NB. a and b
+0 0 0 1
+   
+   -.a        NB. Not a
+1 1 0 0
+   
+   a *.&.-. b NB. Dual of and wrt not
+0 1 1 1
+   
+   a +. b     NB. Is equivalent to or
+0 1 1 1
+   
+   3 +&.^. 4
+12
+   
+   3 * 4
+12
+   
+   log=: 10&^.
+   
+   log 3 4 10 100
+0.477121 0.60206 1 2
+   
+   3 +&.log 4
+12
+
+── (18 of 26) FUNCTION FAMILIES ─────────────────────────────
+Many benefits resulted from uniting the treatment of the
+individual functions square, cube, square root, etc. in a
+single family under the notation x superscript n  Similar
+benefits result from using complex numbers to unite the
+treatment of the trigonometric and hyperbolic functions under
+the exponential.
+
+We will illustrate the matter by using the fit operator (!.)
+to unite the treatment of the falling and rising factorial
+functions under the power function:
+)
+   'x e s' =: 6 4 1
+   
+   (x+0*s)*(x+1*s)*(x+2*s)*(x+3*s)   NB. Rising
+3024
+   
+   s=: _1
+   
+   (x+0*s)*(x+1*s)*(x+2*s)*(x+3*s)   NB. Falling
+360
+   
+   s=: 0
+   
+   (x+0*s)*(x+1*s)*(x+2*s)*(x+3*s)   NB. Power
+1296
+   
+   x ^ e
+1296
+   
+   x ^!.1 e     NB. Rising  factorial
+3024
+   
+   x ^!._1 e    NB. Falling factorial
+360
+   
+   x ^!.0 e     NB. Power
+1296
+
+── (19 of 26) FUNCTION FAMILIES (ctd) ───────────────────────
+Function tables for ^!.e can be used to make clear the
+relationship between Stirling numbers of the first kind and
+Stirling numbers of the second kind.
+)
+   FT=: 1 : '^!.u/~@i.'   NB. falling/rising factorial table
+   
+   _1 FT 6                 NB. falling factorial table
+1 0  0  0   0   0
+1 1  0  0   0   0
+1 2  2  0   0   0
+1 3  6  6   0   0
+1 4 12 24  24   0
+1 5 20 60 120 120
+   
+   0 FT 6                  NB. power table
+1 0  0   0   0    0
+1 1  1   1   1    1
+1 2  4   8  16   32
+1 3  9  27  81  243
+1 4 16  64 256 1024
+1 5 25 125 625 3125
+   
+   ]S2=:(0 FT %. _1 FT) 6  NB. Matrix quotient of above tables
+1 0 0 0 0  0
+0 1 1 1 1  1
+0 0 1 3 7 15
+0 0 0 1 6 25
+0 0 0 0 1 10
+0 0 0 0 0  1
+   
+   ]S1=:(_1 FT %. 0 FT) 6  NB. Matrix inverse of S2
+1 0  0  0  0   0
+0 1 _1  2 _6  24
+0 0  1 _3 11 _50
+0 0  0  1 _6  35
+0 0  0  0  1 _10
+0 0  0  0  0   1
+   
+   NB. |: S2  are the Stirling numbers of the second kind
+   NB. |: |S1 are the Stirling numbers of the first  kind
+
+── (20 of 26) POLYNOMIALS ───────────────────────────────────
+A polynomial is so named because it can be expressed as a sum
+of monomials of the form:
+
+     k
+  c x
+
+It may also be expressed as a weighted sum of factorial
+polynomials, or as a (multiple of a) product of factors of
+the form x-r. We will illustrate some transformations between
+the coefficients that weight the monomials, and the roots
+that represent the corresponding product form:
+)
+   'c x y'=: _3.75 11.5 _9 2 ; 5 ; 0 1 2 3 4
+   
+   c p. x
+78.75
+   
+   +/ c * x ^ 0 1 2 3
+78.75
+   
+   c p. y
+_3.75 0.75 _0.75 3.75 26.25
+   
+   ]r=: p. c
+┌─┬───────────┐
+│2│2.5 1.5 0.5│
+└─┴───────────┘
+   
+   r p. x
+78.75
+   
+   p. r
+_3.75 11.5 _9 2
+
+── (21 of 26) PERMUTATIONS ──────────────────────────────────
+Permutations may be represented in a variety of ways, the
+simplest being by a vector of indices. Since the permutation
+vectors of any given order can be arranged in a table in
+lexical order, a specific permutation can also be referred to
+compactly by its index in the table:
+)
+   ]rp=: 8 ?. 8      NB. Random permutation
+2 4 6 1 5 0 3 7
+   
+   rp { 'ABCDEFGH'
+CEGBFADH
+   
+   (i. ! 3) A. i. 3  NB. All !3 of order 3
+0 1 2
+0 2 1
+1 0 2
+1 2 0
+2 0 1
+2 1 0
+   
+   A. 1 0 2          NB. Index of perm 1 0 2
+2
+   
+   ]p=: 20 ?. 20
+14 18 12 16 5 1 3 0 6 13 9 8 15 17 2 10 7 4 19 11
+   
+   A. p              NB. Extended precision
+1816439565027617335
+   
+   ]cy=: C. rp       NB. Cycle representation
+┌─────────────┬─┐
+│6 3 1 4 5 0 2│7│
+└─────────────┴─┘
+   
+   C. cy             NB. C. is self-inverse
+2 4 6 1 5 0 3 7
+
+── (22 of 26) PERMUTATIONS (ctd) ────────────────────────────
+)
+   SG=: 1 : '~.@(, ,/@(u/~))^:_'
+   
+   ] p=. ?.~ 22        NB. a random permutation of order 22
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+   
+   g=.{"1 SG ,: p      NB. subgroup generated by p
+   
+   #g
+19
+   
+   C. p                NB. cycles of p
+┌─┬─┬──┬────────────────────────────────────────────────┐
+│0│9│17│21 20 1 18 11 3 16 7 6 8 14 2 10 19 12 4 15 13 5│
+└─┴─┴──┴────────────────────────────────────────────────┘
+   
+   *./ #&> C. p        NB. LCM of cycle lengths
+19
+
+── (23 of 26) COMPLETION ────────────────────────────────────
+In mathematics it is common to complete a function by
+extending it beyond its original domain in ways that preserve
+its main properties, often leading to significant
+generalization, as in the extension of the square and cube to
+the form:
+
+     n
+    x
+
+for all values of n
+
+In APL such completion occurred in many cases, as in
+reduction over an empty, to extend to the case k=0 the
+identity (f/x)=(f/k{take}x) f (f/k{drop}x), and in the
+definition of zero to the power zero as 1, which is often
+declared to be undefined in elementary math texts.
+)
+   s=: _3 _2 _1 0 1 2 3
+   
+   s % table s
+┌──┬──────────────────────────────────────┐
+│% │       _3   _2 _1  0  1    2         3│
+├──┼──────────────────────────────────────┤
+│_3│        1  1.5  3 __ _3 _1.5        _1│
+│_2│ 0.666667    1  2 __ _2   _1 _0.666667│
+│_1│ 0.333333  0.5  1 __ _1 _0.5 _0.333333│
+│ 0│        0    0  0  0  0    0         0│
+│ 1│_0.333333 _0.5 _1  _  1  0.5  0.333333│
+│ 2│_0.666667   _1 _2  _  2    1  0.666667│
+│ 3│       _1 _1.5 _3  _  3  1.5         1│
+└──┴──────────────────────────────────────┘
+   
+   ^table~ -:s
+┌────┬──────────────────────────────────────────────────────────────┐
+│^   │      _1.5        _1        _0.5 0        0.5    1         1.5│
+├────┼──────────────────────────────────────────────────────────────┤
+│_1.5│0j0.544331 _0.666667 0j_0.816497 1  0j1.22474 _1.5  0j_1.83712│
+│  _1│       0j1        _1        0j_1 1        0j1   _1        0j_1│
+│_0.5│ 0j2.82843        _2  0j_1.41421 1 0j0.707107 _0.5 0j_0.353553│
+│   0│         _         _           _ 1          0    0           0│
+│ 0.5│   2.82843         2     1.41421 1   0.707107  0.5    0.353553│
+│   1│         1         1           1 1          1    1           1│
+│ 1.5│  0.544331  0.666667    0.816497 1    1.22474  1.5     1.83712│
+└────┴──────────────────────────────────────────────────────────────┘
+
+── (24 of 26) COMPLETION (ctd) ──────────────────────────────
+Completions in J fall in four classes:
+
+* Specific functions, such as the power and divide, and
+operators, such as the application of scan to monadic rather
+than to dyadic functions as in APL.
+
+* The variant or fit operator, used in the extension of the
+power function to the rising factorial function.
+
+* Completion of user-defined functions by specified identity
+elements, inverses, derivatives, and integrals.
+
+* Extensions of conformability rules.
+)
+   0 1 (+./  ; *./ ; >./ ; <./) 0 1
+┌───┬───┬───┬───┐
+│0 1│0 0│0 1│0 0│
+│1 1│0 1│1 1│0 1│
+└───┴───┴───┴───┘
+   
+   (+./  ; *./ ; >./ ; <./) ''
+┌─┬─┬──┬─┐
+│0│1│__│_│
+└─┴─┴──┴─┘
+   
+   +/=. 0 1 2 3 4
+0 1 3 6 10
+   
+   <
+┌─┬───┬─────┬───────┬─────────┐
+│0│0 1│0 1 2│0 1 2 3│0 1 2 3 4│
+└─┴───┴─────┴───────┴─────────┘
+
+── (25 of 26) PRIMES AND FACTORING ──────────────────────────
+)
+   p: 0        NB. Prime from its index
+2
+   
+   p: 0 1 2 3 4 5 6
+2 3 5 7 11 13 17
+   
+   ]n=: ?. 100000
+16194
+   
+   pi=: p:^:_1 NB. # of primes < or =
+   
+   ]m=: pi n
+1883
+   
+   p: m - 1 0  NB. Results bracket n
+16193 16217
+   
+   q: 700
+2 2 5 5 7
+   
+   pi 7
+3
+   
+   p: i. 4
+2 3 5 7
+   
+   ]exp=: 4 q: 700
+2 0 2 1
+   
+   (p: i.4)^exp
+4 1 25 7
+   
+   */(p: i.4)^exp
+700
+
+── (26 of 26) PRIMES AND FACTORING (ctd) ────────────────────
+)
+   m=. 63
+   
+   ]e=. _ q: m
+0 2 0 1
+   
+   p: i.#e
+2 3 5 7
+   
+   ]d=. (#: i.@(*/)) 1+e
+0 0 0 0
+0 0 0 1
+0 1 0 0
+0 1 0 1
+0 2 0 0
+0 2 0 1
+   
+   d */ .(^~) p:i.#e     NB. all factors
+1 7 3 21 9 63
+   
+   n=. 182
+   
+   _ q: m,n
+0 2 0 1 0 0
+1 0 0 1 0 1
+   
+   (m*n), +/&.(_&q:) m,n
+11466 11466
+   
+   (m*.n), >./&.(_&q:) m,n
+1638 1638
+   
+   (m+.n), <./&.(_&q:) m,n
+7 7
+   
+   totient=: * -.@%@~.&.q:
+   
+   (totient m), +/1=m+.i.m
+36 36
+
+End of lab
+   

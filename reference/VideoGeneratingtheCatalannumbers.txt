@@ -1,0 +1,267 @@
+ctrl+j advances
+1 of 83 in /applications/j9.5/addons/media/videolabs/catalan.ijt
+Lab: Video - Generating the Catalan numbers
+
+Chapter: Video Requirements
+ 
+_______________________________________
+
+To run this video lab, you must have
+access to youtube.com through the
+internet.
+
+If you do not, the lab will still
+advance through the exercises, but the
+videos will not be displayed.
+
+Videos will appear as steps in the lab,
+but you will need to click play on the video
+to get it started.
+
+When you have viewed a video, select
+the line below the video and continue
+on as you would for any other lab.
+
+This is required because when you are
+interacting with a video, you are not
+actually interacting with the J lab.
+
+Also, this lab will define verbs that you
+can use to explore the concepts. It will
+place these verbs in the Cat locale and
+add this to the path of your current locale.
+In the case of name conflicts the verbs
+may be accessed directly by adding _Cat_ to
+the verb name. eg. catalan_Cat_
+
+First some housekeeping to set up for the lab
+_______________________________________
+   3 : 0 ''
+coinsert 'Cat' NB. Access to Cat locale
+if.     IFQT  do. require jpath '~addons/media/videolabs/videolabjqt.ijs'
+                  require jpath '~addons/media/videolabs/catauxjqt.ijs'
+elseif. IFJHS do. require jpath '~addons/media/videolabs/videolabjhs.ijs'
+                  require jpath '~addons/media/videolabs/catauxjhs.ijs'
+elseif. IFJA  do. echo 'Video is not available in Android'
+elseif. IFIOS do. echo 'Video is not available for IOS at this time'
+elseif. 1     do. require jpath '~addons/media/videolabs/videolabcon.ijs' NB. Jconsole if nothing else.
+                  require jpath '~addons/media/videolabs/catauxcon.ijs'
+              end.
+)
+Chapter: Catalan numbers
+   display_video_ '5p8--DMRO2U'
+ 
+_______________________________________
+
+Now, see if you can find the five Catalan
+strings with 3 one's and 3 zero's using test3.
+
+test3 '101010'
+_______________________________________
+ 
+Chapter: Other ways of finding Catalan strings
+   display_video_ 'm5K1zWbyQCQ'
+ 
+_______________________________________
+
+Now, can you find the 14 Catalan strings
+with 4 one's and 4 zero's using test4?
+
+test4 '10101010'
+_______________________________________
+ 
+Chapter: What can Catalan strings represent?
+   display_video_ 'IJkyzPHRiGY'
+ 
+_______________________________________
+
+Look at these different views of Catalan strings using:
+
+binary n
+parenthesis n
+ballot n
+multiply n
+path n
+polygon n
+mount n
+
+where n can be any integer up to about 7
+although some can go higher.
+_______________________________________
+ 
+Chapter: How long would it take if we counted strings?
+   display_video_ 'jtfl7Z7gX5M'
+ 
+_______________________________________
+
+firstcat is not recommended as a way to
+create Catalan numbers, but try out a couple
+values anyway.
+
+firstcat 6
+
+If you want to get a sense of the time and
+space then run
+timespacex 'firstcat n'
+where n is any number up to about 10
+depending on how long you want to wait.
+_______________________________________
+ 
+Chapter: Explaining the numerator of the Catalan formula
+   display_video_ 'CiOeRVN_bZk'
+ 
+_______________________________________
+
+explode is a verb that works pretty
+quick but the results grow pretty quick
+as well. See if you can make things go
+pop.
+
+
+explode 45
+_______________________________________
+ 
+ 
+Chapter: Explaining the denominator of the Catalan formula
+   display_video_ 'WlTImA01gHM'
+ 
+_______________________________________
+
+kitty is a verb that will calculate
+catalan numbers up to a point. It won't
+get you all the way to a million, but it
+can do numbers you wouldn't want to do
+by hand.
+
+kitty 11
+_______________________________________
+ 
+Chapter: Extending the accuracy of our Catalan formula
+   display_video_ 'vmEAy9beo6U'
+ 
+ 
+_______________________________________
+
+In order to get the precision that we
+require we use the Extended monadic verb (x:)
+to change kitty into kittyX
+__________________________
+ 
+   (kittyX ; kitty) 45
+┌─────────────────────────┬──────────┐
+│2257117854077248073253720│2.25712e24│
+└─────────────────────────┴──────────┘
+ 
+Chapter: Logarithms, one of our secret weapons
+   display_video_ 'yWKG-whuQMU'
+ 
+_______________________________________
+
+Power (^) and Logarithm (^.) are built in to J
+as primitive dyadic verbs which means that
+you access them directly from their symbols.
+
+______________________________________
+ 
+Chapter: Finding the Prime Factors of a number
+   display_video_ 'oS6SL65NZFs'
+ 
+_______________________________________
+
+Prime Factors (q:) is a primitve monadic
+verb that returns the prime factors of a
+given integer.
+
+q: 45
+_______________________________________
+ 
+Chapter: Using Prime Factors to simplify calculations
+   display_video_ 'W9gZlLunGA8'
+ 
+_______________________________________
+
+You can play with Power (^) and Logarithm (^.)
+to show how multiplication is the same as
+adding logarithms and division is the same as
+subtracting logarithms.
+
+(81 * 20) -: 3 ^ (3 ^. 81) + (3 ^. 20)
+_______________________________________
+ 
+Chapter: Finding the primes less than a given integer
+   display_video_ 'MNDnVp-AplA'
+ 
+_______________________________________
+
+ple is a defined verb that returns a list
+of primes less than the given integer.
+
+ple =: i. &. (p: inverse)
+
+ple 45
+_______________________________________
+ 
+Chapter: Finding the exponents of the primes in the factorial of a given integer
+   display_video_ 'bBlINpzzUCA'
+ 
+_______________________________________
+
+pexp is a defined verb that returns the
+number of times a prime occurs in the
+factorial of a given integer.
+
+pexp =:  [: +/ ] <.@% [ ^ >: @ i. @ (<.@^.)
+
+3 pexp 45
+_______________________________________
+ 
+ 
+Chapter: Finding the millionth Catalan number
+   display_video_ 'ez2OkKU6MxY'
+ 
+_______________________________________
+
+catalan will return the catalan number for
+a given integer up to very large numbers, but
+it may be more effective to display the number
+of integers in the number to avoid too many
+pages required to display the Catalan number
+by using kittyN.
+
+kittyN 50000
+_______________________________________
+ 
+_______________________________________
+
+You can use kittyN to try to find the
+number of digits in the millionth catalan
+number if you would like. This may
+take a few minutes to calculate.
+
+kittyN 1000000
+
+_______________________________________
+Chapter: References
+ 
+_______________________________________
+
+Professor Koo-Guan Choo
+Senior Lecturer in the School of Mathematics and Statistics at the University of Sydney
+http://www.maths.usyd.edu.au/u/kooc/catalan.html
+
+Josef Rukavicka
+On Generalized Dyck Paths
+http://www.emis.de/journals/EJC/ Volume_18/PDF/v18i1p40.pdf
+ _______________________________________
+ 
+_______________________________________
+
+If you would like to review any of the
+previous chapters, advance the lab then
+position the cursor on the chapter you
+wish to review and press return.
+_______________________________________
+ 
+   lab ':'
+end of lab
+   

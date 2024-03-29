@@ -1,0 +1,432 @@
+─────────────────────────────────────────────────────────────
+Lab: An Idiosyncratic Introduction to J
+Author: Roger Hui
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 15) Introduction ───────────────────────────────────
+J is executable mathematical notation.
+)
+   2 + 3
+5
+   x=: 2
+   y=: 3
+   x + y
+5
+   
+
+── (2 of 15) Functions ──────────────────────────────────────
+There is a rich set of primitives.
+)
+   2 + 3
+5
+   2 - 3
+_1
+   2 * 3
+6
+   2 % 3
+0.666667
+   2 ^ 3
+8
+   2 ^ 0.5
+1.41421
+   _2 ^ 0.5
+0j1.41421
+   2 ^. 3
+1.58496
+
+── (3 of 15) Arrays ─────────────────────────────────────────
+Functions apply to arrays.
+)
+   2 + 5 6 7
+7 8 9
+   2 3 4 * 5 6 7
+10 18 28
+   2 3 4 - 5 6 7
+_3 _3 _3
+   2 3 4 % 5 6 7
+0.4 0.5 0.571429
+   2 3 % 5 6 7       NB. error because arguments do not match
+|length error in run1, executing dyad %
+|shapes 2 and 3 do not conform
+|   2 3    %5 6 7
+|[-5] 
+
+── (4 of 15) Arrays (ctd) ───────────────────────────────────
+Some function make arrays.
+
+i.n is a list of the integers from 0 to n-1.
+
+s $ v makes an array of shape s using the elements v
+)
+   i. 7
+0 1 2 3 4 5 6
+   1 + i.7
+1 2 3 4 5 6 7
+   2 ^ i.7
+1 2 4 8 16 32 64
+   (i.7) ^ 0.5
+0 1 1.41421 1.73205 2 2.23607 2.44949
+   3 5 $ 3 1 4 2
+3 1 4 2 3
+1 4 2 3 1
+4 2 3 1 4
+   x=: 3 5 $ 3 1 4 2
+   x * x
+ 9  1 16 4  9
+ 1 16  4 9  1
+16  4  9 1 16
+
+── (5 of 15) Assignment ─────────────────────────────────────
+An array or function can be assigned a name using =:, i.e.
+copula.
+)
+   i. 7
+0 1 2 3 4 5 6
+   x=: i. 7
+   x
+0 1 2 3 4 5 6
+   x ^ 2
+0 1 4 9 16 25 36
+   pow=: ^
+   x pow 2
+0 1 4 9 16 25 36
+   x pow 0.5
+0 1 1.41421 1.73205 2 2.23607 2.44949
+
+── (6 of 15) Monadic or Dyadic ──────────────────────────────
+A function can be monadic or dyadic, depending on whether
+there is an argument on the right or on the left and right.
+)
+   2 % 3
+0.666667
+   % 3
+0.333333
+   2 ^ 3
+8
+   ^ 3
+20.0855
+
+── (7 of 15) More Primitives ────────────────────────────────
+The primitive functions include + - * % as well as ^ (power),
+^. (log), > (greater than), >. (maximum), +. (or/GCD), *.
+(and/LCM), | (residue or modulo), etc.
+
+And all of these can be monadic or dyadic, and apply to
+arrays.
+)
+   2 ^ 3 4 5 6
+8 16 32 64
+   2 ^ 0.5 3 _5
+1.41421 8 0.03125
+   _2 ^ 0.5 6 7
+0j1.41421 64 _128
+   
+   0 0 1 1 +. 0 1 0 1
+0 1 1 1
+   2 3 4 5 +. 10 20 30 40
+2 1 2 5
+   2 3 4 5 *. 10 20 30 40
+10 60 60 40
+   
+   2 3 4 5 | 10 20 30 40
+0 2 2 0
+   2 3 4 5 <. 10 20 30 40
+2 3 4 5
+   2 3 4 5 >. 10 20 30 40
+10 20 30 40
+
+── (8 of 15) Insert ─────────────────────────────────────────
+Adverbs modify verbs to produce new verbs.
+
+For example, the adverb / inserts its verb argument between
+the items of its argument.
+
+Thus, +/ is summation and */ is product.  These are the "big
+sigma" and "big pi" of conventional notation.  Moreover, /
+can be applied to any function: >./ is maximum, <./ is
+minimum, +./ is or or GCD, *./ is and or LCM, etc.
+)
+   x=: 1 + i. 7
+   x
+1 2 3 4 5 6 7
+   +/ x
+28
+   */ x
+5040
+   >./ x
+7
+   <./ x
+1
+   +./ x
+1
+   *./ x
+420
+
+── (9 of 15) Table ──────────────────────────────────────────
+f/ is a verb, and like other verbs can be monadic or dyadic.
+The monadic meaning is "insert".  The dyadic meaning is
+"table", i.e. function table.
+
+Function tables are a good way to organize systematic
+experimentation on unfamiliar functions.
+)
+   x=:i.9
+   x
+0 1 2 3 4 5 6 7 8
+   x +/ x
+0 1  2  3  4  5  6  7  8
+1 2  3  4  5  6  7  8  9
+2 3  4  5  6  7  8  9 10
+3 4  5  6  7  8  9 10 11
+4 5  6  7  8  9 10 11 12
+5 6  7  8  9 10 11 12 13
+6 7  8  9 10 11 12 13 14
+7 8  9 10 11 12 13 14 15
+8 9 10 11 12 13 14 15 16
+   x */ x
+0 0  0  0  0  0  0  0  0
+0 1  2  3  4  5  6  7  8
+0 2  4  6  8 10 12 14 16
+0 3  6  9 12 15 18 21 24
+0 4  8 12 16 20 24 28 32
+0 5 10 15 20 25 30 35 40
+0 6 12 18 24 30 36 42 48
+0 7 14 21 28 35 42 49 56
+0 8 16 24 32 40 48 56 64
+   x </ x
+0 1 1 1 1 1 1 1 1
+0 0 1 1 1 1 1 1 1
+0 0 0 1 1 1 1 1 1
+0 0 0 0 1 1 1 1 1
+0 0 0 0 0 1 1 1 1
+0 0 0 0 0 0 1 1 1
+0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0 0
+   x >/ x
+0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 0 0 0
+1 1 0 0 0 0 0 0 0
+1 1 1 0 0 0 0 0 0
+1 1 1 1 0 0 0 0 0
+1 1 1 1 1 0 0 0 0
+1 1 1 1 1 1 0 0 0
+1 1 1 1 1 1 1 0 0
+1 1 1 1 1 1 1 1 0
+   x >./ x
+0 1 2 3 4 5 6 7 8
+1 1 2 3 4 5 6 7 8
+2 2 2 3 4 5 6 7 8
+3 3 3 3 4 5 6 7 8
+4 4 4 4 4 5 6 7 8
+5 5 5 5 5 5 6 7 8
+6 6 6 6 6 6 6 7 8
+7 7 7 7 7 7 7 7 8
+8 8 8 8 8 8 8 8 8
+   x <./ x
+0 0 0 0 0 0 0 0 0
+0 1 1 1 1 1 1 1 1
+0 1 2 2 2 2 2 2 2
+0 1 2 3 3 3 3 3 3
+0 1 2 3 4 4 4 4 4
+0 1 2 3 4 5 5 5 5
+0 1 2 3 4 5 6 6 6
+0 1 2 3 4 5 6 7 7
+0 1 2 3 4 5 6 7 8
+   x +./ x
+0 1 2 3 4 5 6 7 8
+1 1 1 1 1 1 1 1 1
+2 1 2 1 2 1 2 1 2
+3 1 1 3 1 1 3 1 1
+4 1 2 1 4 1 2 1 4
+5 1 1 1 1 5 1 1 1
+6 1 2 3 2 1 6 1 2
+7 1 1 1 1 1 1 7 1
+8 1 2 1 4 1 2 1 8
+   x *./ x
+0 0  0  0  0  0  0  0  0
+0 1  2  3  4  5  6  7  8
+0 2  2  6  4 10  6 14  8
+0 3  6  3 12 15  6 21 24
+0 4  4 12  4 20 12 28  8
+0 5 10 15 20  5 30 35 40
+0 6  6  6 12 30  6 42 24
+0 7 14 21 28 35 42  7 56
+0 8  8 24  8 40 24 56  8
+   x | / x
+0 1 2 3 4 5 6 7 8
+0 0 0 0 0 0 0 0 0
+0 1 0 1 0 1 0 1 0
+0 1 2 0 1 2 0 1 2
+0 1 2 3 0 1 2 3 0
+0 1 2 3 4 0 1 2 3
+0 1 2 3 4 5 0 1 2
+0 1 2 3 4 5 6 0 1
+0 1 2 3 4 5 6 7 0
+
+── (10 of 15) Table (ctd) ───────────────────────────────────
+The Hilbert matrix is a simple function on the addition
+table.
+
+The patterns are more apparent in the extended (rational)
+domain.  The reciprocal determinant of the Hilbert matrix of
+order n, has prime factors that are the primes less than 2*n
+)
+   x=: i.7
+   x +/ x
+0 1 2 3  4  5  6
+1 2 3 4  5  6  7
+2 3 4 5  6  7  8
+3 4 5 6  7  8  9
+4 5 6 7  8  9 10
+5 6 7 8  9 10 11
+6 7 8 9 10 11 12
+   % 1 + x +/x
+       1      0.5 0.333333     0.25       0.2  0.166667  0.142857
+     0.5 0.333333     0.25      0.2  0.166667  0.142857     0.125
+0.333333     0.25      0.2 0.166667  0.142857     0.125  0.111111
+    0.25      0.2 0.166667 0.142857     0.125  0.111111       0.1
+     0.2 0.166667 0.142857    0.125  0.111111       0.1 0.0909091
+0.166667 0.142857    0.125 0.111111       0.1 0.0909091 0.0833333
+0.142857    0.125 0.111111      0.1 0.0909091 0.0833333 0.0769231
+   
+   y=: i.7x
+   H=: % 1 + y +/ y
+   H
+  1 1r2 1r3  1r4  1r5  1r6  1r7
+1r2 1r3 1r4  1r5  1r6  1r7  1r8
+1r3 1r4 1r5  1r6  1r7  1r8  1r9
+1r4 1r5 1r6  1r7  1r8  1r9 1r10
+1r5 1r6 1r7  1r8  1r9 1r10 1r11
+1r6 1r7 1r8  1r9 1r10 1r11 1r12
+1r7 1r8 1r9 1r10 1r11 1r12 1r13
+   
+   ~. q: % -/ .* H
+2 3 5 7 11 13
+
+── (11 of 15) Table (ctd) ───────────────────────────────────
+The "triangle" of Pascal is an example of a function table,
+using the binomial coefficient function ! .
+
+An advantage of looking at it as a table rather than as a
+triangle, is that one can then apply matrix operations to it,
+such as matrix inverse.
+)
+   x=: i.7
+   x !/x
+1 1 1 1 1  1  1
+0 1 2 3 4  5  6
+0 0 1 3 6 10 15
+0 0 0 1 4 10 20
+0 0 0 0 1  5 15
+0 0 0 0 0  1  6
+0 0 0 0 0  0  1
+   
+   m=: x !/x
+   %. m
+1 _1  1 _1  1  _1   1
+0  1 _2  3 _4   5  _6
+0  0  1 _3  6 _10  15
+0  0  0  1 _4  10 _20
+0  0  0  0  1  _5  15
+0  0  0  0  0   1  _6
+0  0  0  0  0   0   1
+
+── (12 of 15) Prefix ────────────────────────────────────────
+Prefix is another adverb.  f\ applies f to the prefixes of
+the argument.
+
+The monad < (box) is helpful in elucidating prefix.
+)
+   x=: 1+i.7
+   x
+1 2 3 4 5 6 7
+   +/\ x
+1 3 6 10 15 21 28
+   <\ x
+┌─┬───┬─────┬───────┬─────────┬───────────┬─────────────┐
+│1│1 2│1 2 3│1 2 3 4│1 2 3 4 5│1 2 3 4 5 6│1 2 3 4 5 6 7│
+└─┴───┴─────┴───────┴─────────┴───────────┴─────────────┘
+   
+   */\ x
+1 2 6 24 120 720 5040
+   <./\x
+1 1 1 1 1 1 1
+   >./\x
+1 2 3 4 5 6 7
+   +./\x
+1 1 1 1 1 1 1
+   *./\x
+1 2 6 12 60 60 420
+
+── (13 of 15) Permutations ──────────────────────────────────
+The dyadic function x{y indexes y by x  If p is a
+permutation, p{y permutes y by p.
+)
+   p=: 22 ?. 22    NB. a random permutation
+   p
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+   p { p
+0 11 19 7 13 20 14 8 2 9 12 16 15 21 10 5 6 17 3 4 18 1
+   p { p { p
+0 3 12 6 5 1 2 14 10 9 4 7 13 20 19 21 8 17 16 15 11 18
+   
+   3 22$p
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+   {/3 22$p
+0 3 12 6 5 1 2 14 10 9 4 7 13 20 19 21 8 17 16 15 11 18
+   {/\3 22$p
+0 18 10 16 15 21  8  6 14 9 19  3  4  5  2 13 7 17 11 12  1 20
+0 11 19  7 13 20 14  8  2 9 12 16 15 21 10  5 6 17  3  4 18  1
+0  3 12  6  5  1  2 14 10 9  4  7 13 20 19 21 8 17 16 15 11 18
+
+── (14 of 15) Permutations (ctd) ────────────────────────────
+{/ (m,#p) $ p inserts { between m copies of the permutation,
+and computes the m-th power of p.
+
+The corresponding prefixes, {/\ (m,#p) $ p, are the
+successive powers of p.
+)
+   p=: 22 ?. 22    NB. a random permutation
+   p
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+   p { p { p
+0 3 12 6 5 1 2 14 10 9 4 7 13 20 19 21 8 17 16 15 11 18
+   
+   #p
+22
+   
+   (3,#p)$p
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+0 18 10 16 15 21 8 6 14 9 19 3 4 5 2 13 7 17 11 12 1 20
+   {/(3,#p)$p
+0 3 12 6 5 1 2 14 10 9 4 7 13 20 19 21 8 17 16 15 11 18
+   {/\(3,#p)$p
+0 18 10 16 15 21  8  6 14 9 19  3  4  5  2 13 7 17 11 12  1 20
+0 11 19  7 13 20 14  8  2 9 12 16 15 21 10  5 6 17  3  4 18  1
+0  3 12  6  5  1  2 14 10 9  4  7 13 20 19 21 8 17 16 15 11 18
+
+── (15 of 15) Permutations (ctd) ────────────────────────────
+C. p computes the cycles of permutation p.  The LCM of the
+cycle lengths, is the order of the subgroup generated by p.
+)
+   p=: 22 ?. 22
+   C. p
+┌─┬─┬──┬────────────────────────────────────────────────┐
+│0│9│17│21 20 1 18 11 3 16 7 6 8 14 2 10 19 12 4 15 13 5│
+└─┴─┴──┴────────────────────────────────────────────────┘
+   #&> C. p
+1 1 1 19
+   *./ #&> C. p
+19
+   
+   # ~. {/\ (200,#p) $ p
+19
+
+End of lab
+   

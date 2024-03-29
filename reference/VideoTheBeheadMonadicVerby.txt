@@ -1,0 +1,214 @@
+ctrl+j advances
+1 of 85 in /applications/j9.5/addons/media/videolabs/behead.ijt
+Lab: Video - The Behead Monadic Verb - }.y
+
+Chapter: Video Requirements
+ 
+_______________________________________
+
+To run this video lab, you must have
+access to youtube.com through the
+internet.
+
+If you do not, the lab will still
+advance through the exercises, but the
+videos will not be displayed.
+
+Videos will appear as steps in the lab,
+but you will need to click play on the video
+to get it started.
+
+When you have viewed a video, click back on
+the terminal window to continue the lab.
+
+This is required because when you are
+interacting with a video, you are not
+actually interacting with the J lab.
+
+First some preparation for the video
+_______________________________________
+   3 : 0 ''
+if.     IFQT  do. require jpath '~addons/media/videolabs/videolabjqt.ijs'
+elseif. IFJHS do. require jpath '~addons/media/videolabs/videolabjhs.ijs'
+elseif. IFJA  do. echo 'Video is not available in Android'
+elseif. IFIOS do. echo 'Video is not available for IOS at this time'
+elseif. 1     do. require jpath '~addons/media/videolabs/videolabcon.ijs' NB. Jconsole if nothing else.
+              end.
+)
+Chapter: Action of }. on Non-Empty arrays
+ 
+   display_video_ 'LjuDmQAJ4q4'
+ 
+_______________________________________
+
+Now, a chance to play with some of these
+concepts and see if the results of these
+examples meet your expectations.
+_______________________________________
+ 
+   [ A23 =. i. 2  3
+0 1 2
+3 4 5
+ 
+   $ A23
+2 3
+ 
+Can you predict the result of
+}. A23 and $ }. A23 ?
+ 
+   }. A23  NB. Drop the first item
+3 4 5
+ 
+   $ }. A23  NB. Shape becomes 1 3
+1 3
+ 
+_______________________________________
+
+Pretty much makes sense that after
+removing the first item of a shape
+of 2 3, we will have a shape of 1 3.
+
+This is because the items are represented
+by the first number in the shape and
+removing the first item decreases the
+number of items by one.
+
+Now, let's try another one.
+_______________________________________
+ 
+   [ A4 =. i. 4
+0 1 2 3
+ 
+   $ A4
+4
+ 
+Can you predict the result of
+}. A4 and $ }. A4 ?
+ 
+   }. A4   NB. Take away the first item
+1 2 3
+   $ }. A4 NB. Changes from 4 items to 3
+3
+ 
+_______________________________________
+
+What if we had a list of length 1?
+_______________________________________
+ 
+   [ A1 =. ,4
+4
+ 
+   $ A1
+1
+ 
+Can you predict the result of
+}. A1 and $ }. A1 ?
+ 
+   }. A1   NB. Take away the first item
+ 
+   $ }. A1 NB. A list with no items? Shape 0
+0
+ 
+_______________________________________
+
+What about atoms?
+
+By the way, in the video the shape of
+an atom is shown as a background ring
+signifying an empty shape compared
+with a 1 item list which would
+have a solid background shape because
+a shape of 1 is not an empty shape.
+_______________________________________
+ 
+   [ A =. 4
+4
+ 
+   $ A   NB. Shape is empty.
+ 
+Can you predict the result of
+}. A and $ }. A ?
+ 
+   }. A1   NB. Take away the first item
+ 
+   $ }. A1 NB. Leaving no items - Shape 0
+0
+ 
+_______________________________________
+
+Atoms only have one item and that item
+is the atom itself. Removing the first
+item results in a list with no items and
+a shape of 0.
+
+Play around a bit more until you are
+comfortable with these results or
+any others that you might invent. You are
+working in a fully functioning J
+environment.
+
+When you are satisfied, advance the
+lab and get ready for the next video
+which covers the case of empty shapes.
+_______________________________________
+ 
+Chapter: Action of }. on Empty arrays
+ 
+   display_video_ 'eF5Zdqw7C9g'
+ 
+_______________________________________
+
+Now, let's look at a number of
+different empty arrays. I'll define
+a few for your benefit.
+_______________________________________
+ 
+   [ A03 =. 0 3 $ 4
+ 
+   }. A03  NB. No items? No effect on argument.
+ 
+   [ A30 =. 3 0 $ 4
+
+
+
+ 
+   $ A30  NB. shape 3 0 as expected
+3 0
+ 
+   }. A30 NB. Three empty lines becomes two empty lines
+
+
+ 
+   $ }. A30  NB. Shape now 2 0 without the first item
+2 0
+ 
+Here the lessons end, but following
+is a list of references where you
+can find out more about what
+you have seen and the J parts of speech
+that have been used in this explanation.
+ 
+Chapter: References
+ 
+_______________________________________
+
+ Nuvoc Definition for 'Behead' Monadic Verb found at https://code.jsoftware.com/wiki/Vocabulary/curlyrtdot
+ J for C Programmers - Chapter 8 - More Verbs - 'Behead' Monadic Verb found in Monads section at https://www.jsoftware.com/help/jforc/more_verbs.htm#_Toc191734357
+ The J Dictionary Vocabulary Definition for 'Behead' Monadic Verb found at https://www.jsoftware.com/help/dictionary/d531.htm
+
+ Nuvoc Definition for 'Shape Of' Monadic Verb found at https://code.jsoftware.com/wiki/Vocabulary/dollar
+ J for C Programmers - Chapter 5 - Declarations - 'Shape Of' Monadic Verb found at https://www.jsoftware.com/help/jforc/declarations.htm#_Toc191734328
+ The J Dictionary Vocabulary Definition for 'Shape Of' Monadic Verb found at https://www.jsoftware.com/help/dictionary/d210.htm
+_______________________________________
+ 
+_______________________________________
+
+If you would like to review any of the
+previous chapters, advance the lab then
+select the chapter you wish to review
+from the pop up message box.
+_______________________________________
+ 
+   lab ':'
+end of lab
+   

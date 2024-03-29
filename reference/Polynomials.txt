@@ -1,0 +1,546 @@
+─────────────────────────────────────────────────────────────
+Lab: Polynomials
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 18) INTRODUCTION ───────────────────────────────────
+An expression of the form:
+
+    2     5     4
+  3x  + 4x  + 2x
+
+is called a polynomial, with argument x, and coefficients 3 4
+2, and exponents 2 5 4. Using vectors (lists) it may be
+evaluated (for an argument value 3) as follows:
+)
+   x=: 3
+   c=: 3 4 2
+   e=: 2 5 4
+   
+   x^e
+9 243 81
+   
+   c * x^e
+27 972 162
+   
+   +/c * x^e
+1161
+   
+
+── (2 of 18) INTRODUCTION (ctd) ─────────────────────────────
+Since addition is both associative and commutative, the terms
+may be permuted to any order, without changing the result,
+for example:
+
+    5    4    2
+  4x + 2x + 3x
+
+Thus:
+)
+   perm=: 1 2 0
+   
+   ] ep=: perm { e
+5 4 2
+   
+   ] cp=: perm { c
+4 2 3
+   
+   cp * x^ep
+972 162 27
+   
+   +/cp * x^ep
+1161
+
+── (3 of 18) INTRODUCTION (ctd) ─────────────────────────────
+Since:
+
+   0
+  x
+
+is 1, and since any "missing" term, such as the cube in the
+example, can be included with a zero coefficient, any
+polynomial can be written in a standard descending form, with
+an unbroken sequence of exponents from the largest down to
+zero:
+)
+   cd=: 4 2 0 3 0 0
+   ed=: 5 4 3 2 1 0
+   
+   cd * x^ed
+972 162 0 27 0 0
+   
+   +/cd * x^ed
+1161
+   
+   NB. A polynomial may also be written in a standard ascending order:
+   
+   ] ca=: |. cd
+0 0 3 0 2 4
+   
+   ] ea=: |. ed
+0 1 2 3 4 5
+   
+   +/ca*x^ea
+1161
+
+── (4 of 18) INTRODUCTION (ctd) ─────────────────────────────
+The descending order is commonly used in elementary
+mathematics, but the ascending order is more common in
+advanced work because it allows the use of power series,
+polynomials with an indefinite (or even infinite) number of
+terms. We will mainly use the ascending form, but the
+descending form will be used in discussing number systems.
+
+In a polynomial in standard form, the exponents are
+completely determined by the coefficients. For example:
+)
+   c=: 0 0 3 0 2 4
+   
+   # c
+6
+   
+   ]e=: i.#c
+0 1 2 3 4 5
+   
+   +/c*x^i.#c
+1161
+   
+   NB. These steps may be collected in a single function as follows:
+   
+   p=: (+/ @ ([ * ] ^ i.@#@[)) " 1 0
+   
+   c p x
+1161
+   
+   c p 1
+9
+   
+   NB. Because of its importance, the polynomial is provided as
+   NB. a primitive function in J, with the two-character name p.:
+   
+   c p. x
+1161
+   
+   y=: 2 3 5 7 11
+   
+   c p. y
+172 1161 13825 72177 673849
+
+── (5 of 18) INTRODUCTION (ctd) ─────────────────────────────
+Although a polynomial is said to be a sum of terms, it is
+commonly written with the sign for subtraction as well as
+addition, as in:
+
+    2     5     4
+  3x  - 4x  + 2x
+
+This can be handled by using only addition, but with negative
+elements (such as _4) in the list of coefficients. Thus:
+)
+   c=: 3 _4 2
+   
+   e=: 2 5 4
+   
+   +/c*x^e
+_783
+   
+   0 0 3 0 2 _4 p. x
+_783
+
+── (6 of 18) INTRODUCTION (ctd) ─────────────────────────────
+The term polynomial refers to a function of a single
+argument, the x in the expression
+
+     5     4     2
+   4x  + 2x  + 3x
+
+The primitive p. is a function of two arguments, and is
+therefore not properly a polynomial. However, an expression
+of the form c&p. bonds it with a left argument of
+coefficients to produce a polynomial function. For example:
+)
+   c2=: 1 2 1
+   c3=: 1 3 3 1
+   
+   f=: c2&p.
+   g=: c3&p.
+   
+   x=: 2 3 5 7 11
+   
+   f x
+9 16 36 64 144
+   g x
+27 64 216 512 1728
+   
+   h=: f*g
+   h x
+243 1024 7776 32768 248832
+   
+   (f+g) x
+36 80 252 576 1872
+
+── (7 of 18) POLYNOMIAL FUNCTIONS ───────────────────────────
+The sum and the product of polynomials used above are
+themselves polynomials, as is the composition f@g. Thus:
+)
+   f g x
+784 4225 47089 263169 2.98944e6
+   
+   f@g x
+784 4225 47089 263169 2.98944e6
+   
+   k=: f@g
+   k x
+784 4225 47089 263169 2.98944e6
+   
+   4 12 21 22 15 6 1&p. x
+784 4225 47089 263169 2.98944e6
+   
+   NB. As illustrated above, the coefficients of the polynomial
+   NB. k are 4 12 21 22 15 6 1. We will examine means of finding
+   NB. the coefficients of other polynomials (such as the sum f+g
+   NB. and product f*g), after analyzing the effects of appending
+   NB. zeros to coefficients.
+
+── (8 of 18) POWERS AND APPENDED ZEROS ──────────────────────
+The cube function ^&3 is itself a polynomial, and is
+equivalent to:
+
+  0 0 0 1&p.
+
+Thus:
+)
+   x=: 2 3 5 7 11
+   x^3
+8 27 125 343 1331
+   ^&3 x
+8 27 125 343 1331
+   0 0 0 1&p. x
+8 27 125 343 1331
+   
+   NB. Moreover, the polynomial (0 0 0,c)&p. is equivalent to
+   NB. the product of the cube function with the polynomial c&p..
+   NB. For example:
+   
+   c2=: 1 2 1
+   ]pre=: 0 0 0,c2
+0 0 0 1 2 1
+   
+   pre&p. x
+72 432 4500 21952 191664
+   c2&p. x
+9 16 36 64 144
+   (^&3 * c2&p.) x
+72 432 4500 21952 191664
+   
+   NB. However, appending zeros to the end of a list of
+   NB. coefficients has no effect. For example:
+   
+   ]post=: c2,0 0 0
+1 2 1 0 0 0
+   post&p. x
+9 16 36 64 144
+   (post&p. = c2&p.) x
+1 1 1 1 1
+
+── (9 of 18) POWERS AND APPENDED ZEROS (ctd) ────────────────
+A function for "multiplying" polynomial coefficients can be
+defined similarly:
+)
+   times=: +//.@(*/)
+   
+   c2 times c3
+1 5 10 10 5 1
+   
+   NB. In the function times, the diagonal operator /. applies
+   NB. its argument (the sum function +/) to each of the diagonals
+   NB. of the results of the multiplication table function */.
+   NB. The details may be seen as follows:
+   
+   ] table=: c2 */ c3
+1 3 3 1
+2 6 6 2
+1 3 3 1
+   
+   </.table        NB. The box function shows the diagonals
+┌─┬───┬─────┬─────┬───┬─┐
+│1│3 2│3 6 1│1 6 3│2 3│1│
+└─┴───┴─────┴─────┴───┴─┘
+                   NB. to which any function applies
+   
+   +//. table
+1 5 10 10 5 1
+
+── (10 of 18) POWERS AND APPENDED ZEROS (ctd) ───────────────
+The reason why these diagonal sums of the multiplication
+table yield the coefficients of the product polynomial may
+appear obvious. If not, consider the following:
+
+The product of two sums of terms is the sum of the products
+of a term from one with each of the terms from the other. The
+product of typical terms:
+
+
+      j
+   c x
+
+and
+
+      k
+   d x
+
+is
+
+        j+k
+   c d x
+
+
+The multiplication table of all coefficients (c*/d) may
+therefore be multiplied by x raised to the powers in the
+addition table for the indices (that is, (i.#c +/ (i.#d)),
+and the entire resulting table can be summed. Thus:
+)
+   x=: 3
+   
+   ] exp=: (i.#c2) +/ (i.#c3)
+0 1 2 3
+1 2 3 4
+2 3 4 5
+   
+   table;exp;(x^exp);(table*x^exp);(+/+/table*x^exp)
+┌───────┬───────┬───────────┬────────────┬────┐
+│1 3 3 1│0 1 2 3│1  3  9  27│1  9  27  27│1024│
+│2 6 6 2│1 2 3 4│3  9 27  81│6 54 162 162│    │
+│1 3 3 1│2 3 4 5│9 27 81 243│9 81 243 243│    │
+└───────┴───────┴───────────┴────────────┴────┘
+   
+   NB. Any element of the table exp is an exponent of the
+   NB. final result that concerns the corresponding element
+   NB. in the table; the fact that equal elements of exp lie
+   NB. along the diagonals indicates that the elements of the
+   NB. table must be summed along these diagonals.
+
+── (11 of 18) POWERS AND APPENDED ZEROS (ctd) ───────────────
+Repeated multiplication by 1 1 produces the table of binomial
+coefficients. Thus:
+)
+   1 1&times 1
+1 1
+   
+   1 1&times 1 1&times 1
+1 2 1
+   
+   1 1&times ^:(i.6) 1
+1 0  0  0 0 0
+1 1  0  0 0 0
+1 2  1  0 0 0
+1 3  3  1 0 0
+1 4  6  4 1 0
+1 5 10 10 5 1
+
+── (12 of 18) POWERS AND APPENDED ZEROS (ctd) ───────────────
+The coefficients of the composition f@g can be obtained as
+follows:
+)
+   ]q=: c3&times ^: (i.#c2) 1     NB. Powers of c3 times
+1 0  0  0  0 0 0
+1 3  3  1  0 0 0
+1 6 15 20 15 6 1
+   
+   c2*q                           NB. weighted by c2
+1 0  0  0  0 0 0
+2 6  6  2  0 0 0
+1 6 15 20 15 6 1
+   
+   +/c2*q
+4 12 21 22 15 6 1
+   
+   coeffs=. 4 : '+/ x * y&times ^: (i.#x) 1'
+   
+   c2 coeffs c3
+4 12 21 22 15 6 1
+
+── (13 of 18) SECANT SLOPE ──────────────────────────────────
+The points with coordinates x,f x and y,f y lie on the graph
+of the function f. The straight line through them is called a
+secant, and its slope is the quotient rise%run, where rise is
+the difference (f y)-(f x), and run is the difference y-x The
+slope of the secant through x and y gives an "average" value
+for the rate at which the function f is changing in the
+interval. If y=: x+s and the spacing s is small, the secant
+slope is a good approximation to the rate of change of the
+function f at x; geometrically, it is an approximation to the
+slope of the tangent to the graph of f at x
+
+The slope of the cube function may be explored as follows:
+)
+   f=: ^&3
+   
+   x=: 0 1 2 3 4 5
+   
+   ((f x+1) - f x) % 1
+1 7 19 37 61 91
+   
+   ((f x+0.0001) - f x) % 0.0001
+1e_8 3.0003 12.0006 27.0009 48.0012 75.0015
+   
+   scs=: ((f@+ - f@]) % [) " 0
+   
+   0.0001 scs x
+1e_8 3.0003 12.0006 27.0009 48.0012 75.0015
+   
+   ]s=: 10 ^ - i.5
+1 0.1 0.01 0.001 0.0001
+   
+   s scs/ x
+     1      7      19      37      61      91
+  0.01   3.31   12.61   27.91   49.21   76.51
+0.0001 3.0301 12.0601 27.0901 48.1201 75.1501
+  1e_6  3.003  12.006  27.009  48.012  75.015
+  1e_8 3.0003 12.0006 27.0009 48.0012 75.0015
+   
+   3*x^2
+0 3 12 27 48 75
+
+── (14 of 18) SECANT SLOPE (ctd) ────────────────────────────
+We may also define a corresponding secant-slope operator:
+)
+   SCS=: 1 : 0
+((u@+ - u@]) % [) "0
+)
+   
+   ,. (s ^&3 SCS/ x) ; (s ^&4 SCS/ x)
+┌─────────────────────────────────────────────┐
+│     1      7      19      37      61      91│
+│  0.01   3.31   12.61   27.91   49.21   76.51│
+│0.0001 3.0301 12.0601 27.0901 48.1201 75.1501│
+│  1e_6  3.003  12.006  27.009  48.012  75.015│
+│  1e_8 3.0003 12.0006 27.0009 48.0012 75.0015│
+├─────────────────────────────────────────────┤
+│    1     15      65     175     369     671 │
+│0.001  4.641  34.481 113.521 265.761 515.201 │
+│ 1e_6 4.0604 32.2408 108.541 256.962 501.502 │
+│ 1e_9  4.006  32.024 108.054 256.096  500.15 │
+│1e_12 4.0006 32.0024 108.005  256.01 500.015 │
+└─────────────────────────────────────────────┘
+   
+   4 * x ^ 3
+0 4 32 108 256 500
+
+── (15 of 18) DERIVATIVE ────────────────────────────────────
+The derivative of a function f is a function g that gives the
+rate of change of f, that is, the slope of the tangent to the
+graph of f. As suggested by the approximations provided by
+the secant slopes of the cube and fourth power in the
+preceding section, the derivative of the power:
+
+    n
+   x
+
+is:
+
+     n-1
+   nx
+
+The derivative of a constant multiple of a function is the
+same multiple of its derivative, and the derivative of the
+term:
+
+     n
+   cx
+
+is therefore
+
+      n-1
+   ncx
+
+Since the derivative of a sum is the sum of the derivatives
+of the terms, the derivative of the polynomial
+
+                2     3
+   c + c x + c x + c x
+
+is
+
+               1      2
+   0 + c + 2c x + 3c x
+
+In general, the coefficients of the derivative polynomial are
+obtained by multiplying the coefficients by their indices,
+and dropping the first. Thus:
+)
+   c=: 3 1 4 2
+   
+   c*i.#c
+0 1 8 6
+   
+   }.c*i.#c
+1 8 6
+   
+   der=: }.@(] * i.@#)
+   
+   der c
+1 8 6
+   
+   x=: 0 1 2 3 4 5 6 7
+   
+   c p. x
+3 10 37 96 199 358 585 892
+   
+   (der c) p. x
+1 15 41 79 129 191 265 351
+
+── (16 of 18) DERIVATIVE (ctd) ──────────────────────────────
+We will test this derivative of the function f=: c&p. by
+comparing the derivative with the secant slope obtained from
+the operator SCS of an earlier section. Thus:
+)
+   0.01 c&p. SCS x
+1.0402 15.1002 41.1602 79.2202 129.28 191.34 265.4 351.46
+
+── (17 of 18) INTEGRAL ──────────────────────────────────────
+We now define an integral function analogous to the
+derivative function der. Thus:
+)
+   der
+}.@(] * i.@#)
+   
+   int=: 0: , ]  % 1: + i.@#
+   
+   c
+3 1 4 2
+   
+   int c
+0 3 0.5 1.33333 0.5
+   
+   der int c
+3 1 4 2
+   
+   x
+0 1 2 3 4 5 6 7
+   
+   (int c) p. x
+0 5.33333 26.6667 90 233.333 506.667 972 1703.33
+
+── (18 of 18) NUMBER SYSTEMS ────────────────────────────────
+If d is the list of digits representing a number in the
+decimal system, then the number represented is obtained by
+summing the product of d with the powers of 10, in descending
+order.
+
+It can therefore be treated as a polynomial with argument 10
+and coefficients that are the list d in reverse order, |.d.
+In particular the function times=: +//.@(*/) can be adapted
+for the product of decimal digits:
+)
+   d=: 1 9 9 7
+   
+   |.d
+7 9 9 1
+   
+   (|.d) p. 10
+1997
+
+End of lab
+   

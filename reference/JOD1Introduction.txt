@@ -1,0 +1,1118 @@
+─────────────────────────────────────────────────────────────
+Lab: JOD (1) Introduction
+Author: John D. Baker
+bakerjd99@gmail.com
+
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 52) What is JOD? ───────────────────────────────────
+JOD is a J word storage and retrieval system.
+
+The basic idea behind JOD is that J programming is best
+viewed as organizing a collection of words to perform a task.
+Organized collections of words have a better name:
+DICTIONARIES!
+)
+
+── (2 of 52) What is JOD? (ctd) ─────────────────────────────
+JOD is a J addon.  It is installed in the
+(~addons\general\jod) branch of the current J system folder
+by the package manager or by unzipping the distribution zip
+(jod.zip).  The next lab step initializes the JOD system.
+)
+   NB. used by this lab
+   require 'files dir task'
+
+── (3 of 52) Start JOD ──────────────────────────────────────
+This step starts the JOD system.
+)
+   NB. start jod - creates master file if necessary
+   require 'general/jod'
+
+── (4 of 52) Remove old lab dictionaries ────────────────────
+JOD is installed without any dictionaries.   To use JOD you
+must create some dictionaries.  This lab uses four example
+dictionaries (lab), (labdev), (toy) and (playpen).  JOD
+dictionaries are created with the (newd) "new dictionary"
+verb. 
+
+Before creating lab dictionaries remove any prior lab
+dictionaries. This step defines a utility that will erase
+dictionaries from default locations. It is run in the next
+step. 
+
+WARNING: IF THE TEMPORARY LAB DICTIONARIES CONTAIN
+INFORMATION YOU CARE ABOUT DO NOT EXECUTE THE NEXT LAB STEP!
+)
+   RemoveLabDictionaries_ijod_=: 3 : 0
+root=. jpath '~user'
+if. IFWIN do.
+  shell 'rd /s /q "',root,'\joddicts\labdev"'
+  shell 'rd /s /q "',root,'\joddicts\lab"'
+  shell 'rd /s /q "',root,'\joddicts	oy"'
+  shell 'rd /s /q "',root,'\joddicts\playpen"'
+  smoutput 'Lab temporary (win) dictionaries erased'
+elseif. IFUNIX do.
+  NB. avoid blanks in paths on Linux and Mac systems
+  shell 'rm -rf ',root,'/joddicts/labdev'
+  shell 'rm -rf ',root,'/joddicts/lab'
+  shell 'rm -rf ',root,'/joddicts/toy'
+  shell 'rm -rf ',root,'/joddicts/playpen'
+  smoutput 'Lab temporary (mac/linux) dictionaries erased'
+elseif.do.
+  smoutput 'Erase any previous temporary lab dictionaries manually.'
+end.
+)
+
+── (5 of 52) Remove old lab dictionaries (ctd) ──────────────
+Remove any prior lab dictionaries.
+)
+   NB. close any dictionaries - ignore errors
+   0 0 $ 3 od ''
+   
+   NB. unregister any lab dictionaries - ignore errors
+   0 0 $ 3 regd&> ;:'labdev lab toy playpen'
+   
+   NB. remove dictionary directories and all contents - ignore errors
+   RemoveLabDictionaries 0
+Lab temporary (mac/linux) dictionaries erased
+
+── (6 of 52) Remove old lab dictionaries (ctd) ──────────────
+This step creates the (lab) and (labdev) dictionaries.
+)
+   NB. close any open dictionaries
+   3 od ''
+┌─┬────────────────────────────────┐
+│0│!JOD error: no dictionaries open│
+└─┴────────────────────────────────┘
+   
+   NB. create (lab) and  (labdev) dictionaries
+   newd 'lab'
+┌─┬─────────────────────┬───┬─────────────────────────────────────┐
+│1│dictionary created ->│lab│/users/marcin/j9.5-user/joddicts/lab/│
+└─┴─────────────────────┴───┴─────────────────────────────────────┘
+   newd 'labdev'
+┌─┬─────────────────────┬──────┬────────────────────────────────────────┐
+│1│dictionary created ->│labdev│/users/marcin/j9.5-user/joddicts/labdev/│
+└─┴─────────────────────┴──────┴────────────────────────────────────────┘
+   
+   NB. list available dictionaries
+   od ''
+┌─┬───┬──────┐
+│1│lab│labdev│
+└─┴───┴──────┘
+
+── (7 of 52) Opening a closing dictionaries. ────────────────
+The JOD command for opening and closing dictionaries is (od)
+or (open dictionary). JOD commands are short and easy to
+type.
+
+(od) can open dictionaries READWRITE and READONLY. As you
+might expect READONLY dictionaries cannot be changed by JOD
+commands.
+)
+   NB. open read/write
+   od 'labdev'
+┌─┬──────────────┬──────┐
+│1│opened (rw) ->│labdev│
+└─┴──────────────┴──────┘
+   
+   NB. open read/only
+   2 od 'lab'
+┌─┬──────────────┬───┐
+│1│opened (ro) ->│lab│
+└─┴──────────────┴───┘
+
+── (8 of 52) Some command return code basics ────────────────
+All JOD commands return boxed list results. The first item is
+a return code: (1) good (0) bad.  Remaining items are
+messages and, usually, error related information.  JOD
+commands perform extensive argument checking.  If you break a
+JOD command please email me (bakerjd99@gmail.com) and tell me
+what you did.
+)
+   NB. some erroneous open commands
+   od 'i am a missing dictionary'
+┌─┬─────────────────────────────────────────────────┐
+│0│!JOD error: invalid or missing dictionary name(s)│
+└─┴─────────────────────────────────────────────────┘
+   
+   NB. bad types
+   od 9
+┌─┬─────────────────────────────────────────────────┐
+│0│!JOD error: invalid or missing dictionary name(s)│
+└─┴─────────────────────────────────────────────────┘
+   
+   NB. bad ranks
+   od 3 3$'boo'
+┌─┬─────────────────────────────────────────────────┐
+│0│!JOD error: invalid or missing dictionary name(s)│
+└─┴─────────────────────────────────────────────────┘
+
+── (9 of 52) Online JOD documentation ───────────────────────
+JOD has extensive (pdf) documentation. JOD documentation can
+be accessed with the (jodhelp) verb.
+
+(jodhelp) spawns a PDF reader task. JOD use J's configured
+PDF reader on Windows and Linux systems and the "open" shell
+command on Macs.
+)
+   NB. display JOD documentation
+   jodhelp 0
+┌─┬───────────────────┐
+│1│starting PDF reader│
+└─┴───────────────────┘
+   
+   NB. location of main JOD PDF document
+   jpath '~addons\general\joddocument\pdfdoc'
+/applications/j9.5/addons/general/joddocument/pdfdoc
+
+── (10 of 52) Dictionary paths ──────────────────────────────
+The open dictionaries of JOD define a search and fetch path.
+The (did) (dictionary identification) verb lists the path.
+)
+   NB. show path
+   did 0
+┌─┬──────┬───┐
+│1│labdev│lab│
+└─┴──────┴───┘
+
+── (11 of 52) Dictionary paths (ctd) ────────────────────────
+The dyadic form of (did) returns details about the contents
+of each dictionary on the path.
+)
+   NB. dictionary details
+   0 did 0
+┌─┬────────────────────────────────────────────────────┐
+│1│┌──────┬──┬─────┬─────┬───────┬───────┬──────┬─────┐│
+│ ││      │--│Words│Tests│Groups*│Suites*│Macros│Path*││
+│ │├──────┼──┼─────┼─────┼───────┼───────┼──────┼─────┤│
+│ ││labdev│rw│0    │0    │0      │0      │0     │/    ││
+│ │├──────┼──┼─────┼─────┼───────┼───────┼──────┼─────┤│
+│ ││lab   │ro│0    │0    │0      │0      │0     │/    ││
+│ │└──────┴──┴─────┴─────┴───────┴───────┴──────┴─────┘│
+└─┴────────────────────────────────────────────────────┘
+   
+   NB. did ~ 0   NB. handy idiom
+
+── (12 of 52) Some object orientation ───────────────────────
+The JOD system is a complete and detailed example of object
+oriented programming in J.  The system consists of a number
+of classes (prefixed with 'ajod').  When the system loads a
+variety of objects are created.  The basic architecture is a
+main dictionary object that contains four subobjects. Each
+open dictionary is also associated with a directory object.
+Directory objects are created and destroyed as required.
+)
+   NB. objects beginning with 'ajod' are the JOD classes.
+   conl 0
+┌────┬───────┬────────┬─────────┬─────────┬────────┬────┬────┬─┬────────┬──────┬────┬────┬────┬───────┬──┬──────┬──────┬───┬─────┬────────┬──────┬───────┬─┐
+│ajod│ajoddob│ajodmake│ajodstore│ajodtools│ajodutil│base│ijod│j│jcompare│jfiles│jgl2│jijs│jlab│jlab805│jp│jqtide│jregex│jrx│jtask│jviewmat│jwplot│jzgraph│z│
+└────┴───────┴────────┴─────────┴─────────┴────────┴────┴────┴─┴────────┴──────┴────┴────┴────┴───────┴──┴──────┴──────┴───┴─────┴────────┴──────┴───────┴─┘
+   
+   NB. JOD consists of six basic objects and as
+   NB. many directory objects as there are path items.
+   conl 1
+┌─┬─┬─┬─┬─┬─┬─┬─┐
+│0│1│2│3│4│5│6│7│
+└─┴─┴─┴─┴─┴─┴─┴─┘
+
+── (13 of 52) The put dictionary concept ────────────────────
+The first dictionary on the path is special.  It is the only
+dictionary that can be modified by JOD commands.  Because
+most dictionary modifications are put's I call this
+dictionary the "put" dictionary.
+
+It's important to understand that you can use the contents of
+the other dictionaries on the path but you cannot change them
+in any way.
+)
+   NB. first path dictionary is the put dictionary
+   did 0
+┌─┬──────┬───┐
+│1│labdev│lab│
+└─┴──────┴───┘
+
+── (14 of 52) Creating new dictionaries. ────────────────────
+Before modifying the contents of any dictionary let's create
+a new "toy" dictionary and make it the put dictionary.
+)
+   NB. close open dictionaries
+   3 od ''
+┌─┬─────────┬──────┬───┐
+│1│closed ->│labdev│lab│
+└─┴─────────┴──────┴───┘
+   
+   NB. create (toy)
+   newd 'toy'
+┌─┬─────────────────────┬───┬─────────────────────────────────────┐
+│1│dictionary created ->│toy│/users/marcin/j9.5-user/joddicts/toy/│
+└─┴─────────────────────┴───┴─────────────────────────────────────┘
+
+── (15 of 52) Creating new dictionaries. (ctd) ──────────────
+Make (toy) a put dictionary.
+)
+   NB. open toy, labdev and lab - toy is the put dictionary
+   od ;:'toy labdev lab'
+┌─┬────────────────────┬───┬──────┬───┐
+│1│opened (rw/rw/rw) ->│toy│labdev│lab│
+└─┴────────────────────┴───┴──────┴───┘
+   
+   NB. insure toy is read/write
+   dpset 'READWRITE'
+┌─┬────────────────────────────────────────────┬───┐
+│1│put dictionary read/write status restored ->│toy│
+└─┴────────────────────────────────────────────┴───┘
+
+── (16 of 52) Getting and putting words. ────────────────────
+In the first section I said JOD is a word storage and
+retrieval system.  Now we are ready to (put) and (get) some
+words.
+
+First create some words to store.
+)
+   NB. create some words
+   random=: ?10 10$100  NB. numeric noun
+   text=: 'this is a test of the one pure thing'
+   floats=: 2 + % 100#100
+   symbols=: s: ' once more with feeling'
+   boxed=: <"1 i. 2 3
+   rationals=: 100 + % (>:i. 10x) ^ 50
+   unicode=: u: 'this is now unicode'
+   each=: &.>           NB. tacit adverb
+   explicit=: 4 : 0
+NB. explicit verb
+x +. y
+)
+   
+   words=: ;:'random text floats symbols boxed rationals unicode each explicit'
+
+── (17 of 52) Getting and putting words. (ctd) ──────────────
+(put) is the JOD command that stores words.
+
+Save and erase the words.  Take some time to convince
+yourself that the words have been erased before proceeding.
+)
+   NB. save words
+   put words
+┌─┬───────────────────┬───┐
+│1│9 word(s) put in ->│toy│
+└─┴───────────────────┴───┘
+   
+   NB. erase definitions
+   erase words
+1 1 1 1 1 1 1 1 1
+
+── (18 of 52) Getting and putting words. (ctd) ──────────────
+Now retrieve the stored words and check that they are
+properly restored.
+)
+   NB. get words
+   get words
+┌─┬─────────────────┐
+│1│9 word(s) defined│
+└─┴─────────────────┘
+
+── (19 of 52) Documentation 101 ─────────────────────────────
+One of my pet peeves is undocumented code!
+
+How often have you had to face hundreds, maybe thousands, of
+lines of code with nary a comment in sight. Comments are not
+for wimps and girly-men. Telling comments are a hallmark of
+good code.
+
+JOD provides a number of ways to document words. When a word
+is introduced it's a good idea to store a short one line
+description of the word.
+)
+   NB. store short word descriptions
+   0 8 put 'random';'random integer table'
+┌─┬───────────────────────────────┬───┐
+│1│1 word explanation(s) put in ->│toy│
+└─┴───────────────────────────────┴───┘
+   
+   0 8 put 'each';'applies left argument to array items'
+┌─┬───────────────────────────────┬───┐
+│1│1 word explanation(s) put in ->│toy│
+└─┴───────────────────────────────┴───┘
+
+── (20 of 52) Documentation 101 (ctd) ───────────────────────
+Of course you can view your stored descriptions with (get).
+)
+   NB. get short explanations
+   0 8 get 'random';'each'
+┌─┬─────────────────────────────────────────────┐
+│1│┌──────┬────────────────────────────────────┐│
+│ ││random│random integer table                ││
+│ │├──────┼────────────────────────────────────┤│
+│ ││each  │applies left argument to array items││
+│ │└──────┴────────────────────────────────────┘│
+└─┴─────────────────────────────────────────────┘
+
+── (21 of 52) Documentation 101 (ctd) ───────────────────────
+More detailed documentation can be stored and retrieved. This
+step loads a realistic example of word documentation into the
+current put dictionary and then displays with (disp).
+
+(disp) is a JOD utility.  It is the only verb that returns a
+character list (when successful) instead of the usual boxed
+(rc;value)
+)
+   NB. loads (changestr) and (changestr) documentation into the current put dictionary
+   script '~addons\general\jod\jodlabs\labexample001.ijs'
+
+── (22 of 52) Documentation 101 (ctd) ───────────────────────
+This steps displays the long document loaded in the previous
+step.
+)
+   NB. show long documentation
+   0 9 disp 'changestr'
+*changestr v-- replaces substrings within a string.
+
+This algorithm was adapted from an APL algorithm. It requires
+high speed boolean bit  manipulation and is not  as effective
+in current  J systems as it  is in some  APL systems. Despite
+J's non-optimal booleans this verb is still fast enough to be
+fruitfully applied.  On  my  400MHZ NT  machine  you can make
+20,000 length increasing replacements, (the worst case), in a
+1  megabyte  string  in approximately  one  second.  For  100
+kilobyte  strings typical operations complete is less than  a
+tenth of second.
+
+High speed substring replacement is difficult to achieve in J
+and APL environments. This verb would be a good candidate for
+an external compiled routine.
+
+dyad:  clChanged =. clTargets changestr clStr
+
+  '/change/becomes' changestr 'change me'
+
+  '/delete' changestr 'delete me'   NB. null replacement deletes
+
+  NB. first character is delimiter
+
+  '.remove..purge..wipe' changestr 'removepurgewipe'
+
+  '/' changestr 'nothing happens'
+
+  '' changestr 'nothing happens'
+
+  '/nothing/happens' changestr 'no matches to change'
+
+  NB. multiple replacements are made in left to right order
+
+  t =. 'once all things were many'
+
+  '/many/changes/all/at/once/ehh' changestr t
+
+  NB. even null subtring replacements are allowed
+
+  '//XX' changestr 'insert big x chars around us'
+
+  NB. finally all this applies in a clean elegant
+  NB. way to UNICODE strings as well
+
+  uchars=. u: 1033 + i. 500  NB. unicode string
+  datatype uchars            NB. (datatype) from j profile
+
+  usub0=. (100+i.11){uchars  NB. substrings
+  usub1=. (313+i.7){uchars
+  datatype usub0
+  datatype usub1
+
+  NB. strings that will not occur in the original
+  unew0=. u: 40027+i.33
+  unew1=. u: 50217+i.7
+
+  +./ unew0 E. uchars   NB. not in uchars
+  +./ unew1 E. uchars
+
+  ucharsnew=. ('/',usub0,'/',unew0,'/',usub1,'/',unew1) changestr uchars
+
+  +./ unew0 E. ucharsnew  NB. now in string
+  +./ unew1 E. ucharsnew
+
+
+
+
+── (23 of 52) More putting and getting. ─────────────────────
+(put) and (get) are quite flexible and can store entire
+locales.  The locales can be named or numbered.
+)
+   NB. save the (ajodmake) locale/class in "toy"
+   'ajodmake' put zz=: nl_ajodmake_ i. 4
+┌─┬────────────────────┬───┐
+│1│83 word(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   NB. retrieve the (ajodmake) words into an 'xxx' locale
+   'xxx' get zz
+┌─┬──────────────────┐
+│1│83 word(s) defined│
+└─┴──────────────────┘
+
+── (24 of 52) Searching for words ───────────────────────────
+Like most storage systems JOD provides facilities for
+searching the contents of its database.
+
+The main search command is (dnl) (dictionary name lists).
+)
+   NB. list all the words on the path beginning with 'du'
+   list }. dnl 'du'
+dumpdictdoc  dumpdoc      dumpgs       dumpheader   
+dumpntstamps dumptext     dumptm       dumptrailer  
+dumpwords                                           
+
+── (25 of 52) Searching for words (ctd) ─────────────────────
+(dnl) can search for words, tests, groups, suites and macros.
+ This step creates some groups and then lists all the groups
+on the path that begin with 'JOD'
+)
+   NB. create some groups
+   grp 'strings';'changestr'
+┌─┬─────────────────────────┬───┐
+│1│group <strings> put in ->│toy│
+└─┴─────────────────────────┴───┘
+   grp 'loctest';nl_ajodmake_ i.4
+┌─┬─────────────────────────┬───┐
+│1│group <loctest> put in ->│toy│
+└─┴─────────────────────────┴───┘
+   
+   NB. groups beginning with 'loc'
+   2 1 dnl 'loc'
+┌─┬───────┐
+│1│loctest│
+└─┴───────┘
+
+── (26 of 52) What are these funny argument numbers? ────────
+By now you have probably noticed that many JOD commands take
+integer arguments.  JOD argument codes are of basically three
+types, object codes, option codes and qualifiers.
+
+The objects JOD stores and retrieves all have object codes.
+The next table displays JOD object codes
+)
+   NB. JOD object codes
+   (<"0 i. 6) ,. ;:'WORD TEST GROUP SUITE MACRO DICTIONARY'
+┌─┬──────────┐
+│0│WORD      │
+├─┼──────────┤
+│1│TEST      │
+├─┼──────────┤
+│2│GROUP     │
+├─┼──────────┤
+│3│SUITE     │
+├─┼──────────┤
+│4│MACRO     │
+├─┼──────────┤
+│5│DICTIONARY│
+└─┴──────────┘
+
+── (27 of 52) What are these funny argument numbers? (ctd) ──
+Option and qualifier codes select and modify options.  They
+are all integers. For more information about argument codes
+read JOD's online documentation.
+
+Now look at some more (dnl) commands.
+)
+   NB. (group, option 1 - match prefix) - case matters
+   2 1 dnl 'l'
+┌─┬───────┐
+│1│loctest│
+└─┴───────┘
+   
+   NB. (macro, option 2 - name contains string) - no macros yet
+   4 2 dnl 'ar'
+┌─┬┐
+│1││
+└─┴┘
+   
+   NB. make a macro and search again
+   4 put 'arrgh';JSCRIPT_ajod_;'NB. my do nothing J macro'
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   4 2 dnl 'ar'
+┌─┬─────┐
+│1│arrgh│
+└─┴─────┘
+
+── (28 of 52) Groups and suites ─────────────────────────────
+JOD provides a simple way to group words and tests.  A group
+is a collection of J words.  A suite is a collection of J
+test scripts.  You create and modify groups and suites with
+the (grp) verb.
+)
+   NB. create a group of words with names beginning with 'ch'
+   grp 'testgroup' ; }. dnl 'ch'
+┌─┬───────────────────────────┬───┐
+│1│group <testgroup> put in ->│toy│
+└─┴───────────────────────────┴───┘
+   
+   NB. create a test
+   1 put 'helloworld';'1 [ ''JOD tests are J scripts that return 1s'''
+┌─┬───────────────────┬───┐
+│1│1 test(s) put in ->│toy│
+└─┴───────────────────┴───┘
+   
+   NB. create a test suite - note left argument code
+   3 grp 'testsuite' ; }. 1 dnl ''
+┌─┬───────────────────────────┬───┐
+│1│suite <testsuite> put in ->│toy│
+└─┴───────────────────────────┴───┘
+
+── (29 of 52) Groups and suites (ctd) ───────────────────────
+You can list the contents of groups or suites with (grp)
+)
+   NB. list contents of testgroup group
+   grp 'testgroup'
+┌─┬─────────┐
+│1│changestr│
+└─┴─────────┘
+   
+   NB. contents of testsuite, note suite code left argument
+   3 grp 'testsuite'
+┌─┬──────────┐
+│1│helloworld│
+└─┴──────────┘
+
+── (30 of 52) Making groups and suites ──────────────────────
+One of the main advantages of storing J code in JOD vs. a
+plain script is that you can maintain a SINGLE version of a
+word, test, group or suite and then generate many J load
+scripts that use dictionary objects. Database designers call
+this "one version of the truth."
+
+The following inserts a single word in (toy) groups and then
+generates scripts.
+)
+   NB. left justify table verb
+   ljust=:' '&$: :(] |."_1~ i."1&0@(] e. [))
+   
+   NB. store in put dictionary
+   put 'ljust'
+┌─┬───────────────────┬───┐
+│1│1 word(s) put in ->│toy│
+└─┴───────────────────┴───┘
+   
+   NB. insert in all put dictionary groups 
+   (}. 2 revo '') addgrp&> <'ljust'
+┌─┬───────────────────┬─────────┐
+│1│1 words added to ->│testgroup│
+├─┼───────────────────┼─────────┤
+│1│1 words added to ->│loctest  │
+├─┼───────────────────┼─────────┤
+│1│1 words added to ->│strings  │
+└─┴───────────────────┴─────────┘
+   
+   NB. lookup (revo) in jod.pdf with (jodhelp)
+   
+   NB. generate all put dictionary groups 
+   0 mls&> }. 2 revo''
+┌─┬─────────────┬─────────────────────────────────────────────────────────┐
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/strings.ijs  │
+├─┼─────────────┼─────────────────────────────────────────────────────────┤
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/loctest.ijs  │
+├─┼─────────────┼─────────────────────────────────────────────────────────┤
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/testgroup.ijs│
+└─┴─────────────┴─────────────────────────────────────────────────────────┘
+   
+   NB. if the left argument is elided the groups are made into (load) scripts
+   NB. mls&> }. 2 revo''
+
+── (31 of 52) Macros ────────────────────────────────────────
+Tasks, like updating generated scripts, can be simplified
+with JOD macros.  A JOD macro is an arbitrary J script that
+can be fetched and executed with (rm).
+)
+   NB. macro that generates all put dictionary groups
+   jodmacro=: 'NB. generate all put dictionary groups',LF,'0 mls&> }. 2 revo'''' '
+   
+   NB. store macro - code 21 tells JOD this is a J script
+   4 put 'makeputgrps';21;jodmacro
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+
+── (32 of 52) Macros (ctd) ──────────────────────────────────
+Running a JOD macro is a simple matter of opening the
+appropriate dictionaries and using (rm) - run macro.
+)
+   NB. fetch and execute 
+   rm 'makeputgrps'
+   NB. generate all put dictionary groups
+   0 mls&> }. 2 revo'' 
+┌─┬─────────────┬─────────────────────────────────────────────────────────┐
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/strings.ijs  │
+├─┼─────────────┼─────────────────────────────────────────────────────────┤
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/loctest.ijs  │
+├─┼─────────────┼─────────────────────────────────────────────────────────┤
+│1│file saved ->│/users/marcin/j9.5-user/joddicts/toy/script/testgroup.ijs│
+└─┴─────────────┴─────────────────────────────────────────────────────────┘
+   
+   NB. fetch and execute silently - will only display explicity code output
+   NB. 1 rm 'makeputgrps'
+
+── (33 of 52) Macros (ctd) ──────────────────────────────────
+Macros are not restricted to J scripts.  You can also store
+HTML, LaTeX, XML, TEXT, MARKDOWN, UTF8 and BYTE scripts in
+JOD dictionaries.  Only J scripts can be run however.
+)
+   NB. store LaTeX (22) and HTML (23) texts
+   4 put 'latex';22;'... LaTeX code ...'
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   4 put 'html';23;' ... HTML code ...'
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   NB. store XML and arbitrary TEXT (bytes).
+   4 put 'xml';XML_ajod_;'<test>this is lame xml</test>'
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   NB. BYTE is uninterpreted bytes and can store binaries - not recommended for large files.
+   4 put 'BIN';26;read_ajod_ jpath '~addons\general\jod\jmaster.ijf'
+┌─┬────────────────────┬───┐
+│1│1 macro(s) put in ->│toy│
+└─┴────────────────────┴───┘
+   
+   NB. byte size of macro
+   4 15 get 'BIN'
+┌─┬─────┐
+│1│31872│
+└─┴─────┘
+   
+   NB. macro text types are contants in the main JOD class
+   JSCRIPT_ajod_, LATEX_ajod_, HTML_ajod_, XML_ajod_, TEXT_ajod_, BYTE_ajod_, MARKDOWN_ajod_, UTF8_ajod_, PYTHON_ajod_, SQL_ajod_, JSON_ajod_
+21 22 23 24 25 26 27 28 29 30 31
+
+── (34 of 52) Loading dictionary dump script ────────────────
+To demonstrate other JOD features we need some words in our
+dictionary.  The next step loads (labdump.ijs).
+)
+
+── (35 of 52) Loading dictionary dump script (ctd) ──────────
+Load lab dictionary dump script.
+)
+   NB. insure correct path
+   od ;:'toy labdev lab' [ 3 od ''
+┌─┬────────────────────┬───┬──────┬───┐
+│1│opened (rw/rw/rw) ->│toy│labdev│lab│
+└─┴────────────────────┴───┴──────┴───┘
+   
+   NB. load dump script
+   0!:0 <jpath '~addons/general/jod/jodlabs/labdump.ijs'
+┌─┬───────────────────┬───┐
+│1│1 word(s) put in ->│toy│
+└─┴───────────────────┴───┘
+┌─┬────────────────────┬───┐
+│1│35 word(s) put in ->│toy│
+└─┴────────────────────┴───┘
+┌─┬────────────────────────────────┬───┐
+│1│36 word explanation(s) put in ->│toy│
+└─┴────────────────────────────────┴───┘
+┌─┬────────────────────────────┬───┐
+│1│2 word document(s) put in ->│toy│
+└─┴────────────────────────────┴───┘
+┌─┬─────────────────────────┬───┐
+│1│group <bstats> put in -> │toy│
+├─┼─────────────────────────┼───┤
+│1│group <sunmoon> put in ->│toy│
+└─┴─────────────────────────┴───┘
+NB. end-of-JOD-dump-file regenerate cross references with:  0 globs&> }. revo '' 
+
+── (36 of 52) Loading dictionary dump script (ctd) ──────────
+Dump scripts do not store word references.  They must be
+generated.
+)
+   NB. update word references - show first 5 messages
+   5 {. 0 globs&> }. revo''
+┌─┬────────────────────────────────┬───┬┬┬┬┬┬┬┬┬┬┬┐
+│1│<antimode> references put in -> │toy││││││││││││
+├─┼────────────────────────────────┼───┼┼┼┼┼┼┼┼┼┼┼┤
+│1│<arctan> references put in ->   │toy││││││││││││
+├─┼────────────────────────────────┼───┼┼┼┼┼┼┼┼┼┼┼┤
+│1│<calmoons> references put in -> │toy││││││││││││
+├─┼────────────────────────────────┼───┼┼┼┼┼┼┼┼┼┼┼┤
+│1│<cos> references put in ->      │toy││││││││││││
+├─┼────────────────────────────────┼───┼┼┼┼┼┼┼┼┼┼┼┤
+│1│<datecheck> references put in ->│toy││││││││││││
+└─┴────────────────────────────────┴───┴┴┴┴┴┴┴┴┴┴┴┘
+
+── (37 of 52) Global references ─────────────────────────────
+JOD has facilities for carrying out static name analysis on J
+words and tests.
+
+The (globs) and (uses) verbs analyze and store name
+references.
+)
+   NB. analyze names
+   get 'dstat'
+┌─┬─────────────────┐
+│1│1 word(s) defined│
+└─┴─────────────────┘
+   
+   NB. classify name use in base locale word
+   11 globs 'dstat'
+┌─┬────────────────────────────────────────────────────────────────────┐
+│1│┌──────┬───────────────────────────────────────────────────────────┐│
+│ ││Global│┌────────┬────────┬────┬──────┬─────┬──┬──┬────────┬──────┐││
+│ ││      ││antimode│kurtosis│mean│median│mode2│q1│q3│skewness│stddev│││
+│ ││      │└────────┴────────┴────┴──────┴─────┴──┴──┴────────┴──────┘││
+│ │├──────┼───────────────────────────────────────────────────────────┤│
+│ ││Local │┌───┬───┬─┬─┐                                              ││
+│ ││      ││max│min│t│v│                                              ││
+│ ││      │└───┴───┴─┴─┘                                              ││
+│ │├──────┼───────────────────────────────────────────────────────────┤│
+│ ││(*)=: │                                                           ││
+│ │├──────┼───────────────────────────────────────────────────────────┤│
+│ ││(*)=. │                                                           ││
+│ │├──────┼───────────────────────────────────────────────────────────┤│
+│ ││for.  │                                                           ││
+│ │└──────┴───────────────────────────────────────────────────────────┘│
+└─┴────────────────────────────────────────────────────────────────────┘
+
+── (38 of 52) Global references (ctd) ───────────────────────
+You can update global word references.
+)
+   NB. 0 is the word code - stores global references
+   0 globs 'dstat'
+┌─┬────────────────────────────┬───┐
+│1│<dstat> references put in ->│toy│
+└─┴────────────────────────────┴───┘
+
+── (39 of 52) Global references (ctd) ───────────────────────
+(uses) retrieves stored references.
+)
+   NB. global references for (dstat)
+   uses 'dstat'
+┌─┬────────────────────────────────────────────────────────────────────┐
+│1│┌─────┬───────────────────────────────────────────────────────────┬┐│
+│ ││dstat│┌────────┬────────┬────┬──────┬─────┬──┬──┬────────┬──────┐│││
+│ ││     ││antimode│kurtosis│mean│median│mode2│q1│q3│skewness│stddev││││
+│ ││     │└────────┴────────┴────┴──────┴─────┴──┴──┴────────┴──────┘│││
+│ │└─────┴───────────────────────────────────────────────────────────┴┘│
+└─┴────────────────────────────────────────────────────────────────────┘
+
+── (40 of 52) Global references (ctd) ───────────────────────
+(uses) becomes very "useful" when all words have stored
+references.
+)
+   NB. insure toy is the put dictionary
+   od ;:'toy labdev lab' [ 3 od ''
+┌─┬────────────────────┬───┬──────┬───┐
+│1│opened (rw/rw/rw) ->│toy│labdev│lab│
+└─┴────────────────────┴───┴──────┴───┘
+
+── (41 of 52) Global references (ctd) ───────────────────────
+(uses) can return many reference lists at once. The same path
+search mechanism is used for retrieving references.
+)
+   NB. global references of words beginning with 'm'
+   NB. uses }. dnl 'm'
+   
+   NB. global references of words ending with 's'
+   uses }. 0 3 dnl's'
+┌─┬─────────────────────────────────────┐
+│1│┌────────────┬─────────────────────┬┐│
+│ ││calmoons    │┌──────────┬─────┐   │││
+│ ││            ││fromjulian│moons│   │││
+│ ││            │└──────────┴─────┘   │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││cos         │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││dumpgs      │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││dumpntstamps│                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││dumpwords   │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││extscopes   │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││floats      │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││fuserows    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││getallts    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││halfbits    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││jscriptdefs │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││kurtosis    │┌───┬─────┐          │││
+│ ││            ││dev│ssdev│          │││
+│ ││            │└───┴─────┘          │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││makegs      │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││moons       │┌───┐                │││
+│ ││            ││sin│                │││
+│ ││            │└───┘                │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││namecats    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││opaqnames   │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││putallts    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││rationals   │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││skewness    │┌───┬─────┐          │││
+│ ││            ││dev│ssdev│          │││
+│ ││            │└───┴─────┘          │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││symbols     │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││wrdglobals  │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││writeijs    │                     │││
+│ │├────────────┼─────────────────────┼┤│
+│ ││yeardates   │┌─────────┬─────────┐│││
+│ ││            ││datecheck│yeardates││││
+│ ││            │└─────────┴─────────┘│││
+│ │└────────────┴─────────────────────┴┘│
+└─┴─────────────────────────────────────┘
+
+── (42 of 52) The uses union ────────────────────────────────
+Option 31 of (uses) returns the uses-union of a word.  The
+uses-union is basically a unique list all the words on the
+call tree of a word.
+)
+   NB. uses union of two words
+   31 uses ;:'calmoons sunriseset0'
+┌─┬───────────────────────────────────────────────────┐
+│1│┌───────────┬────────────────────────────────────┬┐│
+│ ││calmoons   │┌──────────┬─────┬───┐              │││
+│ ││           ││fromjulian│moons│sin│              │││
+│ ││           │└──────────┴─────┴───┘              │││
+│ │├───────────┼────────────────────────────────────┼┤│
+│ ││sunriseset0│┌─────────┬──────┬───┬───┬─────┬───┐│││
+│ ││           ││NORISESET│arctan│cos│sin│tabit│tan││││
+│ ││           │└─────────┴──────┴───┴───┴─────┴───┘│││
+│ │└───────────┴────────────────────────────────────┴┘│
+└─┴───────────────────────────────────────────────────┘
+
+── (43 of 52) Generating load scripts ───────────────────────
+JOD can generate J load scripts from dictionary groups.  The
+generated scripts are written to the put dictionary's script
+subdirectory.
+)
+   NB. generate load script
+   mls 'sunmoon'   NB. sun/moon rise set
+┌─┬────────────────────┬───────────────────────────────────────────────────────┐
+│1│load script saved ->│/users/marcin/j9.5-user/joddicts/toy/script/sunmoon.ijs│
+└─┴────────────────────┴───────────────────────────────────────────────────────┘
+
+── (44 of 52) Generating load scripts (ctd) ─────────────────
+mls appends generated scripts to the current user's
+startup.ijs file so they can be loaded independently of JOD.
+
+Note: mls scripts are added to PUBLIC_j_ or Public_j_ for the
+current user.
+)
+   NB. load generated script
+   load 'sunmoon'
+   
+   calmoons 2015  NB. full (1)  and new (0) moons in 2015
+1 2015  1  4
+0 2015  1 20
+1 2015  2  3
+0 2015  2 18
+1 2015  3  5
+0 2015  3 19
+1 2015  4  4
+0 2015  4 18
+1 2015  5  3
+0 2015  5 17
+1 2015  6  2
+0 2015  6 16
+1 2015  7  1
+0 2015  7 15
+1 2015  7 30
+0 2015  8 14
+1 2015  8 29
+0 2015  9 12
+1 2015  9 27
+0 2015 10 12
+1 2015 10 27
+0 2015 11 11
+1 2015 11 25
+0 2015 12 10
+1 2015 12 24
+
+── (45 of 52) Generating scripts on demand ──────────────────
+JOD can also generate and load scripts without creating load
+scripts.
+)
+   NB. load basic statistics group
+   lg 'bstats'
+┌─┬───────────────────┐
+│1│bstats group loaded│
+└─┴───────────────────┘
+
+── (46 of 52) Generating scripts on demand (ctd) ────────────
+(getrx) loads all the words called by a given word.
+)
+   NB. load all words need to run (dstat)
+   getrx 'dstat'
+┌─┬──────────────────────────────┐
+│1│(14) words loaded into -> base│
+└─┴──────────────────────────────┘
+   
+   
+   NB. load into arbitrary locales
+   NB. 'statloc' getrx 'dstat'
+   NB. '99' getrx 'dstat'
+
+── (47 of 52) Backing up and restoring dictionaries ─────────
+JOD is database for J words, scripts and other precious
+program texts.  Most database systems have means for backing
+up and restoring databases and JOD does as well.  The (packd)
+verb backups up a database.
+)
+   NB. save a backup of the current put dictionary
+   packd 'toy'
+┌─┬────────────────────┬───┬─┐
+│1│dictionary packed ->│toy│0│
+└─┴────────────────────┴───┴─┘
+
+── (48 of 52) Backing up and restoring dictionaries (ctd) ───
+(packd) copies the current dictionary files to the backup
+subdirectory and prefixes all the files with a unique ever
+increasing backup number.
+)
+   NB. list put dictionary backup files
+   BDIR=: {:{.  DPATH__ST__JODobj   NB. put directory
+   dir BAK__BDIR,'*.ijf'            NB. backup files
+0jgroups.ijf       22400 28-Mar-24 08:57:46
+0jmacros.ijf       43904 28-Mar-24 08:57:45
+0jsuites.ijf        6272 28-Mar-24 08:57:43
+0jtests.ijf         6016 28-Mar-24 08:57:43
+0juses.ijf         21376 28-Mar-24 08:57:47
+0jwords.ijf       214080 28-Mar-24 08:57:50
+
+── (49 of 52) Backing up and restoring dictionaries (ctd) ───
+(restd) restores the last backup by selecting backup files
+with the highest prefix.
+)
+   NB. restore last backup
+   restd 'toy'
+┌─┬──────────────────────┬───┬───┐
+│1│dictionary restored ->│toy│0 0│
+└─┴──────────────────────┴───┴───┘
+
+── (50 of 52) Making a script dump ──────────────────────────
+(packd) creates binary backups.  You can also backup
+dictionaries as dump scripts.  Dump scripts are single J
+scripts that can be used to backup, copy and merge
+dictionaries.
+)
+   NB. dump all the words on the path as a single dump script.
+   toydump=: showpass_ajod_ make ''
+┌─┬───────────────────────────┬─────────────────────────────────────────────────┐
+│1│object(s) on path dumped ->│/users/marcin/j9.5-user/joddicts/toy/dump/toy.ijs│
+└─┴───────────────────────────┴─────────────────────────────────────────────────┘
+
+── (51 of 52) Making a script dump (ctd) ────────────────────
+When we load (toydump) into a new dictionary observe how the
+path is changed. The dictionaries have been merged.
+)
+   NB. new dictionary
+   newd 'playpen' [ 3 od ''
+┌─┬─────────────────────┬───────┬─────────────────────────────────────────┐
+│1│dictionary created ->│playpen│/users/marcin/j9.5-user/joddicts/playpen/│
+└─┴─────────────────────┴───────┴─────────────────────────────────────────┘
+   
+   NB. open
+   od 'playpen'
+┌─┬──────────────┬───────┐
+│1│opened (rw) ->│playpen│
+└─┴──────────────┴───────┘
+   
+   NB. load (toydump)
+   0!:0 < ;{: toydump
+┌─┬────────────────────┬───────┐
+│1│45 word(s) put in ->│playpen│
+└─┴────────────────────┴───────┘
+┌─┬────────────────────┬───────┐
+│1│50 word(s) put in ->│playpen│
+└─┴────────────────────┴───────┘
+┌─┬────────────────────┬───────┐
+│1│34 word(s) put in ->│playpen│
+└─┴────────────────────┴───────┘
+┌─┬────────────────────────────────┬───────┐
+│1│38 word explanation(s) put in ->│playpen│
+└─┴────────────────────────────────┴───────┘
+┌─┬────────────────────────────┬───────┐
+│1│1 word document(s) put in ->│playpen│
+└─┴────────────────────────────┴───────┘
+┌─┬────────────────────────────┬───────┐
+│1│2 word document(s) put in ->│playpen│
+└─┴────────────────────────────┴───────┘
+┌─┬───────────────────┬───────┐
+│1│1 test(s) put in ->│playpen│
+└─┴───────────────────┴───────┘
+┌─┬────────────────────┬───────┐
+│1│6 macro(s) put in ->│playpen│
+└─┴────────────────────┴───────┘
+┌─┬───────────────────────────┬───────┐
+│1│group <bstats> put in ->   │playpen│
+├─┼───────────────────────────┼───────┤
+│1│group <loctest> put in ->  │playpen│
+├─┼───────────────────────────┼───────┤
+│1│group <strings> put in ->  │playpen│
+├─┼───────────────────────────┼───────┤
+│1│group <sunmoon> put in ->  │playpen│
+├─┼───────────────────────────┼───────┤
+│1│group <testgroup> put in ->│playpen│
+└─┴───────────────────────────┴───────┘
+┌─┬───────────────────────────┬───────┐
+│1│suite <testsuite> put in ->│playpen│
+└─┴───────────────────────────┴───────┘
+┌─┬────────────────────────────────────────────┬─────┬───────┐
+│1│(129) timestamps updated - (0) not in put ->│WORD │playpen│
+├─┼────────────────────────────────────────────┼─────┼───────┤
+│1│(1) timestamps updated - (0) not in put ->  │TEST │playpen│
+├─┼────────────────────────────────────────────┼─────┼───────┤
+│1│(5) timestamps updated - (0) not in put ->  │GROUP│playpen│
+├─┼────────────────────────────────────────────┼─────┼───────┤
+│1│(1) timestamps updated - (0) not in put ->  │SUITE│playpen│
+├─┼────────────────────────────────────────────┼─────┼───────┤
+│1│(6) timestamps updated - (0) not in put ->  │MACRO│playpen│
+└─┴────────────────────────────────────────────┴─────┴───────┘
+NB. end-of-JOD-dump-file regenerate cross references with:  0 globs&> }. revo '' 
+   
+   NB. dictionary information
+   did~ 0
+┌─┬────────────────────────────────────────────────────────┐
+│1│┌───────┬──┬─────┬─────┬───────┬───────┬──────┬────────┐│
+│ ││       │--│Words│Tests│Groups*│Suites*│Macros│Path*   ││
+│ │├───────┼──┼─────┼─────┼───────┼───────┼──────┼────────┤│
+│ ││playpen│rw│129  │1    │5      │1      │6     │/playpen││
+│ │└───────┴──┴─────┴─────┴───────┴───────┴──────┴────────┘│
+└─┴────────────────────────────────────────────────────────┘
+
+── (52 of 52) Final words ───────────────────────────────────
+You now have some idea of what JOD is all about. To learn
+more read JOD's documentation and run the other JOD labs. If
+you have any problems, questions or complaints please email
+me at bakerjd99@gmail.com
+
+John Baker bakerjd99@gmail.com Janurary 2019
+)
+   NB. close any open dictionaries
+   3 od ''
+┌─┬─────────┬───────┐
+│1│closed ->│playpen│
+└─┴─────────┴───────┘
+
+End of lab
+   

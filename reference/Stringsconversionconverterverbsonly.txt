@@ -1,0 +1,168 @@
+─────────────────────────────────────────────────────────────
+Lab: Strings conversion: converter verbs only
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 6) INTRO ───────────────────────────────────────────
+
+Addon: format/zulu-lite - installs in locale _z_ a set of
+ "converter" verbs, to convert stringlists between different
+ formats.
+
+The four supported formats are:
+      b - boxed
+      o - open
+      f - LF-separated
+      x - matrix
+
+Addon: format/zulu - creates a locale: _zulu_ AS WELL,
+ a "sandbox" that lets you experiment with the converter
+ verbs, with sample data and some helpful ancillary verbs.
+)
+   cocurrent 'base'
+   require 'format/zulu-lite'
+   NB. require 'format/zulu'	NB. -gets the sandbox TOO.
+   
+
+── (2 of 6) SANDBOX ─────────────────────────────────────────
+
+This addon (zulu-lite) assumes you've tried out the sandbox,
+ especially the Lab that comes with the addon: format/zulu.
+ This lab is called:
+    Strings conversion package.
+ You can find it under the Category: Format
+
+The purpose of having a separate addon: zulu-lite (this one)
+ is to allow you to "require" the converter verbs in your app
+ without the J session being cluttered up with the sandbox.
+
+If you don't know how to use the converter verbs
+ (or how best to use them)
+ then you are strongly advised to first run the lab:
+    Strings conversion package.
+)
+
+── (3 of 6) ZUTYPE ──────────────────────────────────────────
+
+The format of a stringlist is called its "zutype".
+ It is a single letter:
+      b		-boxed
+      f		-LF-separated
+      o		-open
+      x		-matrix
+ plus 3 extra "zutypes":
+      m		-empty x-list
+      n		-empty b-list, o-list or f-list
+      -		-not a stringlist
+
+In addition to the complete set of converter verbs,
+ script: zulu-lite.ijs -has defined a verb: zutype_z_ to let
+ you see the zutype of any given format of stringlist
+ (or indeed of any noun).
+
+Let's make 4 sample stringlists in the 4 formats (b f o x)
+ which we shall call: zub, zuf, zuo, zux,
+ and see their zutypes...
+)
+   zutype zub=: 'alpha' ; 'bravo' ; 'charlie'
+b
+   zutype zuf=: 'alpha',LF,'bravo',LF,'charlie'
+f
+   zutype zuo=: 'alpha bravo charlie'
+o
+   zutype zux=: 3 7$'alpha  bravo  charlie'
+x
+   zutype i.6	NB. not a stringlist
+-
+
+── (4 of 6) TABLE*2* ────────────────────────────────────────
+
+This table shows you what converter (verb) you need
+ to convert any zutype of stringlist to any other:
+
+      zub zuo zuf zux
+     ┌───┬───┬───┬───┐
+ zub │b2b│b2o│b2f│b2x│
+     ├───┼───┼───┼───┤
+ zuo │o2b│o2o│o2f│o2x│
+     ├───┼───┼───┼───┤
+ zuf │f2b│f2o│f2f│f2x│
+     ├───┼───┼───┼───┤
+ zux │x2b│x2o│x2f│x2x│
+     └───┴───┴───┴───┘
+
+Thus, to convert zuf --> zux - you need: f2x
+
+Notice that, for the sake of completeness,
+ there's even a set of "identity" converters:
+)
+   b2b
+]
+   o2o
+]
+   f2f
+]
+   x2x
+]
+
+── (5 of 6) CONVERTER3 ──────────────────────────────────────
+
+Verb: zutype permits a more general set of converter verbs:
+ a2b  a2f  a2o  a2f
+ -called the a2* converter verbs.
+
+They convert ANY of the supported zutypes to the desired
+stringlist format.
+
+They help you write and distribute utilities
+ that accept ANY argument: y of the 4 supported zutypes,
+ without having to test (zutype y) before choosing the
+ appropriate *2* converter verb to convert y into the format
+ you wish to work with.
+)
+   	NB. a2b always returns a b-list...
+   zutype a2b zub
+b
+   zutype a2b zuf
+b
+   zutype a2b zuo
+b
+   zutype a2b zux
+b
+
+── (6 of 6) TABLE*4* ────────────────────────────────────────
+
+ The converter verbs are named "naturally" for most people.
+ However this nomenclature is "back-to-front" when coding J.
+ Instead of:
+      zux -: f2x zuf (LF-separated-to-matrix)
+ you might prefer:
+      zux -: x4f zuf (matrix-for-LF-separated)
+ making 'x-' and '-f' point towards argument and result,
+ and correctly denoting the zutype of each.
+
+      zub zuo zuf zux
+     ┌───┬───┬───┬───┐
+ zub │b4b│o4b│f4b│x4b│
+     ├───┼───┼───┼───┤
+ zuo │b4o│o4o│f4o│x4o│
+     ├───┼───┼───┼───┤
+ zuf │b4f│o4f│f4f│x4f│
+     ├───┼───┼───┼───┤
+ zux │b4x│o4x│f4x│x4x│
+     └───┴───┴───┴───┘
+
+The *4* counterparts of: a2b  a2f  a2o  a2x
+ are:                    b4a  f4a  o4a  x4a
+
+Use whichever you like:
+ the *2*-converters or their *4*-synonyms.
+)
+   	NB. With *4* verbs easier to see what's happening:
+   assert zub -: b4f f4x x4o o4b zub
+   	NB. Contrast this with:
+   assert zub -: f2b x2f o2x b2o zub
+
+End of lab
+   

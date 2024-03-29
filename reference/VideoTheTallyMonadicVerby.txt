@@ -1,0 +1,316 @@
+ctrl+j advances
+1 of 136 in /applications/j9.5/addons/media/videolabs/tally.ijt
+Lab: Video - The Tally Monadic Verb - #y
+
+Chapter: Video Requirements
+ 
+_______________________________________
+
+To run this video lab, you must have
+access to youtube.com through the
+internet.
+
+If you do not, the lab will still
+advance through the exercises, but the
+videos will not be displayed.
+
+Videos will appear as steps in the lab,
+but you will need to click play on the video
+to get it started.
+
+When you have viewed a video, click back on
+the terminal window to continue the lab.
+
+This is required because when you are
+interacting with a video, you are not
+actually interacting with the J lab.
+Now to prepare for the video
+_______________________________________
+   3 : 0 ''
+if.     IFQT  do. require jpath '~addons/media/videolabs/videolabjqt.ijs'
+elseif. IFJHS do. require jpath '~addons/media/videolabs/videolabjhs.ijs'
+elseif. IFJA  do. echo 'Video is not available in Android'
+elseif. IFIOS do. echo 'Video is not available for IOS at this time'
+elseif. 1     do. require jpath '~addons/media/videolabs/videolabcon.ijs' NB. Jconsole if nothing else.
+              end.
+)
+ 
+Chapter: Action of # on Non-Empty arrays
+ 
+   display_video_ 's4Y5fHof6Ss'
+ 
+_______________________________________
+
+Now, a chance to play with some of these
+concepts and see if the results of these
+examples meet your expectations.
+_______________________________________
+ 
+   [ A233 =. i. 2 3 3
+ 0  1  2
+ 3  4  5
+ 6  7  8
+
+ 9 10 11
+12 13 14
+15 16 17
+ 
+   $ A233  NB. Shape of A233 is 2 3 3 - a list of length 3
+2 3 3
+ 
+Can you predict the result of # A233
+ 
+   # A233  NB. 2 items (first entry in "Shape of")
+2
+ 
+ 
+_______________________________________
+
+The rule of thumb here is that the
+number of items is the first entry of
+the Shape list.
+
+In this case, the first entry is 2.
+
+Now, let's try another one.
+_______________________________________
+ 
+   [ A4 =. i. 4
+0 1 2 3
+ 
+   $ A4   NB. Shape of A4 is 4 - a list of length 1
+4
+ 
+Can you predict the result of # A4
+ 
+   # A4   NB. 4 items (first entry in "Shape of")
+4
+ 
+ 
+_______________________________________
+
+What if we had a list of length 1?
+_______________________________________
+ 
+   [ A1 =. ,4
+4
+ 
+   $ A1 NB. Shape of A1 is 1 - a list of length 1
+1
+ 
+Can you predict the result of # A1?
+ 
+   # A1   NB. 1 item (first entry in "Shape of")
+1
+ 
+ 
+_______________________________________
+
+What about atoms?
+_______________________________________
+ 
+   [ A =. 4
+4
+ 
+   $ A   NB. Shape is empty.
+ 
+Can you predict the result of # A?
+ 
+   # A1   NB. 1 item - the atom itself
+1
+ 
+ 
+_______________________________________
+
+Atoms have one item and that item is
+the atom itself.
+
+Play around a bit more until you are
+comfortable with these results or
+any others that you might invent. You are
+working in a fully functioning J
+environment.
+
+When you are satisfied, advance the
+lab and get ready for the next video
+which covers the case of empty shapes.
+_______________________________________
+ 
+Chapter: Action of # on Empty arrays
+ 
+   display_video_ 'mzzVHQyVeB8'
+ 
+_______________________________________
+
+Now, let's look at a number of
+different empty arrays. I'll define
+a few for your benefit.
+_______________________________________
+ 
+   [ A03 =. 0 3 $ 4
+ 
+   $ A03   NB. Shape is 0 3.
+0 3
+ 
+   # A03  NB. 0 items - 0 is the first integer of the shape
+0
+ 
+   [ A30 =. 3 0 $ 4  NB. 3 empty rows!
+
+
+
+ 
+   $ A30  NB. Shape is 3 0 as expected
+3 0
+ 
+   # A30 NB. 3 items - 3 is the first integer of the shape
+3
+ 
+ 
+_______________________________________
+
+You can see that some empty arrays
+are empty because they have no items
+and some empty arrays are empty because
+the items that they have are empty.
+_______________________________________
+ 
+Chapter: Action of # (Tally) compared to $ (Shape Of)
+ 
+   display_video_ 'nAcuL9KWOPI'
+ 
+_______________________________________
+
+Now, let's look at the relationship of
+the shape, the number of items and the
+rank of the argument, using the "Tally"
+and "Shape Of" monadic verbs
+_______________________________________
+ 
+   [ A233 =. i. 2 3 3  NB. we have used this one before
+ 0  1  2
+ 3  4  5
+ 6  7  8
+
+ 9 10 11
+12 13 14
+15 16 17
+ 
+   $ A233  NB. Shape of A233 is 2 3 3
+2 3 3
+ 
+   # A233  NB. 2 items (first entry in Shape of)
+2
+ 
+   #$ A233 NB. Rank 3 - the number of items in the "Shape Of"
+3
+ 
+_______________________________________
+
+We could use $$y instead of #$y to
+give us the rank, but the result of
+$$y would be a list and usually you would
+expect the rank to be an atom.
+_______________________________________
+ 
+   # $ A233
+3
+   $ $ A233
+3
+ 
+   $ #$ A233  NB. Shape of items in the shape is an atom
+   $ $$ A233  NB. Shape of shape of the shape is a list
+1
+ 
+Let's look at another array
+ 
+   [ A1 =. ,4  NB. we have used this one before, as well
+4
+ 
+   $ A1  NB. Shape of A1 is 1
+1
+ 
+   # A1  NB. 1 item (first entry in "Shape of")
+1
+ 
+   #$ A1 NB. Rank 1 - the number of items in the "Shape Of"
+1
+ 
+_______________________________________
+
+When we look at the case of atoms
+we see that we have an empty shape,
+which would be rank 0.
+_______________________________________
+ 
+   [ A =. 4  NB. we have also used this variable before
+4
+ 
+   $ A  NB. Shape of A is the empty list
+ 
+   #$ A NB. Rank 0 - the number of items in the "Shape Of"
+0
+ 
+_______________________________________
+
+How does this help to understand why the
+number of items of an atom is 1?
+_______________________________________
+ 
+   # A  NB. 1 item (the atom itself)
+1
+ 
+_______________________________________
+
+What would the other options be?
+An atom can't have 0 items because
+that would make it an empty array. We
+know empty arrays are not atoms because
+atoms have something in them.
+
+It is also pretty clear that the number of items
+in an atom could not be more than one or
+negative, so we are left with an atom having
+one item - itself.
+
+So if it has a rank of 0, it has a shape that is
+empty, which makes it an atom and
+an atom has one item - itself
+___________________________________
+ 
+   #$ A  NB. Rank 0
+0
+   $ A   NB. Shape empty
+   # A   NB. 1 item
+1
+ 
+Here the lessons end, but following
+is a list of references where you
+can find out more about what
+you have seen and the J parts of speech
+that have been used in this explanation.
+ 
+Chapter: References
+ 
+_______________________________________
+
+ Nuvoc Definition for 'Tally' Monadic Verb found at https://code.jsoftware.com/wiki/Vocabulary/number
+ J for C Programmers - Chapter 8 - More Verbs - 'Tally' Monadic Verb found in Monad # (Tally) section at https://www.jsoftware.com/help/jforc/declarations.htm#_Toc191734329
+ The J Dictionary Vocabulary Definition for 'Tally' Monadic Verb found at https://www.jsoftware.com/help/dictionary/d400.htm
+
+ Nuvoc Definition for 'Shape Of' Monadic Verb found at https://code.jsoftware.com/wiki/Vocabulary/dollar
+ J for C Programmers - Chapter 5 - Declarations - 'Shape Of' Monadic Verb found at https://www.jsoftware.com/help/jforc/declarations.htm#_Toc191734328
+ The J Dictionary Vocabulary Definition for 'Shape Of' Monadic Verb found at https://www.jsoftware.com/help/dictionary/d210.htm
+ _______________________________________
+ 
+_______________________________________
+
+If you would like to review any of the
+previous chapters, advance the lab then
+select the chapter you wish to review
+from the pop up message box.
+_______________________________________
+ 
+   lab ':'
+end of lab
+   

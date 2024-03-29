@@ -1,0 +1,317 @@
+─────────────────────────────────────────────────────────────
+Lab: Scientific Units
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── Chapter 1 Using the verb: uu ─────────────────────────────
+
+── ((1) 1 of 12) INTRO ──────────────────────────────────────
+Addon: math/uu (known as UU, or the UU engine) converts
+quantities between different units of measurement.
+
+UU is based on the International System of Units "Le Système
+International d'Unités" or "SI".
+   http://en.wikipedia.org/wiki/SI_units
+   https://www.bipm.org/utils/common/pdf/si_summary_en.pdf
+
+But UU knows Imperial units too, plus some informal units
+journalists love to use ...
+)
+   cocurrent 'base'
+   
+   require 'math/uu'
+   
+   uu '1 g'         NB. in SI the base unit is [kg] not [g]
+0.001 kg
+   uu '3 ft'        NB. Imperial foot: 1 yd = 3 ft
+0.914 m
+   uu '1 yd'        NB. Imperial yard: approximately a metre
+0.914 m
+   uu '1 kWh'       NB. domestic unit of electrical energy
+3.6E6 kg m²/s²
+   uu '1 W s'       NB. the "coherent" SI unit of energy
+1 kg m²/s²
+   uu '1 elephant'  NB. the "typical" African elephant
+3400 kg
+   uu '1 soccer'    NB. area of "typical" soccer pitch
+7140 m²
+   
+
+── ((1) 2 of 12) CONVERT ────────────────────────────────────
+If you call uu with right argument only, uu converts to the
+base units of SI:
+   metre [m], kilogram [kg], second [s], Ampere [A],
+   Kelvin [K], candela [cd], mole [mol].
+
+But if you specify target units in the left argument, uu
+instead converts to the target units ...
+)
+   'ft' uu '1 yd'
+3 ft
+   'yd' uu '6 ft'
+2 yd
+   'J'  uu '1 kWh'
+3.6E6 J
+
+── ((1) 3 of 12) COMPATIBLE1 ────────────────────────────────
+...But of course only if the units are compatible.
+
+If they are not, uu returns a value of zero  (meaning: there
+are no feet in a kilowatt-hour.) ...
+)
+   'ft'  uu '1 kWh'
+0 ft
+
+── ((1) 4 of 12) COMPATIBLE2 ────────────────────────────────
+NOTE the behavior of uu with unknown units...
+)
+   'gizmo' uu '1 yd'
+∞ gizmo
+   uu '1 gizmo'
+0 *
+
+── ((1) 5 of 12) SLASH1 ─────────────────────────────────────
+'/' is the UU convention for DIMENSIONLESS UNITS.
+
+	>>>>> also mention [*]
+
+This prevents the units string vanishing when you divide
+compatible units by each other.)
+
+Dimensionless units are mostly ratios:
+   sin, cos, specific gravities, %, etc.
+)
+   uu '1 km/mi'		NB. conversion factor: km --> miles
+0.621 /
+   '%' uu '1 km/mi'	NB. ditto, as a percentage
+62.137 %
+
+── ((1) 6 of 12) SLASH2 ─────────────────────────────────────
+To "divide" two arbitrary units strings, use: udiv
+
+(Don't just put '/' between them, unless you know for certain
+that the denominator doesn't contain slash).
+
+Then use: uu -to cancel-out...
+)
+   udiv=: udiv_uu_
+   
+   u1=: 'kg m^2/A^2/s^3'		NB. energy
+   u2=: 'kg m^2/A^2/s^2'		NB. power
+   
+   u1 udiv u2
+/s
+   uu  '123 ', u1 udiv u2
+123 /s
+
+── ((1) 7 of 12) SI_LOOK1 ───────────────────────────────────
+uu approximates the "SI look-and-feel" with unicode chars (in
+utf-8 encoding, the standard for the J session).
+
+To suppress this behavior, enter: state_uu_ 0
+
+
+	>>> no uunicode any more 		but we now have: state
+
+
+If you enter: state_uu_ 1 then uu will output utf-8 chars.
+(It always accepts them as input.)
+)
+   state_uu_ 1
+1
+   'Ohm' uu '1 kg m^2/A^2/s^3'
+1 Ω
+         uu '1 kg m^2/A^2/s^3'
+1 kg m²/(A² s³)
+   
+   state_uu_ 0
+0
+   'Ohm' uu '1 kg m^2/A^2/s^3'
+1 Ohm
+         uu '1 kg m^2/A^2/s^3'
+1 kg m^2/A^2/s^3
+   
+   state_uu_ 1	NB. reset to the default
+1
+
+── ((1) 8 of 12) SI_LOOK2 ───────────────────────────────────
+Strict SI units do not use '/' to represent units quotients.
+
+	>>>> not strictly true.
+
+
+Thus uu accepts [m/s/s] and [m/s^2] (units of acceleration)
+whereas SI insists on the format [m s⁻²].
+
+You can force UU to output units in the strict SI convention
+by setting: uunicode 2
+)
+   state_uu_ 0
+0
+      uu '1 J'
+1 kg m^2/s^2
+   
+   state_uu_ 2
+2
+      uu '1 J'
+1 kg m² s⁻²
+   
+   state_uu_ 1	NB. reset to the default
+1
+
+── ((1) 9 of 12) ZEPTO1 ─────────────────────────────────────
+"SI" allows you to attach a scaling prefix to units.
+
+Most people know about kilo [k-], mega [M-], milli [m-] and
+micro [mu-] or [µ]. But there are others. The full range
+is:
+
+ 	deca- 	hecto- 	kilo- 	mega- 	giga-
+ 	da 	h 	k 	M 	G
+ 	10^1 	10^2 	10^3 	10^6 	10^9
+	--------------------------------------
+ 	tera- 	peta- 	exa- 	zetta- 	yotta-
+ 	T 	P 	E 	Z 	Y
+ 	10^12 	10^15 	10^18 	10^21 	10^24
+	--------------------------------------
+ 	deci- 	centi- 	milli- 	micro- 	nano-
+ 	d 	c 	m 	µ [mu]	n
+ 	10^−1 	10^−2 	10^−3 	10^−6 	10^−9
+	--------------------------------------
+ 	pico- 	femto- 	atto- 	zepto- 	yocto-
+ 	p 	f 	a 	z 	y
+ 	10^−12 	10^−15 	10^−18 	10^−21 	10^−24
+)
+   uu '1 GW'          NB. one gigawatt
+1.0E9 kg m²/s³
+   uu '1e21 zg'       NB. one gram, SI-style
+0.001 kg
+   uu '1 g'           NB. -for comparison.
+0.001 kg
+      NB. …in SI units, [kg] not [g] is the basic unit of mass.
+
+── ((1) 10 of 12) ZEPTO2 ────────────────────────────────────
+The term "micron" and the symbol µ, representing the
+micrometre, were officially accepted between 1879 and 1967,
+but officially revoked by the ISI in 1967.
+   http://en.wikipedia.org/wiki/Micron
+
+However UU accepts [µ] by itself to mean "micron".
+
+WARNING: not every unicode variant of µ will work!
+
+Use either 'u' or 'µ' for entering microns [µm]...
+)
+   uu '1000 um'       NB. 1000 micron (micrometre)
+0.001 m
+   uu '1000 µm'
+0.001 m
+   uu '1000 µ'
+0.001 m
+   'mm' uu '1000 µ'   NB. 1000 micron = 1 mm
+1 mm
+   
+   'Ang' uu '1 µm'    NB. micron --> Ångstrom units
+10000 Å
+   'Å' uu '1 µ'
+10000 Å
+   'µ' uu '1 Å'
+1.0E-4 µ
+
+── ((1) 11 of 12) ZEPTO3 ────────────────────────────────────
+uu accepts SI scaling prefixes on non-SI units too.
+
+Why? Because it's too much trouble to forbid them.
+)
+   cocurrent 'base'
+   
+   uu '1 zft'	NB. zepto-feet -need very small shoes.
+3.048E-22 m
+      NB. Earth mass, in zetta-elephants...
+   'Zelephant' uu '1 ea.mass'
+1.765 Zelephant
+      NB. Earth mass, in yotta-elephants...
+   'Yelephant' uu '1 ea.mass'
+0.002 Yelephant
+      NB. Try again, with greater precision...
+   SCI_uu_=: 0	NB. force scientific numerals above 1
+   SIG_uu_=: 5	NB. decimal places to show
+   'Yelephant' uu '1 ea.mass'
+1.76471E-3 Yelephant
+      NB. Restore recommended settings...
+   factory_uu_''
+
+── ((1) 12 of 12) MISC ──────────────────────────────────────
+Miscellaneous conversions
+
+Would you have guessed? ...
+)
+      NB. A yottagram -in Imperial tons. A heavy unit!! ...
+   'ton' uu '1 Yg'
+9.842E17 ton
+      NB. ditto, in tonnes (metric tons)...
+   't' uu '1000 Zg'
+1.0E18 t
+      NB. Weight of the Space shuttle in African elephants...
+   'elephant' uu '2030 t'
+597.059 elephant
+      NB. Mass of the moon in terms of earth...
+   'ea.mass' uu '1 moon.mass'
+0.012 ea.mass
+      NB. Moon gravity, in earth gravity units...
+   'earth.g' uu '1 moon.g'
+0.165 earth.g
+
+── Chapter 2 Defining new units ─────────────────────────────
+
+── ((2) 1 of 1) INTRO ───────────────────────────────────────
+You can define your own units by editing the table of UU
+constants: uuc.ijs
+
+We shall open uuc to examine it ...
+)
+      open '~addons/math/uu/uuc.ijs'
+
+── Chapter 3 Using the keyhole interface: uuengine ──────────
+
+── ((3) 1 of 1) INTRO ───────────────────────────────────────
+Verb: uuengine is an all-purpose portal into the UU package.
+
+Its "instructions" are all strings (ascii or utf-8).
+
+The first 4 letters are the instruction code.
+
+uuengine can return:
+ • scalar Boolean or integer numbers
+ • strings which are units
+ • boxed lists
+
+If the returned string is not a valid quantity (a number
+followed by units, in the form of a single string) then it is
+an error message (which always begin with '>>>')
+
+We saw an error message earlier:
+ >>> uu: incompatible units: x=[ft] targ=[ft] unit=[kWh]
+
+Here is the same uuengine instruction called directly, and
+also (for comparison) via uu
+)
+   uuengine_uu_ 'CPAT J > erg'
+1
+   uu'*CPAT J > erg'
+1
+   uu'*CPAT J'  NB. WRONG - CPAT needs 2 units separated by '>'
+0
+
+── Chapter 4 Using math/uu as a class ───────────────────────
+
+── ((4) 1 of 1) INTRO ───────────────────────────────────────
+Addon: math/uu can be used as a class.
+
+This lets you run multiple instances of the UU engine each
+with its own separate state.
+)
+
+End of lab
+   

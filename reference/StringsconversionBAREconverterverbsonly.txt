@@ -1,0 +1,112 @@
+─────────────────────────────────────────────────────────────
+Lab: Strings conversion: BARE converter verbs only
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 5) INTRO ───────────────────────────────────────────
+
+Addon: format/zulu-bare - installs in locale _z_ a set of
+ "converter" verbs, to convert stringlists between different
+ formats.
+
+The four supported formats are:
+      b - boxed
+      o - open
+      f - LF-separated
+      x - matrix
+
+Addon: format/zulu ALSO creates a locale: _zulu_ which is
+ a "sandbox" that lets you experiment with the converter
+ verbs, having sample data and some helpful ancillary verbs.
+
+HOWEVER...
+ This Addon (format/zulu-bare) does NOT create the "sandbox".
+)
+   cocurrent 'base'
+   require 'format/zulu-bare'
+   NB. require 'format/zulu'	NB. -gets the sandbox TOO.
+   
+
+── (2 of 5) CONVERSION ──────────────────────────────────────
+
+Let's make 4 sample stringlists in the 4 formats (b f o x)
+ which we shall call: zub, zuf, zuo, zux ...
+)
+   ] zub=: 'alpha' ; 'bravo' ; 'charlie'	NB. b-list
+┌─────┬─────┬───────┐
+│alpha│bravo│charlie│
+└─────┴─────┴───────┘
+   ] zuf=: 'alpha',LF,'bravo',LF,'charlie'	NB. f-list
+alpha
+bravo
+charlie
+   ] zuo=: 'alpha bravo charlie'		NB. o-list
+alpha bravo charlie
+   ] zux=: 3 7$'alpha  bravo  charlie'	NB. x-list
+alpha  
+bravo  
+charlie
+
+── (3 of 5) CONVERSION2 ─────────────────────────────────────
+
+Now let's show what the converter verbs do,
+ by converting given stringlists into each other ...
+)
+   zub -: f2b zuf
+1
+   zub -: x2b zux
+1
+   zub -: o2b zuo
+1
+   zuo -: b2o zub
+1
+   	NB. ...etc.
+
+── (4 of 5) CONVERTER ───────────────────────────────────────
+
+This table shows you what converter verb you need
+ to convert any type of stringlist to any other:
+
+      zub zuo zuf zux
+     ┌───┬───┬───┬───┐
+ zub │b2b│b2o│b2f│b2x│
+     ├───┼───┼───┼───┤
+ zuo │o2b│o2o│o2f│o2x│
+     ├───┼───┼───┼───┤
+ zuf │f2b│f2o│f2f│f2x│
+     ├───┼───┼───┼───┤
+ zux │x2b│x2o│x2f│x2x│
+     └───┴───┴───┴───┘
+
+Thus, to convert zuf --> zux - you need: f2x
+
+In addition to these verbs, two more are defined: t0f, t1f,
+ which ensure that a LF-separated list either DOES NOT end
+ in a single LF (t0f), or DOES ensure that the list ends in
+ LF (t1f).
+
+This Addon: format/zulu-bare DOES NOT define any more verbs
+ that those named above, viz the *2* verbs (uncorrected).
+ Specifically it DOES NOT define the *4* verbs, nor the a2*
+ verbs.
+)
+
+── (5 of 5) STRONGER ────────────────────────────────────────
+
+Do you need stronger versions of the *2* converter verbs?
+
+Some of them don't convert consistently when the stringlist
+ has no entries, or has only one entry (a "trivial" list).
+
+If this matters to you, then you need the sister version
+ of this Addon, called: format/zulu-lite.
+
+BUT if you know your stringlists will always have more than
+ one entry, then this Addon is safe to use.
+ It is faster than format/zulu-lite, and the verbs are easier
+ to read and to understand.
+)
+
+End of lab
+   
