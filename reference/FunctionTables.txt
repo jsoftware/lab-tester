@@ -1,0 +1,1290 @@
+─────────────────────────────────────────────────────────────
+Lab: Function Tables
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 39) INTRODUCTION ───────────────────────────────────
+
+Tables are commonly used in mathematics, not only to organize
+such data as sines and logs, but, more interestingly, to
+provide insight, as in the addition and multiplication tables
+used in elementary school.
+
+Computers now make it more convenient to compute results such
+as sines and logs than to consult tables, but also make it
+mor practicable to produce tables for purposes of elucidation
+and exploration.  This lab explores the use of tables for
+insight, using the programming language J.
+)
+   v=: (0,1,2,3,4,5)
+   
+   v + v         NB. Addition of vectors
+0 2 4 6 8 10
+   
+   v +/ v        NB. Addition table (/ is the table operator)
+0 1 2 3 4  5
+1 2 3 4 5  6
+2 3 4 5 6  7
+3 4 5 6 7  8
+4 5 6 7 8  9
+5 6 7 8 9 10
+   
+   NB. The symmetry of its table suggests that addition is
+   NB. commutative
+   
+
+── (2 of 39) INTRODUCTION (ctd) ─────────────────────────────
+
+Tables of other functions may be produced similarly. In
+particular, matrix inverse (denoted by %.) applied to the
+table of binomial coefficients gives the table of alternating
+binomial coefficients:
+)
+   (v */ v) ; (v *./ v) ; (v -/ v)  NB. Times, lcm, and diff
+┌───────────────┬───────────────┬────────────────┐
+│0 0  0  0  0  0│0 0  0  0  0  0│0 _1 _2 _3 _4 _5│
+│0 1  2  3  4  5│0 1  2  3  4  5│1  0 _1 _2 _3 _4│
+│0 2  4  6  8 10│0 2  2  6  4 10│2  1  0 _1 _2 _3│
+│0 3  6  9 12 15│0 3  6  3 12 15│3  2  1  0 _1 _2│
+│0 4  8 12 16 20│0 4  4 12  4 20│4  3  2  1  0 _1│
+│0 5 10 15 20 25│0 5 10 15 20  5│5  4  3  2  1  0│
+└───────────────┴───────────────┴────────────────┘
+   
+   binomials=: v !/ v     NB. Table of binomial coefficients
+   altbin=: %. binomials
+   X=: +/ . *             NB. The matrix product function
+   
+   binomials ; altbin ; binomials X altbin
+┌────────────┬─────────────────┬───────────┐
+│1 1 1 1 1  1│1 _1  1 _1  1  _1│1 0 0 0 0 0│
+│0 1 2 3 4  5│0  1 _2  3 _4   5│0 1 0 0 0 0│
+│0 0 1 3 6 10│0  0  1 _3  6 _10│0 0 1 0 0 0│
+│0 0 0 1 4 10│0  0  0  1 _4  10│0 0 0 1 0 0│
+│0 0 0 0 1  5│0  0  0  0  1  _5│0 0 0 0 1 0│
+│0 0 0 0 0  1│0  0  0  0  0   1│0 0 0 0 0 1│
+└────────────┴─────────────────┴───────────┘
+
+── (3 of 39) BORDERED TABLES ────────────────────────────────
+
+It is sometimes easier to read a function table if it is
+bordered by its arguments, and we now introduce an operator
+for this purpose called table. Thus:
+)
+   a=: 2 3 5 7     NB. (=: may be read as "is" or "are")
+   
+   b=: 0 1 2 3 4   NB. Exponents
+   
+   a ^/ b          NB. Powers of primes
+1 2  4   8   16
+1 3  9  27   81
+1 5 25 125  625
+1 7 49 343 2401
+   
+   a ^table b      NB. Bordered table of powers
+┌─┬───────────────┐
+│^│0 1  2   3    4│
+├─┼───────────────┤
+│2│1 2  4   8   16│
+│3│1 3  9  27   81│
+│5│1 5 25 125  625│
+│7│1 7 49 343 2401│
+└─┴───────────────┘
+
+── (4 of 39) BORDERED TABLES (ctd) ──────────────────────────
+
+We will sometimes use unadorned tables, which the reader may
+choose to border by hand or by computer.
+
+We will also use tables in which fractions are represented as
+rationals, as for example 2r3 for two-thirds.
+)
+   v (+table ,. -table ,. %table) v NB. Sum, Difference, Quotient
+┌─┬────────────┬─┬────────────────┬─┬─────────────────────────┐
+│+│0 1 2 3 4  5│-│0  1  2  3  4  5│%│0 1   2        3    4   5│
+├─┼────────────┼─┼────────────────┼─┼─────────────────────────┤
+│0│0 1 2 3 4  5│0│0 _1 _2 _3 _4 _5│0│0 0   0        0    0   0│
+│1│1 2 3 4 5  6│1│1  0 _1 _2 _3 _4│1│_ 1 0.5 0.333333 0.25 0.2│
+│2│2 3 4 5 6  7│2│2  1  0 _1 _2 _3│2│_ 2   1 0.666667  0.5 0.4│
+│3│3 4 5 6 7  8│3│3  2  1  0 _1 _2│3│_ 3 1.5        1 0.75 0.6│
+│4│4 5 6 7 8  9│4│4  3  2  1  0 _1│4│_ 4   2  1.33333    1 0.8│
+│5│5 6 7 8 9 10│5│5  4  3  2  1  0│5│_ 5 2.5  1.66667 1.25   1│
+└─┴────────────┴─┴────────────────┴─┴─────────────────────────┘
+
+── (5 of 39) NEGATIVE ARGUMENTS ─────────────────────────────
+
+Multiplication tables for arguments that include negative
+integers are not commonly seen; they exhibit some simple, but
+interesting, properties:
+)
+   - |. v
+_5 _4 _3 _2 _1 0
+   
+   }.v
+1 2 3 4 5
+   
+   s=: (-|.v) , }.v        NB.Symmetric list
+   
+   s
+_5 _4 _3 _2 _1 0 1 2 3 4 5
+   
+   mt=: s */ s
+   
+   mt
+ 25  20  15  10  5 0 _5 _10 _15 _20 _25
+ 20  16  12   8  4 0 _4  _8 _12 _16 _20
+ 15  12   9   6  3 0 _3  _6  _9 _12 _15
+ 10   8   6   4  2 0 _2  _4  _6  _8 _10
+  5   4   3   2  1 0 _1  _2  _3  _4  _5
+  0   0   0   0  0 0  0   0   0   0   0
+ _5  _4  _3  _2 _1 0  1   2   3   4   5
+_10  _8  _6  _4 _2 0  2   4   6   8  10
+_15 _12  _9  _6 _3 0  3   6   9  12  15
+_20 _16 _12  _8 _4 0  4   8  12  16  20
+_25 _20 _15 _10 _5 0  5  10  15  20  25
+   
+   NB. Other functions provide interesting tables when
+   NB. applied to symmetric arguments. Thus:
+   
+   s !table s
+┌──┬───────────────────────────────┐
+│! │  _5  _4  _3 _2 _1 0 1 2 3 4  5│
+├──┼───────────────────────────────┤
+│_5│   1  _4   6 _4  1 0 0 0 0 0  0│
+│_4│   0   1  _3  3 _1 0 0 0 0 0  0│
+│_3│   0   0   1 _2  1 0 0 0 0 0  0│
+│_2│   0   0   0  1 _1 0 0 0 0 0  0│
+│_1│   0   0   0  0  1 0 0 0 0 0  0│
+│ 0│   1   1   1  1  1 1 1 1 1 1  1│
+│ 1│  _5  _4  _3 _2 _1 0 1 2 3 4  5│
+│ 2│  15  10   6  3  1 0 0 1 3 6 10│
+│ 3│ _35 _20 _10 _4 _1 0 0 0 1 4 10│
+│ 4│  70  35  15  5  1 0 0 0 0 1  5│
+│ 5│_126 _56 _21 _6 _1 0 0 0 0 0  1│
+└──┴───────────────────────────────┘
+   
+   NB. Examples from earlier sections may provide further
+   NB. insights if the argument v is replaced by s.
+
+── (6 of 39) AMBIVALENCE ────────────────────────────────────
+
+In math, the symbol - is used ambivalently to denote
+subtraction when used dyadically (with two arguments), and to
+denote negation when used monadically. In J, all functions
+are ambivalent. In particular, * denotes multiplication when
+used dyadically, and signum when used monadically, as in the
+expression * mt below.
+
+The tables mt and * mt show clearly that a zero row and a
+zero column divide the multiplication table into four
+quadrants, each of a common sign, providing a visual
+representation of the rule of signs used in products.
+Moreover, a vertical passage from one quadrant to another
+reverses the sign of the left argument and of the result, and
+horizontal passage reverses the sign of the right argument,
+facts that provide some justification for the rule.
+)
+   mt=: s */ s
+   
+   mt
+ 25  20  15  10  5 0 _5 _10 _15 _20 _25
+ 20  16  12   8  4 0 _4  _8 _12 _16 _20
+ 15  12   9   6  3 0 _3  _6  _9 _12 _15
+ 10   8   6   4  2 0 _2  _4  _6  _8 _10
+  5   4   3   2  1 0 _1  _2  _3  _4  _5
+  0   0   0   0  0 0  0   0   0   0   0
+ _5  _4  _3  _2 _1 0  1   2   3   4   5
+_10  _8  _6  _4 _2 0  2   4   6   8  10
+_15 _12  _9  _6 _3 0  3   6   9  12  15
+_20 _16 _12  _8 _4 0  4   8  12  16  20
+_25 _20 _15 _10 _5 0  5  10  15  20  25
+   
+   * mt
+ 1  1  1  1  1 0 _1 _1 _1 _1 _1
+ 1  1  1  1  1 0 _1 _1 _1 _1 _1
+ 1  1  1  1  1 0 _1 _1 _1 _1 _1
+ 1  1  1  1  1 0 _1 _1 _1 _1 _1
+ 1  1  1  1  1 0 _1 _1 _1 _1 _1
+ 0  0  0  0  0 0  0  0  0  0  0
+_1 _1 _1 _1 _1 0  1  1  1  1  1
+_1 _1 _1 _1 _1 0  1  1  1  1  1
+_1 _1 _1 _1 _1 0  1  1  1  1  1
+_1 _1 _1 _1 _1 0  1  1  1  1  1
+_1 _1 _1 _1 _1 0  1  1  1  1  1
+
+── (7 of 39) COMPLETION ─────────────────────────────────────
+
+Functions are commonly completed by extending them to
+arguments not comprehended in their original definitions. For
+example, expressing the simple notions of squares and cubes
+              2     3 in the forms x and x suggests the
+possible extensions to exponents that are negative,
+non-integral, zero, and complex; completions that provide
+both insight and power.
+
+The similar completion of the factorial, in the gamma
+function, is a further familiar example. Completions are
+normally subjected to careful analysis to ensure that they
+fit smoothly into the original definitions. Consider, for
+example, the summation function, denoted in math by a capital
+Greek Sigma, and in J by +/, used monadically. Thus
+)
+   +/2 3 5 7    NB. Sum over primes
+17
+   
+   2+3+5+7
+17
+   
+   i. 5         NB. First five non-negative integers
+0 1 2 3 4
+   
+   +/ i. 5
+10
+   
+   +/ i. 0
+0
+
+── (8 of 39) COMPLETION (ctd) ───────────────────────────────
+
+The last example above concerns the case of an empty vector,
+a case not comprehended in the simple notion of inserting the
+function + between successive items in a list. The result in
+J is a zero, a completion that might appear to be "obvious".
+
+But what is the rationale for the completions of the
+following functions?
+)
+   */ i.0          NB. Times on empty vector
+1
+   
+   <./ 3 2 5 7     NB. Minimum over
+2
+   
+   <./ i.0         NB. Minimum over empty vector (_ is infinity)
+_
+   
+   NB. The rationale may be illustrated as follows:
+   
+   a=: 2 3 5 7 11
+   
+   k=: 3
+   
+   k{.a     NB. Take k items of a
+2 3 5
+   
+   k}.a     NB. Drop k items of a
+7 11
+   
+   (*/a) ; (*/k{.a) ; (*/k}.a) ; (*/k{.a) * (*/k}.a)
+┌────┬──┬──┬────┐
+│2310│30│77│2310│
+└────┴──┴──┴────┘
+   
+   (*/a) = (*/k{.a) * (*/k}.a)    NB. A tautology
+1
+
+── (9 of 39) COMPLETION (ctd) ───────────────────────────────
+
+For the case k=:0, the expression k{.a yields an empty
+vector, and the definition adopted for */i.0 extends the
+foregoing identity to this case, thus:
+)
+   k=:0
+   
+   k (*/@] ; */@{. ; */@}. ; */@{. * */@}.) a
+┌────┬─┬────┬────┐
+│2310│1│2310│2310│
+└────┴─┴────┴────┘
+   
+   NB. Similarly for the minimum function, whose neutral is
+   NB. infinity (denoted here by _):
+   
+   (<./a) ; (<./k{.a) ; (<./k}.a) ; (<./k{.a)<.(<./k}.a)
+┌─┬─┬─┬─┐
+│2│_│2│2│
+└─┴─┴─┴─┘
+
+── (10 of 39) COMPLETION (ctd) ──────────────────────────────
+
+These results suggest (correctly) that the result of f/i.0 is
+the "identity element" or "neutral" of the function f, the
+neutral of f being that argument n for which n f x yields x
+for any argument x The case of the minimum function <. is
+particularly interesting, since infinity might well be
+DEFINED as its neutral.
+
+Function tables can suggest the manner of completion of a
+function. For example, what value would you suggest for the
+blank entry (at 0 f 0) in order to complete the following
+function?
+
+                     *
+  +--+-------------------------+
+  |  |   _3  _2   _1 0  1 2   3|
+  +--+-------------------------+
+  |_3|_1r27 1r9 _1r3 1 _3 9 _27|
+  |_2| _1r8 1r4 _1r2 1 _2 4  _8|
+  |_1|   _1   1   _1 1 _1 1  _1|
+  | 0|    _   _    _    0 0   0| *
+  | 1|    1   1    1 1  1 1   1|
+  | 2|  1r8 1r4  1r2 1  2 4   8|
+  | 3| 1r27 1r9  1r3 1  3 9  27|
+  +--+-------------------------+
+
+Obvious possibilities include _ and 0 and 1 and _.
+"indeterminate". Since this is a portion of the power table
+(^), and since some math texts insist that zero to the power
+zero is undefined, the indeterminate might suggest itself.
+
+However, further analysis will suggest the value 1, used in
+J, for the following reasons:
+
+                                           0    1    2
+ Expressions for polynomials of the form c x +c x +c x
+                                          0    1    2 and
+         k
+ SIGMA c x  would otherwise fail to evaluate properly for
+         k
+
+a zero argument x
+
+2. If one argument is made to approach its limit as a
+function of the other (as in x^p x), and if p is any
+polynomial other than identically zero, then LHopitals Rule
+can be used to show that the indeterminate 0^0 must be 1.
+)
+
+── (11 of 39) COMPLETION (ctd) ──────────────────────────────
+
+Again, suggest a completion for the following function
+table:
+
+                    *
+  +--+----------------------------+
+  |  |  _3   _2 _1  0  1    2    3|
+  +--+----------------------------+
+  |_3|   1  3r2  3 __ _3 _3r2   _1|
+  |_2| 2r3    1  2 __ _2   _1 _2r3|
+  |_1| 1r3  1r2  1 __ _1 _1r2 _1r3|
+  | 0|   0    0  0     0    0    0| *
+  | 1|_1r3 _1r2 _1  _  1  1r2  1r3|
+  | 2|_2r3   _1 _2  _  2    1  2r3|
+  | 3|  _1 _3r2 _3  _  3  3r2    1|
+  +--+----------------------------+
+
+If this is recognized as part of the divide (%) table, the
+indeterminate might again be suggested. However, the pattern
+of the table clearly suggests 0, as consistent with the rest
+of the row and "midway between" the negative and positive
+infinities in the column. Moreover, the analysis by E.E.
+McDonnell in "Zero Divided by Zero", APL76, published by ACM,
+makes a strong case for the zero used in J.
+)
+
+── (12 of 39) COMMUTATION ───────────────────────────────────
+
+The commute operator ~ commutes a function to which it is
+applied, to produce a related function with arguments
+interchanged. For example:
+)
+   3 % 4
+0.75
+   
+   4 %~ 3
+0.75
+   
+   into=: %~
+   
+   3 4 5 into 6 12 10
+2 3 2
+   
+   from=: -~
+   
+   3 4 5 from 6 12 10
+3 8 5
+   
+   NB. A table of the function f~ is clearly the transpose
+   NB. of the table of f. For example:
+   
+   i=: i. 5
+   
+   i (-/ ; -~/ ; */ ; *~/ ; */ = *~/) i
+┌─────────────┬─────────────┬───────────┬───────────┬─────────┐
+│0 _1 _2 _3 _4│ 0  1  2  3 4│0 0 0  0  0│0 0 0  0  0│1 1 1 1 1│
+│1  0 _1 _2 _3│_1  0  1  2 3│0 1 2  3  4│0 1 2  3  4│1 1 1 1 1│
+│2  1  0 _1 _2│_2 _1  0  1 2│0 2 4  6  8│0 2 4  6  8│1 1 1 1 1│
+│3  2  1  0 _1│_3 _2 _1  0 1│0 3 6  9 12│0 3 6  9 12│1 1 1 1 1│
+│4  3  2  1  0│_4 _3 _2 _1 0│0 4 8 12 16│0 4 8 12 16│1 1 1 1 1│
+└─────────────┴─────────────┴───────────┴───────────┴─────────┘
+
+── (13 of 39) COMMUTATION (ctd) ─────────────────────────────
+
+Whereas the tables -/ and -~/ differ, those for */ and *~/
+agree. Such symmetry of a function table occurs for any
+commutative function. The table of the non-commutative
+subtraction is skew-symmetric, and the table of divide is
+also "skew" in the sense illustrated below:
+)
+     k=: 1 2 3 4
+   
+    st=: k -/ k        NB. Subtraction table
+   
+   cst=: k -~/ k       NB. Commuted subtraction table
+   
+    dv=: k %/ k        NB. Divide table
+   
+   cdv=: k %~/ k       NB.Commuted divide table
+   
+   st ; cst ; st + cst
+┌──────────┬──────────┬───────┐
+│0 _1 _2 _3│ 0  1  2 3│0 0 0 0│
+│1  0 _1 _2│_1  0  1 2│0 0 0 0│
+│2  1  0 _1│_2 _1  0 1│0 0 0 0│
+│3  2  1  0│_3 _2 _1 0│0 0 0 0│
+└──────────┴──────────┴───────┘
+   
+   dv ; cdv ; dv * cdv
+┌───────────────────┬──────────────────────────────┬───────┐
+│1 0.5 0.333333 0.25│       1        2    3       4│1 1 1 1│
+│2   1 0.666667  0.5│     0.5        1  1.5       2│1 1 1 1│
+│3 1.5        1 0.75│0.333333 0.666667    1 1.33333│1 1 1 1│
+│4   2  1.33333    1│    0.25      0.5 0.75       1│1 1 1 1│
+└───────────────────┴──────────────────────────────┴───────┘
+   
+   NB. The relations <, <: (less or equal), >, >:, =, and ~:
+   NB. (notequal) and their commutes also provide interesting
+   NB. function tables. For example:
+   
+   s <:table s
+┌──┬──────────────────────────┐
+│<:│_5 _4 _3 _2 _1 0 1 2 3 4 5│
+├──┼──────────────────────────┤
+│_5│ 1  1  1  1  1 1 1 1 1 1 1│
+│_4│ 0  1  1  1  1 1 1 1 1 1 1│
+│_3│ 0  0  1  1  1 1 1 1 1 1 1│
+│_2│ 0  0  0  1  1 1 1 1 1 1 1│
+│_1│ 0  0  0  0  1 1 1 1 1 1 1│
+│ 0│ 0  0  0  0  0 1 1 1 1 1 1│
+│ 1│ 0  0  0  0  0 0 1 1 1 1 1│
+│ 2│ 0  0  0  0  0 0 0 1 1 1 1│
+│ 3│ 0  0  0  0  0 0 0 0 1 1 1│
+│ 4│ 0  0  0  0  0 0 0 0 0 1 1│
+│ 5│ 0  0  0  0  0 0 0 0 0 0 1│
+└──┴──────────────────────────┘
+
+── (14 of 39) MATRICES ──────────────────────────────────────
+
+The matrices represented by function tables provide
+interesting results. for example:
+)
+   i=: 0 1 2 3 4
+   
+   goe=: i >:/ i          NB. Greater or equal table
+   
+   goe ; %. goe           NB. Greater or equal and its inverse
+┌─────────┬─────────────┐
+│1 0 0 0 0│ 1  0  0  0 0│
+│1 1 0 0 0│_1  1  0  0 0│
+│1 1 1 0 0│ 0 _1  1  0 0│
+│1 1 1 1 0│ 0  0 _1  1 0│
+│1 1 1 1 1│ 0  0  0 _1 1│
+└─────────┴─────────────┘
+
+── (15 of 39) MATRICES (ctd) ────────────────────────────────
+
+The inverse matrix %. goe is a difference matrix, in a sense
+to be established. The matrix product function produces sums
+(+/) over the element-by-element products (*) of rows of the
+left argument with columns of the right. The function may be
+defined using the inner product or dot operator as follows:
+)
+   X=: +/ . *      NB. The space before the dot is essential
+   
+   goe X (%. goe)  NB. Product of inverses is an identity matrix
+1 0 0 0 0
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+   
+   pr=: 2 3 5 7 11      NB. Primes
+   
+   partials=: goe X pr  NB. Partial sums or subtotals
+   
+   partials
+2 5 10 17 28
+   
+   (%. goe) X partials  NB. Differences of partial sums
+2 3 5 7 11
+
+── (16 of 39) MATRICES (ctd) ────────────────────────────────
+
+The binomial coefficients function !, whose table appears in
+the introduction, can also be construed as the "outof"
+function, as illustrated below:
+)
+   outof=: !
+   
+   3 outof 5
+10
+   
+   NB. The number of distinct ways of choosing 3 things from 5
+   
+   5 outof 3
+0
+   
+   NB. The number of distinct ways of choosing 5 things from 3
+
+── (17 of 39) MATRICES (ctd) ────────────────────────────────
+
+>From this it appears that the zeros in the binomial
+coefficients table are meaningful; nonetheless, they are
+normally suppressed (from the commuted table !~/) in the
+presentation of the triangle of Pascal, presumably in the
+interest of readability.
+
+The result is that the triangle of Pascal does not represent
+a matrix, although the matrix represented by the table of
+binomial coefficients is eminently useful. For example:
+)
+      i=: 0 1 2 3 4 5
+   
+    bct=: i !/ i
+   
+   abct=: %. bct  NB. Inverse is table of alternating binomials
+   
+   bct ; abct
+┌────────────┬─────────────────┐
+│1 1 1 1 1  1│1 _1  1 _1  1  _1│
+│0 1 2 3 4  5│0  1 _2  3 _4   5│
+│0 0 1 3 6 10│0  0  1 _3  6 _10│
+│0 0 0 1 4 10│0  0  0  1 _4  10│
+│0 0 0 0 1  5│0  0  0  0  1  _5│
+│0 0 0 0 0  1│0  0  0  0  0   1│
+└────────────┴─────────────────┘
+   
+   +/ bct         NB. The sums over the binomial coefficients
+1 2 4 8 16 32
+   
+   2^i            NB. are the powers of two 1 2 4 8 16 32
+1 2 4 8 16 32
+   
+   +/ abct        NB. The sums over the alternating binomials
+1 0 0 0 0 0
+   
+   NB. This last result is sometimes mis-stated (as in the
+   NB. National Bureau of Standards Handbook of Mathematical
+   NB. Functions, page 10) as identically zero.
+
+── (18 of 39) MATRICES (ctd) ────────────────────────────────
+
+The "expansion" of the coefficients of a polynomial is easily
+stated as a matrix product with a binomial coefficients
+table. For example:
+)
+   c=: 4 0 1 3 2 1
+   
+   x=: i.8
+   x
+0 1 2 3 4 5 6 7
+   
+   c p. x              NB. Polynomial with coefficients c
+4 11 96 499 1748 4779 11056 22691
+   
+   d=: bct X c         NB. Expanded coefficients
+   
+   d
+11 24 32 21 7 1
+   
+   d p. x
+11 96 499 1748 4779 11056 22691 42564
+   
+   c p. x+1
+11 96 499 1748 4779 11056 22691 42564
+   
+   abct X d            NB. Inverse restores coefficients
+4 0 1 3 2 1
+   
+   e=: abct X c
+   e
+3 4 _6 5 _3 1
+   
+   e p. x
+3 4 11 96 499 1748 4779 11056
+   
+   c p. x-1
+3 4 11 96 499 1748 4779 11056
+
+── (19 of 39) POWERS ────────────────────────────────────────
+
+The  term power is commonly used for the function denoted in
+.               n mathematics by x , and in J by x^n, i.e.
+using the symbol ^ introduced for this purpose by de Morgan.
+But the term is also used for the operator ^:, with f^:n
+signifying n applications of the monadic function f. .
+             2 Note that in math sin  does not denote two
+applications of the sine function. The relation between the
+two notions may be visualized by construing the power
+function as repeated application of multiplication. Thus:
+)
+   2^3 8
+8 256
+   
+   2*2*2 8
+8 32
+   
+   */2 2 2 8
+64
+   
+   */3#2        NB. Product over three copies of two 8
+8
+   
+   NB. Although the definition as repeated multiplication
+   NB. does not comprehend the case of a zero exponent,
+   NB. the completion is correctly provided by the neutral
+   NB. of multiplication. Thus:
+   
+   */0#2
+1
+   
+   2^0
+1
+
+── (20 of 39) POWERS (ctd) ──────────────────────────────────
+
+The uniformity of the completion for zero and negative
+arguments may be seen in the following results, wherein
+passing from the exponent k to k+1 multiplies the result by
+5, while passing from k to k-1 divides it by 5:
+)
+   s=: 4 -~ i.9
+   
+   s
+_4 _3 _2 _1 0 1 2 3 4
+   
+   5^s
+0.0016 0.008 0.04 0.2 1 5 25 125 625
+
+── (21 of 39) POWERS (ctd) ──────────────────────────────────
+
+We will illustrate the use of the power operator ^: on the
+function f=: bct&X, which is "the matrix product with left
+argument bct". Thus, using the values of bct and c from the
+section on MATRICES:
+)
+   i=: 0 1 2 3 4 5
+   
+   bct=: i !/ i
+   
+   c=: 4 0 1 3 2 1
+   
+   X=: +/ . *
+   
+   f=: bct&X
+   
+   f f c
+96 184 147 59 12 1
+   
+   c2=: f f c
+   
+   c2 p. x
+96 499 1748 4779 11056 22691 42564 74443
+   
+   c p. x+2
+96 499 1748 4779 11056 22691 42564 74443
+   
+   
+   NB. The operator ^: produces a power of its function left
+   NB. argument, or a collection of powers:
+   
+   f ^: 2 c
+96 184 147 59 12 1
+   
+   f^: 0 1 2 3 4 c
+   4    0   1   3  2 1
+  11   24  32  21  7 1
+  96  184 147  59 12 1
+ 499  708 406 117 17 1
+1748 1944 869 195 22 1
+
+── (22 of 39) POWERS (ctd) ──────────────────────────────────
+
+The powers of f are more interesting when applied to an
+identity matrix:
+)
+   I=: i =/ i
+   
+   ] powers=: f^: 0 1 2 3 I
+1 0 0  0   0   0
+0 1 0  0   0   0
+0 0 1  0   0   0
+0 0 0  1   0   0
+0 0 0  0   1   0
+0 0 0  0   0   1
+
+1 1 1  1   1   1
+0 1 2  3   4   5
+0 0 1  3   6  10
+0 0 0  1   4  10
+0 0 0  0   1   5
+0 0 0  0   0   1
+
+1 2 4  8  16  32
+0 1 4 12  32  80
+0 0 1  6  24  80
+0 0 0  1   8  40
+0 0 0  0   1  10
+0 0 0  0   0   1
+
+1 3 9 27  81 243
+0 1 6 27 108 405
+0 0 1  9  54 270
+0 0 0  1  12  90
+0 0 0  0   1  15
+0 0 0  0   0   1
+
+── (23 of 39) POWERS (ctd) ──────────────────────────────────
+
+It is interesting to examine these matrices to see if they
+form a recognizable pattern. They do indeed, but the pattern
+is easier to spot if each is divided (element-by-element) by
+the binomial coefficient table bct. Thus:
+)
+   powers %"2 bct
+1 0 0  0  0   0
+0 1 0  0  0   0
+0 0 1  0  0   0
+0 0 0  1  0   0
+0 0 0  0  1   0
+0 0 0  0  0   1
+
+1 1 1  1  1   1
+0 1 1  1  1   1
+0 0 1  1  1   1
+0 0 0  1  1   1
+0 0 0  0  1   1
+0 0 0  0  0   1
+
+1 2 4  8 16  32
+0 1 2  4  8  16
+0 0 1  2  4   8
+0 0 0  1  2   4
+0 0 0  0  1   2
+0 0 0  0  0   1
+
+1 3 9 27 81 243
+0 1 3  9 27  81
+0 0 1  3  9  27
+0 0 0  1  3   9
+0 0 0  0  1   3
+0 0 0  0  0   1
+   
+   NB. Rank-2 divide applies to each rank-2 item (each matrix)
+
+── (24 of 39) POWERS (ctd) ──────────────────────────────────
+
+The original result can be produced by the following
+expression, which makes no use of the matrix product, and
+could therefore apply for non-integer values as well:
+)
+   bct (*"2) 0 1 2 3 (^"0 2)  0 >. i -~/ i
+1 0 0  0   0   0
+0 1 0  0   0   0
+0 0 1  0   0   0
+0 0 0  1   0   0
+0 0 0  0   1   0
+0 0 0  0   0   1
+
+1 1 1  1   1   1
+0 1 2  3   4   5
+0 0 1  3   6  10
+0 0 0  1   4  10
+0 0 0  0   1   5
+0 0 0  0   0   1
+
+1 2 4  8  16  32
+0 1 4 12  32  80
+0 0 1  6  24  80
+0 0 0  1   8  40
+0 0 0  0   1  10
+0 0 0  0   0   1
+
+1 3 9 27  81 243
+0 1 6 27 108 405
+0 0 1  9  54 270
+0 0 0  1  12  90
+0 0 0  0   1  15
+0 0 0  0   0   1
+
+── (25 of 39) POWERS (ctd) ──────────────────────────────────
+
+We will now use the power operator to produce a table of
+binomial coefficients. If c is the vector of binomial
+coefficients of order 3, coefficients of order 4 may be
+obtained from it as follows:
+)
+   c=: 1 3 3 1
+   
+   0,c
+0 1 3 3 1
+   
+   c,0
+1 3 3 1 0
+   
+   (0,c)+(c,0)
+1 4 6 4 1
+   
+   NB. This process may be embodied in a function as follows:
+   
+   next=: 0&,+,&0
+   
+   next c
+1 4 6 4 1
+   
+   p=: i.6
+   
+   next ^: p 1
+1 0  0  0 0 0
+1 1  0  0 0 0
+1 2  1  0 0 0
+1 3  3  1 0 0
+1 4  6  4 1 0
+1 5 10 10 5 1
+
+── (26 of 39) PATTERN SPOTTING ──────────────────────────────
+
+Pattern-spotting may be greatly aided by computer
+calculations, as illustrated by the emergence of a pattern in
+the matrix-product-powers of the binomial coefficient table
+bct under element-by-element division by bct itself.
+
+We will now suggest a few general tools. Try to discern
+patterns in the following lists, and then examine the
+subsequent calculations on them:
+)
+   a=: 2 1 2 2 4 2 4 2 4 6 2 6 4 2 4 6 6 2 6 4
+   
+   b=: 2 5 10 17 28 41 58 77 100 129 160 197 238 281 328 381 440 501 568 639
+   
+   c=: 2 _1 1 0 2 _2 2 _2 2 2 _4 4 _2 _2 2 2 0 _4 4 _2
+   
+   sum=: +/\         NB. Subtotals
+   
+   dif=: sum^:_1     NB. Differences are inverse of subtotals
+   
+   sum a
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71
+   
+   dif b
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71
+   
+   sum sum c
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71
+
+── (27 of 39) PATTERN SPOTTING (ctd) ────────────────────────
+
+The compact, organized, display of groups of tables can also
+be helpful. Consider, for example, the table of powers used
+in an earlier section:
+)
+   bct=: i !/ i
+   
+   I=: i =/ i
+   
+   X=: +/ . *
+   
+   f=: bct&X
+   
+   powers=: f^: 0 1 2 3 I
+   
+   box=: <"2    NB.Box rank-2 arrays (matrices)
+   
+   box powers
+┌───────────┬────────────┬──────────────┬────────────────┐
+│1 0 0 0 0 0│1 1 1 1 1  1│1 2 4  8 16 32│1 3 9 27  81 243│
+│0 1 0 0 0 0│0 1 2 3 4  5│0 1 4 12 32 80│0 1 6 27 108 405│
+│0 0 1 0 0 0│0 0 1 3 6 10│0 0 1  6 24 80│0 0 1  9  54 270│
+│0 0 0 1 0 0│0 0 0 1 4 10│0 0 0  1  8 40│0 0 0  1  12  90│
+│0 0 0 0 1 0│0 0 0 0 1  5│0 0 0  0  1 10│0 0 0  0   1  15│
+│0 0 0 0 0 1│0 0 0 0 0  1│0 0 0  0  0  1│0 0 0  0   0   1│
+└───────────┴────────────┴──────────────┴────────────────┘
+   
+   2 2 $ box powers
+┌──────────────┬────────────────┐
+│1 0 0 0 0 0   │1 1 1 1 1  1    │
+│0 1 0 0 0 0   │0 1 2 3 4  5    │
+│0 0 1 0 0 0   │0 0 1 3 6 10    │
+│0 0 0 1 0 0   │0 0 0 1 4 10    │
+│0 0 0 0 1 0   │0 0 0 0 1  5    │
+│0 0 0 0 0 1   │0 0 0 0 0  1    │
+├──────────────┼────────────────┤
+│1 2 4  8 16 32│1 3 9 27  81 243│
+│0 1 4 12 32 80│0 1 6 27 108 405│
+│0 0 1  6 24 80│0 0 1  9  54 270│
+│0 0 0  1  8 40│0 0 0  1  12  90│
+│0 0 0  0  1 10│0 0 0  0   1  15│
+│0 0 0  0  0  1│0 0 0  0   0   1│
+└──────────────┴────────────────┘
+
+── (28 of 39) CONTINUED FRACTIONS ───────────────────────────
+
+The expression:
+
+   3 + 1
+       -
+       7 is commonly used as an approximation to pi. An even
+better approximation is given by:
+
+   3 + 1
+       -
+       7 + 1
+           -
+           15 + 1
+                -
+                1
+
+Such an expression is called a continued fraction, and can be
+completely characterized by the list of integers, in this
+case, 3 7 15 1. In J it might be evaluated as:
+)
+   3 + 1 % 7 + 1 % 15 + 1 % 1
+3.14159
+   
+   NB. Using the reciprocal (monadic %) it may be written
+   NB. more simply:
+   
+   3 + % 7 + % 15 + % 1
+3.14159
+
+── (29 of 39) CONTINUED FRACTIONS (ctd) ─────────────────────
+
+Using reduction by a hook it may be written as a function of
+the integer list:
+)
+   cf=: (+%)/
+   
+   cf 3 7 15 1
+3.14159
+   
+   cf\ 3 7 15 1
+3 3.14286 3.14151 3.14159
+
+── (30 of 39) CONTINUED FRACTIONS (ctd) ─────────────────────
+
+The final expression above uses the scan operator \, used
+previously to give partial sums, to give all the convergents.
+The following examples, taken from the MAA publication by
+C.D. Olds [3], give results that will perhaps be recognized:
+)
+   cf\ 1 1 1 1 1 1 1 1 1
+1 2 1.5 1.66667 1.6 1.625 1.61538 1.61905 1.61765
+   
+   cf\ 1 2 2 2 2 2 2
+1 1.5 1.4 1.41667 1.41379 1.41429 1.4142
+   
+   cf 3 , 3 6 , 3 6 , 3 6
+3.31662
+   
+   cf 5 , 2 1 1 2 10
+5.38519
+   
+   %: 2 11 29
+1.41421 3.31662 5.38516
+   
+   gm=: 1.61765      NB. Approximation to the Golden Mean
+   
+   gm * gm -1
+0.999142
+
+── (31 of 39) CONTINUED FRACTIONS (ctd) ─────────────────────
+
+A process for deriving a continued fraction expansion will be
+illustrated by the case of pi:
+)
+   ]x =: o. 1
+3.14159
+   
+   ]x=: 3 , % 0.14159
+3 7.06265
+   
+   ]x=: 3 7 , % 0.06265
+3 7 15.9617
+   
+   ]x=: 3 7 15 , % 0.9617
+3 7 15 1.03983
+   
+   ]x=: 3 7 15 1 , % 0.03983
+3 7 15 1 25.1067
+   
+   NB. An expansion function may therefore be defined and used
+   NB. as follows:
+   
+   cfex=: }: , <.@{: , 1: % {: - <.@{:
+   
+   cfex pi=: o.1
+3 7.06251
+   
+   cfex cfex pi
+3 7 15.9966
+   
+   cfex ^: 0 1 2 3 4 5 6 pi
+3.14159       0       0       0       0       0       0
+      3 7.06251       0       0       0       0       0
+      3       7 15.9966       0       0       0       0
+      3       7      15 1.00342       0       0       0
+      3       7      15       1 292.635       0       0
+      3       7      15       1     292 1.57582       0
+      3       7      15       1     292       1 1.73666
+
+── (32 of 39) EVOLUTES ──────────────────────────────────────
+
+The table e=: 3 3 $ 6 5 4 7 0 3 8 1 2 is an example of a
+spiral or evolute, which can be rolled clockwise like a
+(rectangular) snowball, accreting successive integers to form
+a larger spiral. Thus:
+)
+   ] e=: 3 3 $ 6 5 4 7 0 3 8 1 2  6 5 4 7 0 3 8 1 2
+6 5 4
+7 0 3
+8 1 2
+   
+   stick=: ] , >:@i.@{:@$ + >./@,
+   
+   roll=: |:@|.
+   
+   snow=: roll@stick ^:2
+   
+   stick e
+6  5  4
+7  0  3
+8  1  2
+9 10 11
+   
+   roll stick e
+ 9 8 7 6
+10 1 0 5
+11 2 3 4
+   
+   (] ; snow ; snow^:2 ; snow^:4) e
+┌─────┬──────────┬──────────────┬────────────────────┐
+│6 5 4│12 11 10 9│20 19 18 17 16│42 41 40 39 38 37 36│
+│7 0 3│13  2  1 8│21  6  5  4 15│43 20 19 18 17 16 35│
+│8 1 2│14  3  0 7│22  7  0  3 14│44 21  6  5  4 15 34│
+│     │15  4  5 6│23  8  1  2 13│45 22  7  0  3 14 33│
+│     │          │24  9 10 11 12│46 23  8  1  2 13 32│
+│     │          │              │47 24  9 10 11 12 31│
+│     │          │              │48 25 26 27 28 29 30│
+└─────┴──────────┴──────────────┴────────────────────┘
+
+── (33 of 39) EVOLUTES (ctd) ────────────────────────────────
+
+The spirals having an even number of sides are necessarily
+lop-sided, and we will concentrate on the following 5-by-5
+table:
+)
+   ]spiral =: snow^:2 e
+20 19 18 17 16
+21  6  5  4 15
+22  7  0  3 14
+23  8  1  2 13
+24  9 10 11 12
+
+── (34 of 39) EVOLUTES (ctd) ────────────────────────────────
+
+It should be possible to use the pattern shown in the table
+as a guide in defining a more direct solution to the
+generation of a spiral.
+
+In his paper on Volutes in Vector, Vol 13 # 2, E.E. McDonnell
+analyzes solutions by six different authors, including one in
+Concrete Mathematics by Graham, et al. One interesting
+approach is to ravel the table to produce a permutation
+vector which can then be used to permute the list i. 25, and
+finally reshape the result into a table:
+)
+   perm=: ,spiral
+   
+   perm
+20 19 18 17 16 21 6 5 4 15 22 7 0 3 14 23 8 1 2 13 24 9 10 11 12
+   
+   5 5 $ perm { i. 25
+20 19 18 17 16
+21  6  5  4 15
+22  7  0  3 14
+23  8  1  2 13
+24  9 10 11 12
+
+── (35 of 39) EVOLUTES (ctd) ────────────────────────────────
+
+Of course, the problem of how to generate this permutation
+remains, and forms the bulk of the discussion of McDonnell.
+He remarks that there are sixteen related spirals: zero to
+three rolls produce tables that "end" at four different
+corners; reversal (|.) reverses the sense to produce a
+clockwise spiral, and subtraction, i.e. from 24 in the case
+of the 5-by-5 table, produces an involute. Examples of each
+case, and all cases, are produced as follows:
+)
+   box=: <"2       NB. Box rank-2 arrays (matrices)
+   
+   box spiral , (|.spiral) , (roll spiral) ,: (24-spiral)
+┌──────────────┬──────────────┬──────────────┬─────────────┐
+│20 19 18 17 16│24  9 10 11 12│24 23 22 21 20│4  5  6  7  8│
+│21  6  5  4 15│23  8  1  2 13│ 9  8  7  6 19│3 18 19 20  9│
+│22  7  0  3 14│22  7  0  3 14│10  1  0  5 18│2 17 24 21 10│
+│23  8  1  2 13│21  6  5  4 15│11  2  3  4 17│1 16 23 22 11│
+│24  9 10 11 12│20 19 18 17 16│12 13 14 15 16│0 15 14 13 12│
+└──────────────┴──────────────┴──────────────┴─────────────┘
+   
+   invol=: */@$ - 1: + ]       NB. Involute from evolute
+   
+   all=: invol^:0 1"2@(|.^:0 1"2)@(roll^:0 1 2 3)
+   
+   $ all spiral
+4 2 2 5 5
+   
+   $ box all spiral
+4 2 2
+   
+   $ , box all spiral
+16
+   
+   4 4 $ , box all spiral
+┌──────────────┬─────────────┬──────────────┬─────────────┐
+│20 19 18 17 16│4  5  6  7  8│24  9 10 11 12│0 15 14 13 12│
+│21  6  5  4 15│3 18 19 20  9│23  8  1  2 13│1 16 23 22 11│
+│22  7  0  3 14│2 17 24 21 10│22  7  0  3 14│2 17 24 21 10│
+│23  8  1  2 13│1 16 23 22 11│21  6  5  4 15│3 18 19 20  9│
+│24  9 10 11 12│0 15 14 13 12│20 19 18 17 16│4  5  6  7  8│
+├──────────────┼─────────────┼──────────────┼─────────────┤
+│24 23 22 21 20│ 0  1  2  3 4│12 13 14 15 16│12 11 10  9 8│
+│ 9  8  7  6 19│15 16 17 18 5│11  2  3  4 17│13 22 21 20 7│
+│10  1  0  5 18│14 23 24 19 6│10  1  0  5 18│14 23 24 19 6│
+│11  2  3  4 17│13 22 21 20 7│ 9  8  7  6 19│15 16 17 18 5│
+│12 13 14 15 16│12 11 10  9 8│24 23 22 21 20│ 0  1  2  3 4│
+├──────────────┼─────────────┼──────────────┼─────────────┤
+│12 11 10  9 24│12 13 14 15 0│16 17 18 19 20│ 8  7  6  5 4│
+│13  2  1  8 23│11 22 23 16 1│15  4  5  6 21│ 9 20 19 18 3│
+│14  3  0  7 22│10 21 24 17 2│14  3  0  7 22│10 21 24 17 2│
+│15  4  5  6 21│ 9 20 19 18 3│13  2  1  8 23│11 22 23 16 1│
+│16 17 18 19 20│ 8  7  6  5 4│12 11 10  9 24│12 13 14 15 0│
+├──────────────┼─────────────┼──────────────┼─────────────┤
+│16 15 14 13 12│8  9 10 11 12│20 21 22 23 24│4  3  2  1  0│
+│17  4  3  2 11│7 20 21 22 13│19  6  7  8  9│5 18 17 16 15│
+│18  5  0  1 10│6 19 24 23 14│18  5  0  1 10│6 19 24 23 14│
+│19  6  7  8  9│5 18 17 16 15│17  4  3  2 11│7 20 21 22 13│
+│20 21 22 23 24│4  3  2  1  0│16 15 14 13 12│8  9 10 11 12│
+└──────────────┴─────────────┴──────────────┴─────────────┘
+
+── (36 of 39) COMPLEX NUMBERS ───────────────────────────────
+
+In mathematics, complex numbers are written in the form 3+4i,
+where i denotes the "imaginary" square root of negative 1. In
+J they are treated as follows:
+)
+   ]i=: 2 %: _1
+0j1
+   
+   3 + 4 * i
+3j4
+   
+   j. 4
+0j4
+   
+   3 j. 4
+3j4
+   
+   %: _1                  NB. Primitive third root of _1
+0j1
+   
+   r=: %: & _1
+   
+   ,. r a=: 2 3 4 5 6     NB. Some primitive roots of _1
+              0j1
+     0.5j0.866025
+0.707107j0.707107
+0.809017j0.587785
+     0.866025j0.5
+
+── (37 of 39) COMPLEX NUMBERS (ctd) ─────────────────────────
+
+Since the nth power of r n is _1, the 2*nth power is 1, and
+powers therefore repeat in cycles of 2*n This is illustrated
+by the left panel of the following table.
+
+The middle panel shows the real and imaginary parts that
+result from the function +., and the right panel shows them
+in a more readable form, formatted to 7 spaces per column,
+with 3 digits following the decimal point:
+)
+   t=: (r 3) ^ i. 8
+   
+   (,. ; +. ; 7j3&":@+.) t
+┌──────────────┬─────────────────┬──────────────┐
+│             1│   1            0│  1.000  0.000│
+│  0.5j0.866025│ 0.5     0.866025│  0.500  0.866│
+│ _0.5j0.866025│_0.5     0.866025│ _0.500  0.866│
+│_1j3.88578e_16│  _1  3.88578e_16│ _1.000  0.000│
+│_0.5j_0.866025│_0.5    _0.866025│ _0.500 _0.866│
+│ 0.5j_0.866025│ 0.5    _0.866025│  0.500 _0.866│
+│1j_8.32667e_16│   1 _8.32667e_16│  1.000  0.000│
+│  0.5j0.866025│ 0.5     0.866025│  0.500  0.866│
+└──────────────┴─────────────────┴──────────────┘
+
+── (38 of 39) COMPLEX NUMBERS (ctd) ─────────────────────────
+
+The even powers in this table form a significant pattern,
+which may be more easily recognized in the formatted table
+for the cases of 2, 3, 4, and 6:
+)
+   poly=: 7j3&": @ +. @ (r ^ +:@i.)"0
+   
+   <@poly 2 3 4 6
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│  1.000  0.000│  1.000  0.000│  1.000  0.000│  1.000  0.000│
+│ _1.000  0.000│ _0.500  0.866│  0.000  1.000│  0.500  0.866│
+│              │ _0.500 _0.866│ _1.000  0.000│ _0.500  0.866│
+│              │              │  0.000 _1.000│ _1.000  0.000│
+│              │              │              │ _0.500 _0.866│
+│              │              │              │  0.500 _0.866│
+└──────────────┴──────────────┴──────────────┴──────────────┘
+
+── (39 of 39) COMPLEX NUMBERS (ctd) ─────────────────────────
+
+The list of all 2*n distinct powers of the nth root of _1
+provides interesting results when used as argument in
+function tables for product and quotient. For example:
+)
+   r=: %:&_1
+   
+   all=: r ^ i.@+:
+   
+   a3=: all 3
+   
+   a3
+1 0.5j0.866025 _0.5j0.866025 _1j3.88578e_16 _0.5j_0.866025 0.5j_0.866025
+   
+   t=: a3 */ a3       NB. Times table
+   
+   d=: a3 %/ a3       NB. Divide table
+   
+   t
+             1   0.5j0.866025  _0.5j0.866025 _1j3.88578e_16 _0.5j_0.866025  0.5j_0.866025
+  0.5j0.866025  _0.5j0.866025 _1j4.14341e_16 _0.5j_0.866025  0.5j_0.866025 1j_8.69319e_16
+ _0.5j0.866025 _1j3.73704e_16 _0.5j_0.866025  0.5j_0.866025 1j_8.13808e_16   0.5j0.866025
+_1j3.88578e_16 _0.5j_0.866025  0.5j_0.866025 1j_7.77156e_16   0.5j0.866025  _0.5j0.866025
+_0.5j_0.866025  0.5j_0.866025  1j_8.5843e_16   0.5j0.866025  _0.5j0.866025 _1j1.31341e_15
+ 0.5j_0.866025 1j_8.73304e_16   0.5j0.866025  _0.5j0.866025 _1j1.31341e_15 _0.5j_0.866025
+   
+   (1=t) ; (_1=t) ; (1=d) ; (_1=d)
+┌───────────┬───────────┬───────────┬───────────┐
+│1 0 0 0 0 0│0 0 0 1 0 0│1 0 0 0 0 0│0 0 0 1 0 0│
+│0 0 0 0 0 1│0 0 1 0 0 0│0 1 0 0 0 0│0 0 0 0 1 0│
+│0 0 0 0 1 0│0 1 0 0 0 0│0 0 1 0 0 0│0 0 0 0 0 1│
+│0 0 0 1 0 0│1 0 0 0 0 0│0 0 0 1 0 0│1 0 0 0 0 0│
+│0 0 1 0 0 0│0 0 0 0 0 1│0 0 0 0 1 0│0 1 0 0 0 0│
+│0 1 0 0 0 0│0 0 0 0 1 0│0 0 0 0 0 1│0 0 1 0 0 0│
+└───────────┴───────────┴───────────┴───────────┘
+
+End of lab
+   

@@ -1,0 +1,200 @@
+─────────────────────────────────────────────────────────────
+Lab: Binomial Coefficients
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 6) TABLE OR MATRIX ─────────────────────────────────
+
+The expression k ! n produces the kth binomial coefficient of
+order n, and the function bc=: i. !/ i. may be used to
+produce a table or matrix of binomial coefficients. For
+example:
+)
+   0!5
+1
+   
+   1!5
+5
+   
+   2!5
+10
+   
+   bc=: i. !/ i.
+   
+   bc 6
+1 1 1 1 1  1
+0 1 2 3 4  5
+0 0 1 3 6 10
+0 0 0 1 4 10
+0 0 0 0 1  5
+0 0 0 0 0  1
+   
+
+── (2 of 6) TABLE OR MATRIX (ctd) ───────────────────────────
+
+Such a matrix can be used in a variety of interesting ways.
+For example, its inverse is the matrix of alternating
+binomials, and its matrix product with a vector of polynomial
+coefficients (with powers in ascending order) produces the
+corresponding "expanded" coefficients. For example:
+)
+   bct=: bc 6
+   
+   bct
+1 1 1 1 1  1
+0 1 2 3 4  5
+0 0 1 3 6 10
+0 0 0 1 4 10
+0 0 0 0 1  5
+0 0 0 0 0  1
+   
+   abct=: %. bct
+   
+   abct
+1 _1  1 _1  1  _1
+0  1 _2  3 _4   5
+0  0  1 _3  6 _10
+0  0  0  1 _4  10
+0  0  0  0  1  _5
+0  0  0  0  0   1
+   
+   X=: +/ . *          NB. The matrix product function
+   
+   bct X abct
+1 0 0 0 0 0
+0 1 0 0 0 0
+0 0 1 0 0 0
+0 0 0 1 0 0
+0 0 0 0 1 0
+0 0 0 0 0 1
+   
+   c=: 5 1 4 0 2 2
+   
+   d=: bct X c
+   
+   x=: 0 1 2 3 4 5 6 7
+   
+   c p. x              NB. The polynomial with coefficients c
+5 14 119 692 2633 7610 18299 38624
+   
+   d p. x
+14 119 692 2633 7610 18299 38624 73997
+   
+   c p. x+1
+14 119 692 2633 7610 18299 38624 73997
+
+── (3 of 6) TABLE OR MATRIX (ctd) ───────────────────────────
+
+The alternating binomial coefficients can be used to produce
+the inverse of expansion. For example:
+)
+   abct X d
+5 1 4 0 2 2
+   
+   c
+5 1 4 0 2 2
+   
+   c=abct X d
+1 1 1 1 1 1
+
+── (4 of 6) MANUAL METHODS OF EXPANSION ─────────────────────
+
+If the vector c is written as a column to the right of the
+matrix bct, the product bct X c is easily computed by hand.
+Moreover, such computation may be less prone to error than
+commonly used methods. Try the experiment of expanding the
+vector c by by this method and by any others you may know.
+
+Finally, it is easy to jot down the table bct of any order,
+because each row is obtained from the preceding row by adding
+it to a shift of itself.
+
+It may also be interesting to compute the sums of the columns
+of bct and abct (+/ bct and +/ abct), particularly since the
+result of the latter is commonly mis-stated.
+)
+
+── (5 of 6) IDENTITIES ──────────────────────────────────────
+
+It is clear that the product bct X bct contains sums over
+products of various binomial coefficients. If, therefore, one
+could spot and articulate the pattern of the elements of the
+result, it could be used to state a host of identities,
+provided that the pattern holds for larger tables.
+
+Try to state the pattern in the following results:
+)
+   bct X bct
+1 2 4  8 16 32
+0 1 4 12 32 80
+0 0 1  6 24 80
+0 0 0  1  8 40
+0 0 0  0  1 10
+0 0 0  0  0  1
+   
+   bct X bct X bct
+1 3 9 27  81 243
+0 1 6 27 108 405
+0 0 1  9  54 270
+0 0 0  1  12  90
+0 0 0  0   1  15
+0 0 0  0   0   1
+   
+   bct X bct X bct
+1 3 9 27  81 243
+0 1 6 27 108 405
+0 0 1  9  54 270
+0 0 0  1  12  90
+0 0 0  0   1  15
+0 0 0  0   0   1
+   
+   bct X bct X bct X bct
+1 4 16 64 256 1024
+0 1  8 48 256 1280
+0 0  1 12  96  640
+0 0  0  1  16  160
+0 0  0  0   1   20
+0 0  0  0   0    1
+
+── (6 of 6) IDENTITIES (ctd) ────────────────────────────────
+
+Using the fact that M % N denotes the element-by-element
+division of the matrix M by the matrix N, and the fact that
+0%0 is defined to be 0, try to discern the pattern in the
+following results:
+)
+   (bct X bct) % bct
+1 2 4 8 16 32
+0 1 2 4  8 16
+0 0 1 2  4  8
+0 0 0 1  2  4
+0 0 0 0  1  2
+0 0 0 0  0  1
+   
+   (bct X bct X bct) % bct
+1 3 9 27 81 243
+0 1 3  9 27  81
+0 0 1  3  9  27
+0 0 0  1  3   9
+0 0 0  0  1   3
+0 0 0  0  0   1
+   
+   (bct X bct X bct) % bct
+1 3 9 27 81 243
+0 1 3  9 27  81
+0 0 1  3  9  27
+0 0 0  1  3   9
+0 0 0  0  1   3
+0 0 0  0  0   1
+   
+   (bct X bct X bct X bct) % bct
+1 4 16 64 256 1024
+0 1  4 16  64  256
+0 0  1  4  16   64
+0 0  0  1   4   16
+0 0  0  0   1    4
+0 0  0  0   0    1
+
+End of lab
+   

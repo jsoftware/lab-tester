@@ -1,0 +1,97 @@
+─────────────────────────────────────────────────────────────
+Lab: FVJ4 dwin.ijs  Simple object drawing windows
+Author: Cliff Reiter
+Math Dept
+Lafayette College
+Easton, PA 18042 USA
+reiterc@lafayette.edu
+
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 7) Object window script ────────────────────────────
+This lab offers an overview of some of the facilities in the
+script dwin.ijs associated with the 4th edition of the book
+Fractals, Visualization and J. These object windows require
+the JQT interface. They are primitive but are sufficient for
+experimenting with polygons and transformations.
+)
+   load '~addons/graphics/fvj4/dwin.ijs'
+   
+
+── (2 of 7) First plots ─────────────────────────────────────
+First we open a window, then we draw a green square and a red
+diagonal line.
+)
+   _1 _1 1 1 dwin 'Object window'
+   ]sq=:#:0 1 3 2
+0 0
+0 1
+1 1
+1 0
+   0 255 0 dpoly sq
+ 
+   255 0 0 dline _1 1,:1 _1
+ 
+
+── (3 of 7) Smaller, asymetric window ───────────────────────
+Now we repeat the experiment with a smaller, asymmetric
+window.
+)
+   setWIN_WH 600 300
+600 300
+   _1 _1 1 1 dwin 'Object window'
+   0 255 0 dpoly sq
+ 
+   255 0 0 dline _1 1,:1 _1
+ 
+
+── (4 of 7) Random polygons ─────────────────────────────────
+Next we plot 200 random quadralerals. You may close the
+graphics window before proceeding.
+)
+   wd'reset;'
+   setWIN_WH 500 500
+500 500
+   0 0 100 100 dwin '200 random quadralaterals'
+   (?200 3$256) dpoly ?200 4 2$100
+                                                                                                                                                                                                        
+
+── (5 of 7) Animation ───────────────────────────────────────
+We can open animation windows with dawin. Here we will use
+the animation window to rotate a random polygon. You may
+close the animation window before proceeding.
+)
+   wd'reset;'
+   rp=:0.007*?. 8 2$100
+   _1 _1 1 1 0.1 dawin 'animated rotation'
+0.1
+   rot=:(cos,sin),:-@sin,cos
+   255 0 0 dapoly rp (+/ . *)"_ 2 rot"0] 2p1*(i.%<:) 100
+100
+
+── (6 of 7) 3-D Polygon ─────────────────────────────────────
+We can plot this polygon in 3-D. You may close the 3D window
+before proceeding.
+)
+   wd'reset;'
+   rp3=:rp,.0
+   _1 _1 _1 1 1 1 d3win '3D window'
+0
+   255 0 0 d3poly rp3
+ 
+
+── (7 of 7) Animation of 3-D Polygon ────────────────────────
+Lastly, we can animate it in 3D using the built-in rotz;
+however, we need to use homogeneous coordinates since rotz
+does. Try experimenting with rotations about other axes.
+)
+   wd'reset'
+   _1 _1 _1 1 1 1 0.1 d3awin '3D animated rotation'
+0
+   255 0 0 d3apoly (rp3,0 0 0 1) (+/ . *)"_ 2 rotz"0] 2p1*(i.%<:) 100
+100
+
+End of lab
+   

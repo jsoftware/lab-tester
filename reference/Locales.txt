@@ -260,6 +260,10 @@ Executing t_foo_ :
 
 When t_foo_ is executed it sets q in foo, not q in base.
 )
+
+Closing plot window...
+
+   wd 'sm focus term'
    cocurrent 'base'
    t_foo_ =: verb def 'q=: y'
    t_foo_ 456
@@ -269,7 +273,7 @@ When t_foo_ is executed it sets q in foo, not q in base.
    q          NB. q isn't defined in base
 |value error: q
 
-|[-5] 
+|[-6] 
 
 ── (22 of 70) locale name (ctd) ─────────────────────────────
 Define verb g in both base and foo. The definitions are the
@@ -407,7 +411,7 @@ Let us make the definitions to see this.
 |       bb 0              
 |aa[0]                    
 |       aa 0              
-   dbr 0 NB. turn off debug 
+   dbr 0 NB. turn off debug
 
 ── (33 of 70) summary so far ────────────────────────────────
 A locale is a set of global definitions.

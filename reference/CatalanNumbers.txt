@@ -1,0 +1,353 @@
+─────────────────────────────────────────────────────────────
+Lab: Catalan Numbers
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 24) Introduction ───────────────────────────────────
+Catalan numbers appear in several areas of mathematics. For
+example, the nth Catalan number is the number of planar
+binary trees with n nodes, and is the number of ways of
+cutting up a polygon with n+2 sides into triangles by drawing
+non-intersecting diagonals.
+
+Catalan numbers 0-8 are: 1 1 2 5 14 42 132 429 1430
+
+The question we will look at here is how to calculate the nth
+Catalan number, for n taking values of 5, 10, 1000, 10000 and
+up.
+)
+
+── (2 of 24) Basic Formula ──────────────────────────────────
+The formula in conventional math notation is:
+
+   (2n)!
+  --------
+  n!(n+1)!
+
+A direct translation of the formula into J is given below,
+evaluated for n=5. Note that the factorial function is
+written !n
+)
+   n=: 5
+   
+   (!2*n) % (!n) * (!n+1)
+42
+
+── (3 of 24) Basic Formula (ctd) ────────────────────────────
+For a more efficient solution, rewrite the formula as:
+
+  (2n)!    1
+  ----- x ---
+   n!n!   n+1
+
+and note that the first expression is the number of ways of
+choosing n things from 2n, which in J is the binomial
+coefficent: n!2*n
+)
+
+── (4 of 24) Basic Formula (ctd) ────────────────────────────
+A direct translation of this formula into J is:
+)
+   (n ! 2*n) % n+1
+42
+
+── (5 of 24) Basic Formula (ctd) ────────────────────────────
+This can be simplified using +: (double) and >: (increment)
+as follows:
+)
+   (n ! +: n) % >: n
+42
+
+── (6 of 24) Basic Formula (ctd) ────────────────────────────
+Try this with other values for n:
+)
+   n=: i.8
+   
+   (n ! +: n) % >: n
+1 1 2 5 14 42 132 429
+
+── (7 of 24) First Solution ─────────────────────────────────
+We can now define our first Catalan verb, by removing
+references to the argument n in the expression:
+
+  (n ! +: n) % >: n
+
+and assigning the result to cat1.
+)
+   cat1=: (! +:) % >:
+   
+   cat1 i.8
+1 1 2 5 14 42 132 429
+
+── (8 of 24) First Solution (ctd) ───────────────────────────
+To display a table of numbers, join n with cat1 n, as below:
+)
+   n=: i.8
+   
+   n ,. cat1 n
+0   1
+1   1
+2   2
+3   5
+4  14
+5  42
+6 132
+7 429
+   
+   (,. cat1) i.8
+0   1
+1   1
+2   2
+3   5
+4  14
+5  42
+6 132
+7 429
+
+── (9 of 24) First Solution (ctd) ───────────────────────────
+Lets now try this with n=100. This results in a big number
+that exceeds the standard integer representation.
+
+To calculate it accurately, use x: to convert the argument to
+an extended integer.
+)
+   cat1 100
+8.9652e56
+   
+   cat1 x: 100
+896519947090131496687170070074100632420837521538745909320
+
+── (10 of 24) Second Solution ───────────────────────────────
+This suggests a new verb cat2, which applies x: followed by
+cat1.
+)
+   cat2=: cat1 @ x:
+   
+   cat2 100
+896519947090131496687170070074100632420837521538745909320
+   
+   (,. cat2) 100+i.10
+100       896519947090131496687170070074100632420837521538745909320
+101      3533343320884635898708258511468514257188006702535057407320
+102     13927547459020991989083038404429289207944958458536245702640
+103     54906677482678910726192747555923159377475316999998660943100
+104    216489185503133990863274261791925599831188392742851863147080
+105    853702637172735926234421145556838686126761775155774328259240
+106   3366939372774715522158184331074634818182181954352680060985040
+107  13280705303722489004068393750349948449496384375502238018329880
+108  52391773216519910749994580850004383791591241114366627044787600
+109 206709359781542193322705891717290023323187260396682873976707440
+
+── (11 of 24) Second Solution (ctd) ─────────────────────────
+The 1,000th catalan number has 598 digits:
+)
+   cat2 1000
+2046105521468021692642519982997827217179245642339057975844538099572176010191891863964968026156453752449015750569428595097318163634370154637380666882886375203359653243390929717431080443509007504772912973142253209352126946839844796747697638537600100637918819...
+   
+   $":cat2 1000
+598
+
+── (12 of 24) Second Solution (ctd) ─────────────────────────
+This can be formatted using the xfmt (extended format)
+utility:
+)
+   load 'general/misc/format'
+   
+   xfmt cat2 1000
+  204 61055 21468 02169 26425 19982 99782 72171 79245 64233 
+90579 75844 53809 95721 76010 19189 18639 64968 02615 64537 
+52449 01575 05694 28595 09731 81636 34370 15463 73806 66882 
+88637 52033 59653 24339 09297 17431 08044 35090 07504 77291 
+29731 42253 20935 21269 46839 84479 67476 97638 53760 01006 
+37918 81932 65697 30982 08302 15380 57087 71117 62857 77909 
+27586 96486 36874 85680 59565 80057 67317 36556 66887 00349 
+39446 50164 15339 69109 27037 40630 17990 52584 66361 10168 
+97272 89330 55321 16292 14327 10371 40718 75162 58398 12072 
+68246 43431 53792 95628 17485 82435 75148 14985 98087 58699 
+86039 21577 52365 74777 75758 89998 79540 12641 03387 06406 
+65444 65166 02460 24318 18410 90468 64244 73200 19620 29120 
+
+── (13 of 24) Second Solution (ctd) ─────────────────────────
+Can cat2 be used to generate the 10,000th Catalan number?
+
+Yes - with a fast PC and enough memory. On the authors PC,
+this calculation takes just under a second and results in a
+number with 6,015 digits. However, it is near the limit of
+what can be achieved using this simple formula. If you try
+this, you might find that your PC runs out of memory, and
+starts paging memory to hard disk. This slows the calculation
+down enormously, and should be avoided.
+)
+
+── (14 of 24) Third Solution ────────────────────────────────
+It turns out that you can calculate !n by calculating the
+exponents in !n of each prime up to n, and this leads to a
+more efficient technique for computing the Catalan numbers
+where n is very large.
+
+The idea is that for each prime p up to n, you calculate a
+list, lp, of the prime powers of p up to n, and then the
+exponent of p in !n is given by:
+
+  +/ <. n % lp
+
+To keep numbers small, We will illustrate this for the
+calculation of !100.
+)
+
+── (15 of 24) Third Solution (ctd) ──────────────────────────
+For any prime p, the maximum power of p less than or equal to
+n is:
+
+  <. p ^. n
+
+For example, the maximum power of 3 less than or equal to 100
+is 4, and the corresponding maximum power of 7 is 2:
+)
+   <. 3 ^. 100
+4
+   
+   3 ^ 1 2 3 4 5
+3 9 27 81 243
+   
+   
+   <. 7 ^. 100
+2
+   
+   7 ^ 1 2 3
+7 49 343
+
+── (16 of 24) Third Solution (ctd) ──────────────────────────
+The exponent of p in !n is then:
+
+  +/ <. n % p ^ >: i. <. p ^. n
+
+For example:
+)
+   +/ <. 100 % 3 ^ >: i. <. 3 ^. 100
+48
+
+── (17 of 24) Third Solution (ctd) ──────────────────────────
+As confirmation, note that 3^48 evenly divides !100, but 3^49
+does not:
+)
+   a=: !100x
+   
+   b=: 3^48x
+   a -: b * a <.@% b
+1
+   
+   b=: 3^49x
+   a -: b * a <.@% b
+0
+
+── (18 of 24) Third Solution (ctd) ──────────────────────────
+The formula for each prime used (as above) is:
+
+  +/ <. n % p ^ >: i. <. p ^. n
+
+Since n may be an extended integer, we rewrite this to avoid
+floating point results as:
+
+  +/ n <.@% p ^ >: i. p <.@^. n
+
+and define a corresponding verb pexp:
+)
+   pexp=: [: +/ ] <.@% [ ^ >: @ i. @ (<.@^.)
+   
+   3 pexp 100
+48
+   
+   7 pexp 100
+16
+
+── (19 of 24) Third Solution (ctd) ──────────────────────────
+The list of primes less than or equal to n can be found using
+the inverse of p: the prime-producing verb.
+
+Define a verb, ple, to produce this list.
+)
+   p: 7                 NB. 7th prime
+19
+   
+   p: inverse 19        NB. which prime is 19?
+7
+   
+   p: i. p: inverse 19  NB. primes 0-6 (=i.7)
+2 3 5 7 11 13 17
+   
+   p: i. p: inverse 20  NB. primes 0-7 (=i.8)
+2 3 5 7 11 13 17 19
+   
+   ple=: p: @ i. @ (p: inverse) @ >:
+   
+   ple 19
+2 3 5 7 11 13 17 19
+
+── (20 of 24) Third Solution (ctd) ──────────────────────────
+The exponents of each prime p in !n are then given by:
+
+  (ple n) pexp"0 n
+
+Rank 0 is used to evaluate pexp on each prime in the left
+argument, rather than the list of primes as a whole.
+)
+   n=: 100
+   
+   ple n
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+   
+   (ple n) pexp"0 n
+97 48 24 16 9 7 5 5 4 3 3 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+
+── (21 of 24) Third Solution (ctd) ──────────────────────────
+The calculation of:
+
+   (2n)!
+  --------
+  n!(n+1)!
+
+can now be done by calculating the exponents of the numerator
+less the exponents of the denominator, for each prime up to
+2n, then taking the product of the prime powers.
+)
+
+── (22 of 24) Third Solution (ctd) ──────────────────────────
+Therefore we define cat3 as below, and check it matches cat2:
+)
+   cat3=: 3 : 0
+p=. ple +: y
+e1=. p pexp"0 +: y
+e2=. p pexp"0 y
+e3=. p pexp"0 >: y
+*/ p ^ x: e1-e2+e3
+)
+   
+   (cat2 1000) -: cat3 1000
+1
+
+── (23 of 24) Third Solution (ctd) ──────────────────────────
+cat3 can be used to calculate the 10,000th Catalan number.
+
+You can try larger numbers, but be warned this may take a
+long time, or run out of memory. On the PC of the author,
+cat3 100,000 takes just under 4 seconds and returns a result
+with 60,199 digits.
+
+The next section calculates cat3 10000. It may take a few
+seconds.
+)
+
+── (24 of 24) Third Solution (ctd) ──────────────────────────
+To see the answer in full, enter:
+
+   xfmt a
+)
+   a=: cat3 10000
+   
+   $":a
+6015
+
+End of lab
+   

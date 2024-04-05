@@ -778,6 +778,10 @@ define an "infinite" series.
    2{a
 5
    7{a
+|index error in run1, executing dyad {
+|x is 7; too long for y, whose length is only 6
+|   7    {a
+|[-3] 
    
    f=:>:@+:  NB. >: is increment, and +: is double
    f 2

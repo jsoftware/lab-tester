@@ -1,0 +1,259 @@
+─────────────────────────────────────────────────────────────
+Lab: Fast Fourier Transform
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 15) FFTW ───────────────────────────────────────────
+Fast Fourier Transform routines in J are based on the FFTW
+library, i.e. the Fastest Fourier Transform in the West.
+
+FFTW is a comprehensive collection of fast C routines for
+computing the discrete Fourier transform (DFT) in one or more
+dimensions, of both real and complex data, and of arbitrary
+input size.
+
+FFTW was developed at MIT by Matteo Frigo and Steven G.
+Johnson, and a full description is available at the FFTW home
+page: http://theory.lcs.mit.edu/~fftw/
+
+FFTW is licensed under the GNU General Public License, see
+addons/math/fftw/gpl.htm.
+)
+
+── (2 of 15) Source Files ───────────────────────────────────
+The FFTW routines are packaged in file libfftw3-3.dll, which
+includes the complete set of complex number routines in
+FFTW.
+
+These routines are accessible to J through the J DLL call
+mechanism as documented in User Manual chapter "Dlls and
+Memory Management".
+)
+
+── (3 of 15) Source Files (ctd) ─────────────────────────────
+The scripts and other files for FFTW are in subdirectory
+math/fftw of the addons directory, i.e.
+)
+   jpath '~addons/math/fftw'
+/applications/j9.5/addons/math/fftw
+
+── (4 of 15) Loading FFTW ───────────────────────────────────
+Load the fftw.ijs script to access FFTW.
+
+The main definitions for FFTW are read into locale jfftw.
+
+Two verbs are defined in the z locale:
+
+   fftw     forward FFT
+   ifftw    backward FFT
+)
+   load 'math/fftw'
+
+── (5 of 15) Examples ───────────────────────────────────────
+Here is a simple example:
+)
+   fftw i.8
+28 _4j9.65685 _4j4 _4j1.65685 _4 _4j_1.65685 _4j_4 _4j_9.65685
+
+── (6 of 15) Examples (ctd) ─────────────────────────────────
+This example is easily verified by direct computation in J.
+
+The discrete FFT for vector f is given by:
+
+            N-1
+  F(k) = sigma f(n) exp ((- j 2 pi n k)/N)     k = 0 ... N-1
+            n=0
+
+The verb dfft defined below implements the above expression,
+and matches the result of fftw. However, it is very
+inefficient for large arguments.
+
+Note that we remove small rounding errors by using the verb
+clean from the numeric script.
+)
+   dfft=: 3 : '+/ y * ^ (#y) %~ (- o. 0j2 ) * */~ i.#y'
+   
+   require 'numeric'
+   clean (dfft - fftw) i.8
+0 0 0 0 0 0 0 0
+
+── (7 of 15) Examples (ctd) ─────────────────────────────────
+The inverse FFT is given by:
+
+   ifftw
+
+or equivalently:
+
+   fftw inverse
+
+Note that the inverse is normalized, so that the inverse FFT
+returns the original data.
+)
+   ifftw fftw i.8
+0 1 2 3 4 5 6 7
+   
+   fftw inverse fftw i.8
+0 1 2 3 4 5 6 7
+
+── (8 of 15) Examples (ctd) ─────────────────────────────────
+Doing a FFT followed by an inverse FFT returns the original
+data, so that the following expression is everywhere zero:
+
+   dat - ifftw fftw dat
+
+In practice, there may be small rounding errors.  Again, we
+use clean to remove these.
+)
+   A=: ?.~ 8
+   
+   A - ifftw fftw A
+0 0 0 5.55112e_16 0 2.73432e_16 0 _8.88178e_16
+   
+   clean A - ifftw fftw A
+0 0 0 0 0 0 0 0
+
+── (9 of 15) Examples (ctd) ─────────────────────────────────
+In general, the arguments to fftw and ifftw are complex,
+multidimensional arrays.
+
+The next section computes the FFT on a random complex,
+6-dimensional array of shape 3 4 5 6 7 8. This may take a few
+seconds to run.
+)
+
+── (10 of 15) Examples (ctd) ────────────────────────────────
+)
+   A=: j./ ?. 1 + i. 2 3 4 5 6 7 8
+   
+   $A
+3 4 5 6 7 8
+   
+   $B=: fftw A
+3 4 5 6 7 8
+   
+   $C=: ifftw B
+3 4 5 6 7 8
+   
+   +/ , clean A - C      NB. A matches C
+0
+
+── (11 of 15) Other Facilities ──────────────────────────────
+The verbs fftw and ifftw should cover practically all uses of
+FFTW.
+
+However, there are two other facilities that are designed to
+optimize repeated uses of the FFTW library on arguments of
+the same shape, which are supported by the utilities in the
+jfftw locale:
+
+   saved plans
+   performance measures
+)
+
+── (12 of 15) Other Facilities (ctd) ────────────────────────
+When using the underlying facilities directly, take care to
+ensure the arguments given are correct. Calling DLL
+procedures incorrectly can crash your system or corrupt
+memory.
+)
+
+── (13 of 15) Saved Plans ───────────────────────────────────
+The verbs fftw and ifftw dynamically create and destroy
+plans. If you are calling an FFT on same sized arrays
+repeatedly, you can create and reuse a plan, destroying it
+when no longer required.
+
+In the following example, a plan is created for a 2 3 4
+array, and FFT is called twice using it:
+)
+   shape=: 2 3 4
+   data=: j./? 1+ i.2, shape                   NB. random data
+   
+   NB. get data in right shape for library call and allocate
+   NB. space for output.
+   in=: (,|:data)
+   out=: in * 0
+   
+   [P=: createplan_jfftw_ shape;(15!:14<'in');(15!:14<'out');_1;64   NB. create plan
+105553156875104
+   
+   NB. execute plan.  Result goes to out, which we must reshape
+   fftwexecute_jfftw_ P
+1
+   |: (|.shape) $ out
+         144j361   1.15064j15.9737           _32j_55 _42.3468j_40.2942
+         _88j_81 _50.9878j_12.3468            40j_13 _18.8109j_1.29423
+ 71.9878j41.3468  _42.1506j35.0263   41.8109j14.2942  11.3468j_24.7058
+
+           45j70  25.5429j_97.9352                23   37.8109j62.9878
+          _53j18 _25.8109j_73.6147           _15j_12  _17.4378j28.1314
+34.8109j_23.3853 _38.5429j_13.0648 _29.5622j_67.1314 _22.8109j_59.9878
+   
+   data=: j./? 1+ i.2, shape                   NB. new random data
+   
+   in=: (,|:data) a: } in                      NB. in-place update of input data
+   
+   fftwexecute_jfftw_ P                        NB. reuse existing plan
+1
+   |: (|.shape) $ out
+        112j483  4.24871j_59.9282           _6j_75 _65.7654j_15.7321
+        _44j_41  5.26795j_11.4449           _10j13  _29.5692j22.8564
+8.73205j47.4449 _44.2487j_46.0718 53.5692j_4.85641  27.7654j_12.2679
+
+         12j_39   47.1051j13.1244            _16j1  58.2295j_8.78461
+        _12j_23  _90.6218j40.3923           44j_15 _17.3923j_23.1244
+30.6218j19.6077 _29.1051j_11.1244   3.3923j1.12436  _42.2295j32.7846
+   
+   destroyplan_jfftw_ P                        NB. destroy plan
+1
+
+── (14 of 15) Performance Measures ──────────────────────────
+The final argument to the verb createplan is a flag,
+0=MEASURE or 64=ESTIMATE, where ESTIMATE is the default.
+
+Plans created with the MEASURE flag are optimized for a given
+array size. It takes much longer to create such plans than
+with ESTIMATE, and so you would do this only when a large
+number of FFTs are to be calculated for the same array
+shape.
+
+When creating plans with the ESTIMATE flag you may set up the
+input either before or after creating the plan.  But when
+creating plans with the MEASURE flag, you must set up the
+input after creating the plan.
+
+The next section creates a plan with a performance measure.
+It will take a little longer to run, most of the time being
+spent creating the plan.
+)
+
+── (15 of 15) Performance Measures (ctd) ────────────────────
+)
+   shape=: 2 3 4
+   in=: (*/ shape) $ 1j1                       NB. input must hold complex values
+   out=: in * 0
+   
+   [P=: createplan_jfftw_ shape;(15!:14<'in');(15!:14<'out');_1;0    NB. create plan
+105553157130496
+   
+   NB. populate input after creating plan.
+   data=: j./? 1+ i.2, shape
+   in=: (,|:data) a: } in
+   
+   fftwexecute_jfftw_ P                        NB. execute plan
+1
+   |: (|.shape) $ out                          NB. result goes to out
+          155j405  _31.4352j43.8923            _43j33   114.253j_42.3038
+          _79j_25 _32.7942j_56.1795             27j_1    28.0429j38.5526
+_17.2058j_90.8205   53.4352j23.1077 _36.0429j0.447441  _102.253j_52.6962
+
+           _29j41 _22.4474j_3.99038           _41j_29 _51.6769j_0.866025
+            41j51   47.8731j60.7942             41j21    12.6436j16.0622
+ _24.8731j45.2058  _60.5526j21.9904   40.3564j3.93782   10.6769j0.866025
+   
+   destroyplan_jfftw_ P                        NB. destroy plan
+1
+
+End of lab
+   

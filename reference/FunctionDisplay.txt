@@ -1,0 +1,406 @@
+─────────────────────────────────────────────────────────────
+Lab: Function Display
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 14) INTRODUCTION ───────────────────────────────────
+
+Although a simple representation, such as the vector of
+coefficients of a polynomial, may give all essential
+information about a particular function, it may also be
+helpful to display it in a more elaborate and more familiar
+form.
+
+For example, we may use the following function "display" to
+show the polynomial represented by the coefficients c:
+)
+   c=: 1 3 3 1
+   y=: 0 1 2 3 4 5 6
+   c p. y
+1 8 27 64 125 216 343
+   
+   display=: 3 : 0
+r=. '',:''                NB. 2 row 0 col
+while. 0<#y do.
+  r=. ('',:~":<:# y),.r   NB. exponent
+  r=. ('',:,'x'),.r       NB. argument x
+  r=. ('',:":{:y),.r      NB. coefficient
+  r=. ('',:,'+'),.r       NB. plus sign
+  y=. }:y                 NB. delete last coefficient
+end.
+}."1 r                    NB. delete leading +
+)
+   
+   display c
+  0   1   2   3
+1x +3x +3x +1x 
+   
+   display c,c,c,c,c,c
+  0   1   2   3   4   5   6   7   8   9   10   11   12   13   14   15   16   17   18   19   20   21   22   23
+1x +3x +3x +1x +1x +3x +3x +1x +1x +3x +3x  +1x  +1x  +3x  +3x  +1x  +1x  +3x  +3x  +1x  +1x  +3x  +3x  +1x  
+   
+   NB. Put cursor in field and use right and left arrows
+   NB. to view long displays.
+   
+
+── (2 of 14) FUNCTIONS OF TWO ARGUMENTS ─────────────────────
+
+Although expressions such as a+b and a-b and a*b provide a
+completely general scheme for functions of two arguments,
+other schemes abound in mathematics. Many of these fall in
+two popular classes:
+
+.                                              n The use of
+superscripts and subscripts, as in x  for x to the power n,
+in log y for the base b logarithm of y, .
+  b and in 1066  for the base 8 value of the digits 1066. .
+       8
+
+2. The use of various brackets to embrace the arguments, as
+       n                                  n       n
+   in ( ) for binomial coefficients, and [ ] and { } for
+       k                                  k       k
+   Stirling numbers of the first and second kind, and [m
+]
+   for a test of divisibility of n by m The brackets, of
+   course, appear in a font large enough to completely
+   embrace the arguments.
+
+Several of these dyadic functions occur as primitives in J.
+For example, try entering the following expressions:
+
+   5^3         NB. 5 to the power 3
+
+   10^.1000    NB. Base 10 logarithm of 1000
+
+   3!5         NB. Binomial coeff (# of ways of 3 outof 5)
+
+   8(0&=@|)32  NB. Test if 8 divides 32
+
+   10 #. 1 0 6 6
+
+   8 #. 1 0 6 6
+)
+
+── (3 of 14) FUNCTIONS OF TWO ARGUMENTS (ctd) ───────────────
+
+The functions ^ and ^. and ! follow the standard pattern set
+by + and * for extension to array arguments. For example, try
+the following:
+
+   0 1 2 3 4 ! 4
+
+   0 1 2 3 4 !/ 0 1 2 3 4
+
+Although bracket and super- and sub-script notation might be
+extended similarly, expressions of the following form would
+be rather jarring:
+
+        4
+   (         )
+    0 1 2 3 4
+
+   log          20
+      2 3 4 5 6
+
+   log          20 30 40 50 60
+      2 3 4 5 6
+
+   log20 30 40 40 50 60
+      2 3 4 5 6
+)
+
+── (4 of 14) FUNCTIONS OF TWO ARGUMENTS (ctd) ───────────────
+
+The operator / serves to apply a function over an array
+argument, as in +/ for summation, and */ for product-over.
+
+It may be remarked that the superscript used to denote the
+power function provides no symbol for such use with an
+operator.
+
+Although type fonts and special symbols may no longer present
+a problem, it is easy to see how printers found it easier to
+provide superscripts and subscripts, as well as common
+brackets in various sizes, than to cast new special symbols
+for use in mathematical texts.
+)
+
+── (5 of 14) SIGMA AND PI ───────────────────────────────────
+
+The capital Greek Sigma and Pi are commonly used to signify
+the sum and product over what follows them. We will use the
+functions S and PI, as defined and illustrated below:
+)
+     S=: +/
+    PI=: */
+   
+    AS=: -/   NB. Alternating sum
+   API=: %/   NB. Alternating product
+   
+   d=: 1 4 6 4 1
+   
+   S d
+16
+   1+4+6+4+1
+16
+   
+   PI d
+96
+   1*4*6*4*1
+96
+   
+   AS d
+0
+   1-4-6-4-1
+0
+   
+   API d
+0.375
+   1%4%6%4%1
+0.375
+
+── (6 of 14) POLYNOMIALS ────────────────────────────────────
+
+Operations on polynomials can be treated in terms of their
+coefficients. For example, the coefficients of the product of
+two polynomials can be obtained as the diagonal sums of the
+product table of the coefficients. Thus:
+)
+   c=: 1 3 3 1
+   d=: 1 4 6 4 1
+   
+   c*/d
+1  4  6  4 1
+3 12 18 12 3
+3 12 18 12 3
+1  4  6  4 1
+   
+   e=: +//. c*/d
+   
+   e
+1 7 21 35 35 21 7 1
+   
+   e p. y
+1 128 2187 16384 78125 279936 823543
+   
+   (c p. y) * (d p. y)
+1 128 2187 16384 78125 279936 823543
+   
+   display e
+  0   1    2    3    4    5   6   7
+1x +7x +21x +35x +35x +21x +7x +1x 
+
+── (7 of 14) POLYNOMIALS (ctd) ──────────────────────────────
+
+A polynomial product function may therefore be defined and
+used as follows:
+)
+   times=: +//.@(*/)
+   
+   f=: e times e
+   
+   f
+1 14 91 364 1001 2002 3003 3432 3003 2002 1001 364 91 14 1
+   
+   g=: f times f times c
+   
+   8 4 $ g
+        1        31       465      4495
+    31465    169911    736281   2629575
+  7888725  20160075  44352165  84672315
+141120525 206253075 265182525 300540195
+300540195 265182525 206253075 141120525
+ 84672315  44352165  20160075   7888725
+  2629575    736281    169911     31465
+     4495       465        31         1
+   
+   display g
+  0    1     2      3       4        5        6         7         8          9          10          11           12           13           14           15           16           17           18           19          20          21          22         23   ...
+1x +31x +465x +4495x +31465x +169911x +736281x +2629575x +7888725x +20160075x +44352165x  +84672315x  +141120525x  +206253075x  +265182525x  +300540195x  +300540195x  +265182525x  +206253075x  +141120525x  +84672315x  +44352165x  +20160075x  +7888725x  +26...
+   
+   ,. g p. x: y  NB. The function x: introduces extended precision
+                          1
+                 2147483648
+            617673396283947
+        4611686018427387904
+     4656612873077392578125
+  1326443518324400147398656
+157775382034845806615042743
+   
+   (6+1) ^ x: 31
+157775382034845806615042743
+
+── (8 of 14) RATIONALS ──────────────────────────────────────
+
+A function defined as the quotient of two polynomials c&p.
+and d&p. is called a rational function. Such a function is
+commonly displayed as the first polynomial above the second.
+Thus:
+)
+   rational=: (display@[),('-'"_),(display@])
+   
+   c rational d
+  0   1   2   3    
+1x +3x +3x +1x     
+-------------------
+  0   1   2   3   4
+1x +4x +6x +4x +1x 
+   
+   e rational f
+  0   1    2    3    4    5   6   7                                                          
+1x +7x +21x +35x +35x +21x +7x +1x                                                           
+---------------------------------------------------------------------------------------------
+  0    1    2     3      4      5      6      7      8      9      10     11    12    13   14
+1x +14x +91x +364x +1001x +2002x +3003x +3432x +3003x +2002x +1001x  +364x  +91x  +14x  +1x  
+   
+   NB. Put cursor in field and use right arrow to see long display
+
+── (9 of 14) RATIONALS (ctd) ────────────────────────────────
+
+We will now define and use a rational operator RAT such that
+c RAT d gives the rational function defined by the polynomial
+with coefficients c in the numerator, and the polynomial with
+coefficients d in the denominator:
+)
+   RAT=: 2 : 'm&p. % n&p.' NB. Rational operator
+   
+   c;d;y
+┌───────┬─────────┬─────────────┐
+│1 3 3 1│1 4 6 4 1│0 1 2 3 4 5 6│
+└───────┴─────────┴─────────────┘
+   
+   c RAT d
+1 3 3 1&p. % 1 4 6 4 1&p.
+   
+   c RAT d y
+1 0.5 0.333333 0.25 0.2 0.166667 0.142857
+   
+   d RAT c y
+1 2 3 4 5 6 7
+   
+   PROD=: 2 : 'm&p. * n&p.' NB. Product operator
+   
+   c PROD d y
+1 128 2187 16384 78125 279936 823543
+
+── (10 of 14) FUNCTIONS OF n ARGUMENTS ──────────────────────
+
+Expressions of the form f(a,b,c) and f(a,b,c,d) are commonly
+used to denote functions of more than two arguments.
+
+If the individual arguments a, b, etc. are scalars, the same
+form may be used in J. For example:
+)
+   f=: +/          NB. Sum
+   
+   g=: +/@(]*])    NB. Sum of products
+   
+   h=: */@(]^])    NB. Product of powers
+   
+   f(1,2,3,4,5,6)
+21
+   
+   g(1,2,3,4)
+30
+   
+   h(1,2,3,4)
+27648
+
+── (11 of 14) FUNCTIONS OF n ARGUMENTS (ctd) ────────────────
+
+However, a function such as the product of polynomial
+coefficients requires vector arguments, and these may not be
+simply catenated, but must be linked in separate boxes to
+preserve their identities. For example:
+)
+   times=: +//.@(*/)
+   
+   b=: 1 2 1
+   c=: 1 3 3 1
+   d=: 1 4 6 4 1
+   
+   c times d
+1 7 21 35 35 21 7 1
+   
+   b times c times d
+1 9 36 84 126 126 84 36 9 1
+   
+   b,c,d
+1 2 1 1 3 3 1 1 4 6 4 1
+   
+   b;c;d
+┌─────┬───────┬─────────┐
+│1 2 1│1 3 3 1│1 4 6 4 1│
+└─────┴───────┴─────────┘
+   
+   times &.>/ b;c;d
+┌───────────────────────────┐
+│1 9 36 84 126 126 84 36 9 1│
+└───────────────────────────┘
+   
+   >times &.>/ b;c;d
+1 9 36 84 126 126 84 36 9 1
+
+── (12 of 14) FUNCTIONS OF n ARGUMENTS (ctd) ────────────────
+
+The case of vector arguments appears to present a similar
+problem in the conventional notation f(b,c,d) . On the one
+hand, the comma is commonly used to denote catenation, as in
+(3,4,5), but cannot be so construed in the expression
+f(b,c,d) when b and c and d are vectors.
+)
+
+── (13 of 14) FUNCTIONS OF n ARGUMENTS (ctd) ────────────────
+
+A continued fraction is commonly expressed in the following
+form:
+
+   3 + 1
+       -
+       7 + 1
+           -
+           14 + 1
+                -
+                1
+
+It may be expressed in terms of the list 3 7 14 1 as follows:
+)
+   pr=: + %   NB. Plus reciprocal
+   
+   3 pr 7
+3.14286
+   
+   3 pr 7 pr 14
+3.14141
+   
+   pr/3 7 14 1
+3.14151
+
+── (14 of 14) FUNCTIONS OF n ARGUMENTS (ctd) ────────────────
+
+A general continued fraction (with numerators other than one)
+would be written as:
+
+  2 + 3
+      -
+      5 + 7
+          -
+          11 + 13
+               --
+               17
+
+It may be expressed in terms of the list 2 3 5 7 11 13 17 as
+follows:
+)
+   pd=: +`%   NB. Plus divide
+   
+   pd/ 2 3 5 7 11 13 17
+2.53619
+   
+   2 + 3 % 5 + 7 % 11 + 13 % 17
+2.53619
+
+End of lab
+   

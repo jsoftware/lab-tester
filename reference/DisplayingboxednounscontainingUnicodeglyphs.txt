@@ -1,0 +1,295 @@
+─────────────────────────────────────────────────────────────
+Lab: Displaying boxed nouns containing Unicode glyphs
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 14) U-NOUNS ────────────────────────────────────────
+Let us call a noun containing Unicoded glyphs a "u-noun".
+
+Make some u-nouns, for experimenting with ...
+)
+   cocurrent 'base'
+   dom=: '⌹'
+   qqd=: '⍞'
+   
+
+── (2 of 14) U-NOUNS DON'T BOX NICELY ───────────────────────
+
+U-nouns don't display correctly when boxed. Why not?
+
+The box algorithm was designed for single-atom glyphs only.
+ If a glyph is encoded in several atoms (members of (a.))
+ (as the utf-8 encoding standard requires) then the algorithm
+fails.
+)
+   <'a'		NB. This boxes nicely
+┌─┐
+│a│
+└─┘
+   <dom		NB. -- but not this
+┌─┐
+│⌹│
+└─┘
+   dom;qqd,'a'	NB. -- or this.
+┌─┬──┐
+│⌹│⍞a│
+└─┴──┘
+
+── (3 of 14) A BIGGER U-NOUN ────────────────────────────────
+
+The Atomic Representation of a tacit verb provides a good
+example of a deeply nested noun.
+
+Define a verb with (dom) in it.
+ Commence with the standard library verb: dlb
+ (Delete Leading Blanks)
+)
+   5!:6 <'dlb'	NB. Parenthesized Representation
+1&(128!:11)
+   5!:1 <'dlb'	NB. Atomic Representation
+┌─────────────────────────────────┐
+│┌─┬─────────────────────────────┐│
+││&│┌─────┬─────────────────────┐││
+││ ││┌─┬─┐│┌──┬────────────────┐│││
+││ │││0│1│││!:│┌───────┬──────┐││││
+││ ││└─┴─┘││  ││┌─┬───┐│┌─┬──┐│││││
+││ ││     ││  │││0│128│││0│11││││││
+││ ││     ││  ││└─┴───┘│└─┴──┘│││││
+││ ││     ││  │└───────┴──────┘││││
+││ ││     │└──┴────────────────┘│││
+││ │└─────┴─────────────────────┘││
+│└─┴─────────────────────────────┘│
+└─────────────────────────────────┘
+
+── (4 of 14) BIGGER U-NOUN DOESN'T BOX NICELY ───────────────
+
+Define a new verb: dlD with dom in place of: ' ' ...
+)
+   dlD=: }.~ (=&dom i. 0:)
+   
+   5!:6 <'dlb'	NB. Parenthesized Representation of: dlb
+1&(128!:11)
+   5!:6 <'dlD'	NB. Parenthesized Representation of: dlD
+(}.~) ((=&(226 140 185{a.)) (i.) (0:))
+
+── (5 of 14) BIGGER U-NOUN DOESN'T BOX NICELY (ctd) ─────────
+
+Observe how the presence of APL Domino in: dlD corrupts the
+box structure ...
+)
+   5!:1 <'dlD'
+┌────────────────────────────────────────┐
+│┌─┬────────────────────────────────────┐│
+││2│┌────────┬─────────────────────────┐││
+││ ││┌─┬────┐│┌─┬─────────────────────┐│││
+││ │││~│┌──┐│││3│┌─────────────┬──┬──┐││││
+││ │││ ││}.││││ ││┌─┬─────────┐│i.│0:│││││
+││ │││ │└──┘│││ │││&│┌─┬─────┐││  │  │││││
+││ ││└─┴────┘││ │││ ││=│┌─┬─┐│││  │  │││││
+││ ││        ││ │││ ││ ││0│⌹││││  │  │││││
+││ ││        ││ │││ ││ │└─┴─┘│││  │  │││││
+││ ││        ││ │││ │└─┴─────┘││  │  │││││
+││ ││        ││ ││└─┴─────────┘│  │  │││││
+││ ││        ││ │└─────────────┴──┴──┘││││
+││ ││        │└─┴─────────────────────┘│││
+││ │└────────┴─────────────────────────┘││
+│└─┴────────────────────────────────────┘│
+└────────────────────────────────────────┘
+
+── (6 of 14) CORRECTING THE BOX-STRUCTURE ───────────────────
+
+Addon: sbox defines a verb: sbox in the z-locale which
+corrects the box structure ...
+)
+   require 'format/sbox'
+   sbox 5!:1 <'dlD'
+┌────────────────────────────────────────┐
+│┌─┬────────────────────────────────────┐│
+││2│┌────────┬─────────────────────────┐││
+││ ││┌─┬────┐│┌─┬─────────────────────┐│││
+││ │││~│┌──┐│││3│┌─────────────┬──┬──┐││││
+││ │││ ││}.││││ ││┌─┬─────────┐│i.│0:│││││
+││ │││ │└──┘│││ │││&│┌─┬─────┐││  │  │││││
+││ ││└─┴────┘││ │││ ││=│┌─┬─┐│││  │  │││││
+││ ││        ││ │││ ││ ││0│⌹││││  │  │││││
+││ ││        ││ │││ ││ │└─┴─┘│││  │  │││││
+││ ││        ││ │││ │└─┴─────┘││  │  │││││
+││ ││        ││ ││└─┴─────────┘│  │  │││││
+││ ││        ││ │└─────────────┴──┴──┘││││
+││ ││        │└─┴─────────────────────┘│││
+││ │└────────┴─────────────────────────┘││
+│└─┴────────────────────────────────────┘│
+└────────────────────────────────────────┘
+
+── (7 of 14) REVISIT EARLIER EXAMPLES ───────────────────────
+
+Verb: sbox works with our earlier examples, too ... 
+)
+        <dom		NB. Corrupted box-structure
+┌─┐
+│⌹│
+└─┘
+   sbox <dom		NB. CORRECTED box-structure
+┌─┐
+│⌹│
+└─┘
+
+── (8 of 14) REVISIT EARLIER EXAMPLES (ctd) ─────────────────
+
+Verb: sbox works with our earlier examples, too ... 
+)
+        dom;qqd,'a'	NB. Corrupted box-structure
+┌─┬──┐
+│⌹│⍞a│
+└─┴──┘
+   sbox dom;qqd,'a'	NB. CORRECTED box-structure
+┌─┬──┐
+│⌹│⍞a│
+└─┴──┘
+
+── (9 of 14) A PRACTICAL EXAMPLE ────────────────────────────
+
+Let's take a more practical example of a u-noun ...
+)
+   fr=: }: 0 : 0
+TABLE
+Français
+Arménien
+Hébreu
+Thâna
+Dévanâgarî
+Gourmoukhî
+Télougou
+Tibétain
+Géorgien
+Jamos hangûl
+Éthiopien
+Chérokî
+Taï-le
+Flèches
+Opérateurs mathématiques
+Pavés
+Formes géométriques
+)
+
+── (10 of 14) APPEARANCE OF: fr ─────────────────────────────
+
+Even though fr is a string, here's how it looks in the J
+session ...
+)
+   fr
+TABLE
+Français
+Arménien
+Hébreu
+Thâna
+Dévanâgarî
+Gourmoukhî
+Télougou
+Tibétain
+Géorgien
+Jamos hangûl
+Éthiopien
+Chérokî
+Taï-le
+Flèches
+Opérateurs mathématiques
+Pavés
+Formes géométriques
+
+── (11 of 14) APPEARANCE OF: >fr ────────────────────────────
+
+How does fr look when boxed?
+
+Here's the classic algorithm ...
+)
+        <fr
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│TABLE Français Arménien Hébreu Thâna Dévanâgarî Gourmoukhî Télougou Tibétain Géorgien Jamos hangûl Éthiopien Chérokî Taï-le Flèches Opérateurs mathématiques Pavés Formes géométriques│
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+── (12 of 14) APPEARANCE OF: >fr (ctd) ──────────────────────
+
+Here's the corrected algorithm ...
+
+(NOTE an arbitrary difference from the classic box algorithm:
+ a LF-separated string is displayed like a 2-D matrix having
+the same appearance in the J session) ...
+)
+   sbox <fr
+┌────────────────────────┐
+│TABLE                   │
+│Français                │
+│Arménien                │
+│Hébreu                  │
+│Thâna                   │
+│Dévanâgarî              │
+│Gourmoukhî              │
+│Télougou                │
+│Tibétain                │
+│Géorgien                │
+│Jamos hangûl            │
+│Éthiopien               │
+│Chérokî                 │
+│Taï-le                  │
+│Flèches                 │
+│Opérateurs mathématiques│
+│Pavés                   │
+│Formes géométriques     │
+└────────────────────────┘
+
+── (13 of 14) APPEARANCE OF: >fr (ctd) ──────────────────────
+
+Combine: fr with numbers to make a display: z ... 
+)
+   sbox z=: (,.1+i.18) ; fr ; (,.?18#1000)
+┌──┬────────────────────────┬───┐
+│ 1│TABLE                   │622│
+│ 2│Français                │324│
+│ 3│Arménien                │907│
+│ 4│Hébreu                  │ 63│
+│ 5│Thâna                   │386│
+│ 6│Dévanâgarî              │338│
+│ 7│Gourmoukhî              │ 95│
+│ 8│Télougou                │601│
+│ 9│Tibétain                │285│
+│10│Géorgien                │926│
+│11│Jamos hangûl            │299│
+│12│Éthiopien               │417│
+│13│Chérokî                 │687│
+│14│Taï-le                  │837│
+│15│Flèches                 │792│
+│16│Opérateurs mathématiques│465│
+│17│Pavés                   │605│
+│18│Formes géométriques     │190│
+└──┴────────────────────────┴───┘
+
+── (14 of 14) APPEARANCE OF: >fr (ctd) ──────────────────────
+
+Here's how z looks without sbox ... 
+)
+   z
+┌──┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───┐
+│ 1│TABLE Français Arménien Hébreu Thâna Dévanâgarî Gourmoukhî Télougou Tibétain Géorgien Jamos hangûl Éthiopien Chérokî Taï-le Flèches Opérateurs mathématiques Pavés Formes géométriques│622│
+│ 2│                                                                                                                                                                                      │324│
+│ 3│                                                                                                                                                                                      │907│
+│ 4│                                                                                                                                                                                      │ 63│
+│ 5│                                                                                                                                                                                      │386│
+│ 6│                                                                                                                                                                                      │338│
+│ 7│                                                                                                                                                                                      │ 95│
+│ 8│                                                                                                                                                                                      │601│
+│ 9│                                                                                                                                                                                      │285│
+│10│                                                                                                                                                                                      │926│
+│11│                                                                                                                                                                                      │299│
+│12│                                                                                                                                                                                      │417│
+│13│                                                                                                                                                                                      │687│
+│14│                                                                                                                                                                                      │837│
+│15│                                                                                                                                                                                      │792│
+│16│                                                                                                                                                                                      │465│
+│17│                                                                                                                                                                                      │605│
+│18│                                                                                                                                                                                      │190│
+└──┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───┘
+
+End of lab
+   

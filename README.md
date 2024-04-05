@@ -27,7 +27,7 @@ Sequential Machines
 > 0.008396 2.71298e7             nondeterministic calculations
 =========================================================
 ```
-In addition, as a result of the script, a ```output``` directory will be created, in which the lab outputs will be placed. They are compared (```diff```) with the corresponding files in the ```reference``` directory when the report is created.
+In addition, as a result of the script, ```output``` directory will be created, in which the lab outputs will be placed. They are compared (```diff```) with the corresponding files in the ```reference``` directory when the report is created.
 
 ## Why aren't all the labs tested?
 The following labs are not tested.
