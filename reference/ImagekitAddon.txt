@@ -1,0 +1,284 @@
+─────────────────────────────────────────────────────────────
+Lab: Imagekit Addon
+Author: Cliff Reiter
+Math Dept, Lafayette College
+reiterc@lafayette.edu
+modified for J8.04, January 2016
+
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── (1 of 19) Image_kit addon ────────────────────────────────
+The imagekit addon is designed to allow reading and writing
+24 bit image files to and from J. This allows format
+conversion under program control as well as convenient file
+i/o for image processing with J. The supported types are BMP,
+JPEG, and PNG. There is limited support for 8-bit images.
+Since these facilities by their nature overwrite files, we
+offer standard but essential advice in such circumstances:
+users should work on duplicate copies of their files.
+)
+
+── (2 of 19) Note re. html lab ──────────────────────────────
+The image i/o utilities form the basis for html image gallery
+building and the other facilities included with the addon.
+While we briefly consider html gallery building, a more
+detailed lab, dealing just with html galleries, may be
+studied.
+)
+
+── (3 of 19) Loading the addon image script ─────────────────
+The addon script uses system calls to access the image files.
+)
+   dir_sep=: '/'
+   addon_path=: jpath '~addons/media/imagekit/'
+   require addon_path,'imagekit.ijs'
+
+── (4 of 19) Creating a temp folder ─────────────────────────
+Now we will define a temporary directory to place the image
+files that we will create during this lab. You may delete
+this directory when you are finished with the lab. However,
+the image3 html lab assumes that the images created by this
+lab are in place. Hence, you may want to leave the temporary
+directory in place until you have done the html lab.
+)
+   create_dir=:1!:5 :: ]
+   ]im_path=: jpath '~temp/imagekit/'   NB. directory to be created
+/users/marcin/j9.5-user/temp/imagekit/
+   create_dir < im_path
+┌──────────────────────────────────────┐
+│/users/marcin/j9.5-user/temp/imagekit/│
+└──────────────────────────────────────┘
+
+── (5 of 19) Notice provided images ─────────────────────────
+Now we can observe that one jpeg image, atkiln.jpg, was
+included with the addon and one png image was also included.
+We assign "im1" and "im2" as names for those files.
+)
+   fdir addon_path,'*.jpg'
+┌──────────┬─────────────────┬──────┬───┬──────┬──────────┐
+│poster.jpg│2024 4 6 17 27 57│349822│rw-│------│-rw-rw-r--│
+├──────────┼─────────────────┼──────┼───┼──────┼──────────┤
+│atkiln.jpg│2024 4 6 17 27 57│133288│rw-│------│-rw-rw-r--│
+└──────────┴─────────────────┴──────┴───┴──────┴──────────┘
+   im1=:addon_path,'atkiln.jpg'
+   fdir addon_path,'*.png'
+┌─────────────┬─────────────────┬─────┬───┬──────┬──────────┐
+│hy_fly_di.png│2024 4 6 17 27 57│34929│rw-│------│-rw-rw-r--│
+└─────────────┴─────────────────┴─────┴───┴──────┴──────────┘
+   im2=:addon_path,'hy_fly_di.png'
+
+── (6 of 19) Reading an image ───────────────────────────────
+We can read the image "im1" into J. It is a three dimensional
+integer array giving RGB triples with each entry an integer
+in the range 0-255. Its shape is height by width by 3.
+)
+   B=:read_image im1
+   $B
+700 468 3
+   <"1 (2 4){.B
+┌───────────┬───────────┬───────────┬───────────┐
+│253 251 252│251 249 250│251 249 250│252 250 251│
+├───────────┼───────────┼───────────┼───────────┤
+│254 252 253│253 251 252│252 250 251│253 251 252│
+└───────────┴───────────┴───────────┴───────────┘
+
+── (7 of 19) Writing an image ───────────────────────────────
+We can save the array B as a BMP in the temp directory. We
+also load the "view_m" script so that we can view the image.
+You close the image windows at your convenience, but you may
+want to leave them open for a couple of lab steps so that you
+can easily compare variations on the images which will be
+shown.
+)
+   B write_image im_path,'atkiln.bmp'
+982854
+   view_image im_path,'atkiln.bmp'
+
+── (8 of 19) Negating an image ──────────────────────────────
+It is easy to do arithmetic to negate the image, and then
+save and view it.
+)
+   (255-B) write_image im_path,'negative.bmp'
+982854
+   view_image im_path,'negative.bmp'
+
+── (9 of 19) Raw images ─────────────────────────────────────
+While integer arrays are convenient for most image
+processing, raw, binary, character arrays of bytes suffice
+for mechanical manipulations and save memory. Notice that
+"write_image" can also use binary arrays for its data.
+)
+   $B=:read_image_raw im_path,'atkiln.bmp'
+700 468
+   1 4{.B   NB. B contains raw, undisplayable, data
+_132100 _263686 _263686 _197893
+   (|.B) write_image im_path,'flip.bmp'
+982854
+   view_image im_path,'flip.bmp'
+
+── (10 of 19) Jpeg images ───────────────────────────────────
+We can save the images as *.bmp, *.jpg (or *.jpeg), *.png,
+etc. by using the appropriate filename extention. Since bmp,
+png, tga, and pnm are "lossless", there is not too much risk
+in using them. However, jpeg images are compressed using
+techniques that lose information and because of the space
+savings, it desirable to use the quality options in a manner
+appropriate to the application. Both global variables and
+options may be used to control the quality setting. Notice
+that the jpeg file is dramatically smaller than the png.
+)
+   B write_image im_path,'temp.png'
+720584
+   JPEG_QUALITY_mkit_
+90
+   B write_image im_path,'temp90.jpg'
+132283
+   75 B write_image im_path,'temp75.jpg'
+69058
+
+── (11 of 19) Jpeg quality ──────────────────────────────────
+Compare the temp75.jpg and temp90.jpg images. Here we changed
+the global setting to change the quality. Notice the higher
+quality image took more space but at screen quality it is
+difficult to see significant difference.
+)
+   JPEG_QUALITY_mkit_=:75   NB. reset to default value
+   view_image im_path,'temp75.jpg'
+   view_image im_path,'temp90.jpg'
+
+── (12 of 19) Jpeg quality II ───────────────────────────────
+Other exmples:
+)
+   60 B write_image im_path,'temp60.jpg'
+55032
+   40 B write_image im_path,'temp40.jpg'
+37774
+   10 B write_image im_path,'temp10.jpg'
+13724
+    5 B write_image im_path,'temp05.jpg'
+8747
+   view_image im_path,'temp05.jpg'
+
+── (13 of 19) Palettes ──────────────────────────────────────
+A common 8-bit image format consists of a palette and an
+array of indices into the palette representing the pixels.
+Such a format is useful for abstract images with few colors
+but may also be used to approximate a full color image. In
+that case, quality is lost in exchange for smaller size. The
+function quantize_image allows us to create a palette of the
+specified size and the array suitable for saving.
+)
+   B=:read_image im1
+   B write_image im_path,'temp.bmp'
+982854
+   (C256=:256 quantize_image B) write_image im_path,'atk256.bmp'
+982854
+   (C16=:16 quantize_image B) write_image im_path,'atk016.png'
+283099
+   view_image C256
+   view_image C16
+
+── (14 of 19) Palettes II: Hue ──────────────────────────────
+A function Hue is defined by the script. It gives full
+intensity colors running from red to yellow to green to cyan
+to blue to magenta and back to red as its argument runs from
+0 to 1.
+)
+   Hue(i.%<:)11
+255   0   0
+255 153   0
+204 255   0
+ 51 255   0
+  0 255 102
+  0 255 255
+  0 102 255
+ 51   0 255
+204   0 255
+255   0 153
+255   0   0
+
+── (15 of 19) Palettes IV ───────────────────────────────────
+We may save paletted images using <tt>(pal;indices)</tt> type
+structures. Paletted bmp and png images may also be read as
+palleted images.
+)
+   $hpal=:Hue(i.%<:)256
+256 3
+   $b=:256#i.1 256
+256 256
+   (hpal;b) write_image im_path,'hues.png'
+904
+   view_image im_path,'hues.png'
+
+── (16 of 19) Loading html_gallery ──────────────────────────
+The addon script html_gallery8 provides functions for working
+with collections of images and creating html files for
+showing them. These are convenient for applications such as
+reviewing, manipulating, and presenting for web viewing, a
+collection of images from a digital camera.
+)
+   load '~addons/media/imagekit/html_gallery.ijs'
+
+── (17 of 19) Image lists ───────────────────────────────────
+We can now easily check which images are in the temporary
+folder we created.
+)
+   >images_in im_path
+/users/marcin/j9.5-user/temp/imagekit/atk016.png  
+/users/marcin/j9.5-user/temp/imagekit/atk256.bmp  
+/users/marcin/j9.5-user/temp/imagekit/atk256.png  
+/users/marcin/j9.5-user/temp/imagekit/atkiln.bmp  
+/users/marcin/j9.5-user/temp/imagekit/atkiln.png  
+/users/marcin/j9.5-user/temp/imagekit/disk.png    
+/users/marcin/j9.5-user/temp/imagekit/flip.bmp    
+/users/marcin/j9.5-user/temp/imagekit/flip.png    
+/users/marcin/j9.5-user/temp/imagekit/hues.png    
+/users/marcin/j9.5-user/temp/imagekit/negative.bmp
+/users/marcin/j9.5-user/temp/imagekit/negative.png
+/users/marcin/j9.5-user/temp/imagekit/temp.bmp    
+/users/marcin/j9.5-user/temp/imagekit/temp.png    
+/users/marcin/j9.5-user/temp/imagekit/temp05.jpg  
+/users/marcin/j9.5-user/temp/imagekit/temp10.jpg  
+/users/marcin/j9.5-user/temp/imagekit/temp40.jpg  
+/users/marcin/j9.5-user/temp/imagekit/temp60.jpg  
+/users/marcin/j9.5-user/temp/imagekit/temp75.jpg  
+/users/marcin/j9.5-user/temp/imagekit/temp90.jpg  
+   
+   images_in im_path
+┌────────────────────────────────────────────────┬────────────────────────────────────────────────┬────────────────────────────────────────────────┬────────────────────────────────────────────────┬────────────────────────────────────────────────┬──────────...
+│/users/marcin/j9.5-user/temp/imagekit/atk016.png│/users/marcin/j9.5-user/temp/imagekit/atk256.bmp│/users/marcin/j9.5-user/temp/imagekit/atk256.png│/users/marcin/j9.5-user/temp/imagekit/atkiln.bmp│/users/marcin/j9.5-user/temp/imagekit/atkiln.png│/users/mar...
+└────────────────────────────────────────────────┴────────────────────────────────────────────────┴────────────────────────────────────────────────┴────────────────────────────────────────────────┴────────────────────────────────────────────────┴──────────...
+
+── (18 of 19) Jpegs in temp folder ──────────────────────────
+Now we consider just the set of jpeg images. Any thumbnails
+with default thumbnail type name will not be included.
+)
+   >im_list=:jpegs_in im_path
+/users/marcin/j9.5-user/temp/imagekit/temp05.jpg
+/users/marcin/j9.5-user/temp/imagekit/temp10.jpg
+/users/marcin/j9.5-user/temp/imagekit/temp40.jpg
+/users/marcin/j9.5-user/temp/imagekit/temp60.jpg
+/users/marcin/j9.5-user/temp/imagekit/temp75.jpg
+/users/marcin/j9.5-user/temp/imagekit/temp90.jpg
+   $im_list
+6
+
+── (19 of 19) A gallery page ────────────────────────────────
+Here we made a 4 column gallery page which has the default
+name index.html in the temporary folder. Thumbnails will be
+created for each image so this will take several seconds. If
+the command below doesn't open a browser once the computation
+is done, use a web browser to open index.html in the
+temporary folder. Click on images to get a full view and
+observe the impact of quality settings upon the images.
+)
+   4 mk_html_gallery 240 180 im_list
+1011
+   
+   NB. attempt to launch browser:
+   open_html im_path,'index.html'
+
+End of lab
+   

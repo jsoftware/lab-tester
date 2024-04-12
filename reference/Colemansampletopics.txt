@@ -1,0 +1,884 @@
+─────────────────────────────────────────────────────────────
+Lab: Coleman (sample topics)
+Author: KEI
+To advance the lab, select menu Help|Studio|Advance or the
+corresponding shortcut.
+
+
+── Chapter 1 INTRODUCTION ───────────────────────────────────
+
+── ((1) 1 of 28) A. Purpose ─────────────────────────────────
+This lab is written as a companion to A. J. Coleman, et al.,
+Algebra, Gage Publishing Limited, Toronto 1979, ISBN
+0-7715-3636-4, designed for use in Grade 13 in Ontario
+schools. It will be referred to here as ALG.
+
+The use of the computer makes it possible to experiment with
+mathematical ideas with ease and precision, sometimes
+revealing lapses in the text-book treatment, and often
+providing new insights.
+
+Study each computer example, but do not get hung up by
+failure to fully grasp any one -- it is better to continue as
+far as possible, returning to the matter in a review.
+
+A computer sentence may include a phrase such as -- NB. *
+denotes multiplication -- which is used as a comment (Nota
+Bene) and is not executed. For example:
+)
+   3+4
+7
+   3*4
+12
+   3^4     NB. three to the power four
+81
+   5*4+3   NB. Equivalent to 5*(4+3), that is, executed from
+35
+           NB. right to left, with no precedence rules such
+           NB. as "times before plus and minus"
+   
+
+── ((1) 2 of 28) B. Computer use ────────────────────────────
+To use the computer for experimentation, type a sentence such
+as 2*i.11 and then press the Enter key to execute it.
+
+Do not hesitate to try any experiment -- the worst that can
+happen is the appearence of a (possibly helpful) error
+message, after which you may simply continue.
+
+This section illustrates the use of a few basic facilities:
+the copula (=:) to assign values to names of variables and
+functions, and the use of lists.
+
+The rest of this chapter provides examples for each chapter
+of ALG. They should prove intelligible even to a reader not
+yet familiar with the topics covered:
+)
+   x=:4  NB. x is (assigned) 4
+   
+   y=:0 1 2 3 4 5 6 7 8 9 10  NB. y is (the list) 0 to 10
+   
+   x*y
+0 4 8 12 16 20 24 28 32 36 40
+   
+   y*y   NB. Element-by element multiplication
+0 1 4 9 16 25 36 49 64 81 100
+   
+   and=:*.
+   0 0 1 1 and 0 1 0 1
+0 0 0 1
+
+── ((1) 3 of 28) C. Examples for Chapter 1 (Sets and Subsets) 
+A function that yields only a 0 or a 1 classifies its
+arguments, and can therefore be said to represent a set, with
+the result 1 indicating that an argument belongs to the set:
+)
+   y=:i.11  NB. the function i. produces lists of successive integers
+   y
+0 1 2 3 4 5 6 7 8 9 10
+   5<y
+0 0 0 0 0 0 1 1 1 1 1
+   S1=:5&<  NB. The set "five is less than"
+   S1 y
+0 0 0 0 0 0 1 1 1 1 1
+   S2=:8&>
+   S2 y
+1 1 1 1 1 1 1 1 0 0 0
+   and=:*.
+   (S1 y) and (S2 y)
+0 0 0 0 0 0 1 1 0 0 0
+   S3=:S1 and S2             NB. the intersection of sets S1 and S2
+   S3 y
+0 0 0 0 0 0 1 1 0 0 0
+   select=:#
+   (S3 y) select y           NB. the members of S3 in y
+6 7
+   membersofS3=:S3 select ]  NB. ] is the identity function
+   membersofS3 y
+6 7
+
+── ((1) 4 of 28) D. Examples for Chapter 2 (Arrangements and Subsets) 
+In the expression { 'ab';'ABC' the function { applies to the
+character lists 'ab' and 'ABC' to produce a catalogue of all
+possible pairs of an element from the first list with one
+from the second.
+
+Similarly, the expression {'abc';'abc' produces the Cartesian
+product shown in Section 2.1 of ALG, showing that the
+diagonal contains the only three duplicate pairs. Similar
+Cartesian products are produced by longer lists.
+
+The full definition (and further examples) of any function
+such as { may be obtained by placing the cursor immediately
+to the left of it, holding down the Ctrl key, and pressing
+key F1. To restore normal execution, press the key Esc:
+)
+   'ab';'ABC'
+┌──┬───┐
+│ab│ABC│
+└──┴───┘
+   { 'ab';'ABC'
+┌──┬──┬──┐
+│aA│aB│aC│
+├──┼──┼──┤
+│bA│bB│bC│
+└──┴──┴──┘
+   { 'abc';'abc'
+┌──┬──┬──┐
+│aa│ab│ac│
+├──┼──┼──┤
+│ba│bb│bc│
+├──┼──┼──┤
+│ca│cb│cc│
+└──┴──┴──┘
+   {'abcde';'abcde'
+┌──┬──┬──┬──┬──┐
+│aa│ab│ac│ad│ae│
+├──┼──┼──┼──┼──┤
+│ba│bb│bc│bd│be│
+├──┼──┼──┼──┼──┤
+│ca│cb│cc│cd│ce│
+├──┼──┼──┼──┼──┤
+│da│db│dc│dd│de│
+├──┼──┼──┼──┼──┤
+│ea│eb│ec│ed│ee│
+└──┴──┴──┴──┴──┘
+
+── ((1) 5 of 28) D. Examples for Chapter 2 (Arrangements and Subsets) (ctd) 
+The following examples define a binomial coefficients
+function bc, use it to define the function C of Section 2.4
+of ALG (for the number of r-subsets of a set of n elements),
+as well as a function P that produces a matrix whose
+none-zero elements are the familiar Pascal's triangle.
+
+They also show the application of matrix inverse to the
+matrix P 5 to show some mathematically significant patterns:
+)
+   bc=:!~
+   C=:bc/
+   P=:C~@i.
+   5 bc 3
+10
+   C(5,3)
+10
+   ]M=:P 5
+1 0 0 0 0
+1 1 0 0 0
+1 2 1 0 0
+1 3 3 1 0
+1 4 6 4 1
+   inv=:%.
+   mp=:+/ . *
+   inv M  NB. Alternating binomial coefficients
+ 1  0  0  0 0
+_1  1  0  0 0
+ 1 _2  1  0 0
+_1  3 _3  1 0
+ 1 _4  6 _4 1
+   (M mp inv M) ; (M mp M mp M mp M)
+┌─────────┬───────────────┐
+│1 0 0 0 0│  1   0  0  0 0│
+│0 1 0 0 0│  4   1  0  0 0│
+│0 0 1 0 0│ 16   8  1  0 0│
+│0 0 0 1 0│ 64  48 12  1 0│
+│0 0 0 0 1│256 256 96 16 1│
+└─────────┴───────────────┘
+
+── ((1) 6 of 28) E. Examples for Chapter 3 (Mathematical Induction and the Binomial Theorem) 
+These examples treat the summation notation of Section 3.1 of
+ALG:
+)
+   a=:1 2 3 4 5
+   sum=:+/      NB. Equivalent to Greek capital sigma
+   sum a
+15
+   ps=:sum\     NB. Partial sums, or subtotals
+   ps a
+1 3 6 10 15
+   ps a*a
+1 5 14 30 55
+   prod=:*/     NB. Equivalent to Greek capital pi
+   pp=:prod\
+   prod a
+120
+   pp a
+1 2 6 24 120
+   !a           NB. Factorial
+1 2 6 24 120
+
+── ((1) 7 of 28) E. Examples for Chapter 3 (Mathematical Induction and the Binomial Theorem) (ctd) 
+The following illustrates the binomial theorem of Section 3.5
+of ALG:
+)
+   n=:4
+   ]i=:i. n+1
+0 1 2 3 4
+   bc=:!~
+   n bc i
+1 4 6 4 1
+   pol=:p.         NB. Polynomial function with exponents in ascending order
+   1 2 3 pol x=:2
+17
+   (n bc i) pol x
+81
+   (x+1)^n         NB. ^ is the power function
+81
+   10 bc i.11
+1 10 45 120 210 252 210 120 45 10 1
+   (10 bc i.11) pol x
+59049
+   (x+1)^10
+59049
+
+── ((1) 8 of 28) F. Examples for Chapter 4 (Probability) ────
+The following expressions give the sample spaces of a die (as
+discussed in Section 4.1 of ALG) for two and three throws:
+)
+   S=:1 2 3 4 5 6
+   {S;S
+┌───┬───┬───┬───┬───┬───┐
+│1 1│1 2│1 3│1 4│1 5│1 6│
+├───┼───┼───┼───┼───┼───┤
+│2 1│2 2│2 3│2 4│2 5│2 6│
+├───┼───┼───┼───┼───┼───┤
+│3 1│3 2│3 3│3 4│3 5│3 6│
+├───┼───┼───┼───┼───┼───┤
+│4 1│4 2│4 3│4 4│4 5│4 6│
+├───┼───┼───┼───┼───┼───┤
+│5 1│5 2│5 3│5 4│5 5│5 6│
+├───┼───┼───┼───┼───┼───┤
+│6 1│6 2│6 3│6 4│6 5│6 6│
+└───┴───┴───┴───┴───┴───┘
+   {S;S;S
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│1 1 1│1 1 2│1 1 3│1 1 4│1 1 5│1 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│1 2 1│1 2 2│1 2 3│1 2 4│1 2 5│1 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│1 3 1│1 3 2│1 3 3│1 3 4│1 3 5│1 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│1 4 1│1 4 2│1 4 3│1 4 4│1 4 5│1 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│1 5 1│1 5 2│1 5 3│1 5 4│1 5 5│1 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│1 6 1│1 6 2│1 6 3│1 6 4│1 6 5│1 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│2 1 1│2 1 2│2 1 3│2 1 4│2 1 5│2 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│2 2 1│2 2 2│2 2 3│2 2 4│2 2 5│2 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│2 3 1│2 3 2│2 3 3│2 3 4│2 3 5│2 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│2 4 1│2 4 2│2 4 3│2 4 4│2 4 5│2 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│2 5 1│2 5 2│2 5 3│2 5 4│2 5 5│2 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│2 6 1│2 6 2│2 6 3│2 6 4│2 6 5│2 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│3 1 1│3 1 2│3 1 3│3 1 4│3 1 5│3 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│3 2 1│3 2 2│3 2 3│3 2 4│3 2 5│3 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│3 3 1│3 3 2│3 3 3│3 3 4│3 3 5│3 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│3 4 1│3 4 2│3 4 3│3 4 4│3 4 5│3 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│3 5 1│3 5 2│3 5 3│3 5 4│3 5 5│3 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│3 6 1│3 6 2│3 6 3│3 6 4│3 6 5│3 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│4 1 1│4 1 2│4 1 3│4 1 4│4 1 5│4 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│4 2 1│4 2 2│4 2 3│4 2 4│4 2 5│4 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│4 3 1│4 3 2│4 3 3│4 3 4│4 3 5│4 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│4 4 1│4 4 2│4 4 3│4 4 4│4 4 5│4 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│4 5 1│4 5 2│4 5 3│4 5 4│4 5 5│4 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│4 6 1│4 6 2│4 6 3│4 6 4│4 6 5│4 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│5 1 1│5 1 2│5 1 3│5 1 4│5 1 5│5 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│5 2 1│5 2 2│5 2 3│5 2 4│5 2 5│5 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│5 3 1│5 3 2│5 3 3│5 3 4│5 3 5│5 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│5 4 1│5 4 2│5 4 3│5 4 4│5 4 5│5 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│5 5 1│5 5 2│5 5 3│5 5 4│5 5 5│5 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│5 6 1│5 6 2│5 6 3│5 6 4│5 6 5│5 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│6 1 1│6 1 2│6 1 3│6 1 4│6 1 5│6 1 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│6 2 1│6 2 2│6 2 3│6 2 4│6 2 5│6 2 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│6 3 1│6 3 2│6 3 3│6 3 4│6 3 5│6 3 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│6 4 1│6 4 2│6 4 3│6 4 4│6 4 5│6 4 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│6 5 1│6 5 2│6 5 3│6 5 4│6 5 5│6 5 6│
+├─────┼─────┼─────┼─────┼─────┼─────┤
+│6 6 1│6 6 2│6 6 3│6 6 4│6 6 5│6 6 6│
+└─────┴─────┴─────┴─────┴─────┴─────┘
+   L=:'ABCDEFGH'
+   {L;L
+┌──┬──┬──┬──┬──┬──┬──┬──┐
+│AA│AB│AC│AD│AE│AF│AG│AH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│BA│BB│BC│BD│BE│BF│BG│BH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│CA│CB│CC│CD│CE│CF│CG│CH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│DA│DB│DC│DD│DE│DF│DG│DH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│EA│EB│EC│ED│EE│EF│EG│EH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│FA│FB│FC│FD│FE│FF│FG│FH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│GA│GB│GC│GD│GE│GF│GG│GH│
+├──┼──┼──┼──┼──┼──┼──┼──┤
+│HA│HB│HC│HD│HE│HF│HG│HH│
+└──┴──┴──┴──┴──┴──┴──┴──┘
+
+── ((1) 9 of 28) F. Examples for Chapter 4 (Probability) (ctd) 
+The following illustrates the evaluation of C(n,r), the
+number of ways of choosing r things out of n, and the
+equivalent calculation in terms of a numerator and
+denominator (as discussed in Section 4.7 of ALG):
+)
+   n=:6
+   r=:3
+   C=:!~/
+   C(n,r)
+20
+   fon=:{.-i.@}.
+   fon n,r
+6 5 4
+   fod=:>:@i.@}.
+   fod n,r
+1 2 3
+   table=:(fon,.fod) n,r
+   table
+6 1
+5 2
+4 3
+   */table
+120 6
+   %/*/table
+20
+
+── ((1) 10 of 28) G. Examples for Chapter 5 (Vectors as Directed Line Segments) 
+In Section 5.1 of ALG it is stated athat "A vector may be
+represented geometrically by a directed line segment".
+
+Algebraically, it may be represented by a list, and such
+lists can be added, subtracted, and multiplied by single
+elements (called scalars) in obvious ways:
+)
+   a=:3 5
+   b=:6 1
+   a+b
+9 6
+   a-b
+_3 4
+   b-a
+3 _4
+   4*a
+12 20
+   (5*a)+(5*b)
+45 30
+   5*(a+b)
+45 30
+
+── ((1) 11 of 28) G. Examples for Chapter 5 (Vectors as Directed Line Segments) (ctd) 
+
+COORDINATE GEOMETRY
+
+Plot points with coordinates 3 5 and 6 2 on graph paper, and
+comment on the following statements:
+
+* The vectors a and b can be visualized as coordinates of
+points in geometry.
+
+* The difference a-b is a vector that can be pictured as the
+movement (in the x and y directions) from point a to point
+b.
+
+* Geometrically, the magnitude of the vector a-b is the
+length of the vector from point a to point b.
+
+* If you know the theorem of Pythagoras, write and execute an
+expression to give the magnitude of the vector c=:a-b.
+)
+
+── ((1) 12 of 28) G. Examples for Chapter 5 (Vectors as Directed Line Segments) (ctd) 
+
+MAGNITUDE OR LENGTH
+
+The magnitude of a vector is the square root of the sum of
+the squares of its coordinates. Thus:
+)
+   c=:a-b
+   c
+_3 4
+   *:c
+9 16
+   +/*:c
+25
+   %:+/*:c
+5
+   L=:%:@:(+/)@:*:
+   L c
+5
+   L a
+5.83095
+   L b
+6.08276
+
+── ((1) 13 of 28) G. Examples for Chapter 5 (Vectors as Directed Line Segments) (ctd) 
+
+THREE DIMENSIONS
+
+A three-element vector represents coordinates in 3-space.
+Thus, if d=:5 4 3 represents the dimensions in metres of a 5
+by 4 room with a 3 metre ceiling, the length of a body
+diagonal (from any vertex to the farthest vertex) is given by
+the same function L, For example:
+)
+   d=:5 4 3
+   L d
+7.07107
+   p=:0.25*d
+   p
+1.25 1 0.75
+   L d-p
+5.3033
+   cv=: 0 1 1 * d    NB. Ceiling vertex opposite to d
+   cv
+0 4 3
+   L cv              NB. Length of the face diagonal on the ceiling
+5
+   */d               NB. Volume of room
+60
+
+── ((1) 14 of 28) H. Examples for Chapter 6 (Vectors and their Components) 
+The important dot product is simple to define (the sum of the
+element-by-element product of its vector arguments), but it
+is not so easy to get a grasp on its important properties.
+
+Begin by plotting the vectors 3 4 and _8 6, drawing lines to
+the origin, and verifying that they are perpendicular. Then
+note that their dot product is zero, and that the dot product
+of each with itself is the square of its length:
+)
+   dp=:+/@:*"1/
+   L=:%:@:(+/)@:*: " 1
+   a=:3 4
+   b=:_8 6
+   a dp b
+0
+   a dp a
+25
+   b dp b
+100
+   L a
+5
+   L b
+10
+
+── ((1) 15 of 28) H. Examples for Chapter 6 (Vectors and their Components) (ctd) 
+Further insight may be gained by taking a matrix (to be
+called B) whose row vectors are of equal length (that is, lie
+on the same circle), and computing the dot product of each
+with the others. Study the results carefully, and comment on
+them:
+)
+   angles=:] * i.@:<.@:(360&%)
+   angles 30
+0 30 60 90 120 150 180 210 240 270 300 330
+   sin=:1: o. %&180p_1
+   cos=:2: o. %&180p_1
+   circle=:(cos,.sin)@:angles
+   ]B=:circle 90
+           1           0
+ 6.12323e_17           1
+          _1 1.22465e_16
+_1.83697e_16          _1
+   B dp/ B
+           1 6.12323e_17          _1 _1.83697e_16
+ 6.12323e_17           1 6.12323e_17           _1
+          _1 6.12323e_17           1  6.12323e_17
+_1.83697e_16          _1 6.12323e_17            1
+   B ; (B dp/ B)
+┌────────────────────────┬─────────────────────────────────────────────────┐
+│           1           0│           1 6.12323e_17          _1 _1.83697e_16│
+│ 6.12323e_17           1│ 6.12323e_17           1 6.12323e_17           _1│
+│          _1 1.22465e_16│          _1 6.12323e_17           1  6.12323e_17│
+│_1.83697e_16          _1│_1.83697e_16          _1 6.12323e_17            1│
+└────────────────────────┴─────────────────────────────────────────────────┘
+
+── ((1) 16 of 28) H. Examples for Chapter 6 (Vectors and their Components) (ctd) 
+Compare your comments with the following:
+
+* The dot product of a vector with its negative (e.g. 1 0
+with _1 0) is negative.
+
+* The dot product of a vector with any perpendicular vector
+is zero (1 0 and 0 _1)
+
+Comment on the following results:
+)
+   d2=:0j2&":   NB. Contract display to two digits
+   d1=:0j1&":   NB. Contract display to one digit
+   ]B=:circle 30
+           1           0
+    0.866025         0.5
+         0.5    0.866025
+ 6.12323e_17           1
+        _0.5    0.866025
+   _0.866025         0.5
+          _1 1.22465e_16
+   _0.866025        _0.5
+        _0.5   _0.866025
+_1.83697e_16          _1
+         0.5   _0.866025
+    0.866025        _0.5
+   
+   d2 B dp/ B
+ 1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87
+ 0.87  1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50
+ 0.50  0.87  1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00
+ 0.00  0.50  0.87  1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50
+_0.50  0.00  0.50  0.87  1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87
+_0.87 _0.50  0.00  0.50  0.87  1.00  0.87  0.50  0.00 _0.50 _0.87 _1.00
+_1.00 _0.87 _0.50  0.00  0.50  0.87  1.00  0.87  0.50  0.00 _0.50 _0.87
+_0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87  1.00  0.87  0.50  0.00 _0.50
+_0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87  1.00  0.87  0.50  0.00
+ 0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87  1.00  0.87  0.50
+ 0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87  1.00  0.87
+ 0.87  0.50  0.00 _0.50 _0.87 _1.00 _0.87 _0.50  0.00  0.50  0.87  1.00
+
+── ((1) 17 of 28) H. Examples for Chapter 6 (Vectors and their Components) (ctd) 
+
+The cross product of vectors a and b is a vector that is
+perpendicular to both a and b. Thus:
+)
+   l=:1&|.      NB. Left shift by one place
+   r=:_1&|.     NB. Right shift by one place
+   a=:3 5 4
+   b=:1 2 6
+   (l a);(r b);(l b);(r a)
+┌─────┬─────┬─────┬─────┐
+│5 4 3│6 1 2│2 6 1│4 3 5│
+└─────┴─────┴─────┴─────┘
+   
+   ((l a)*(r b)) - ((l b)*(r a))
+22 _14 1
+   X=:(l@[ * r@]) - (l@] * r@[)    NB. Cross product
+   ]]cp=:a X b
+22 _14 1
+   cp dp a                         NB. Test for perpendicularity
+0
+   cp dp b
+0
+   a X a
+0 0 0
+   c=:2 1 4
+   b+c
+3 3 10
+   (b+c) X a
+_38 18 6
+   (b X a)+(c X a)
+_38 18 6
+
+── ((1) 18 of 28) I. Examples for Chapter 7 (Equations of Lines and Planes) 
+As noted in Section 7.4 of ALG, a line in 3-space through the
+point r0 and running in the direction m may be represented by
+r0+t*m, where t is a scalar parameter that determines a
+particular point on the line.
+
+For the vector r0=:1 1 2 and m=:1 2 1, plot several points on
+the line (including the cases 2 and 1 and 0 and _1 for t),
+using axes in the directions _ and / and | for coordinates x
+and y and z.
+
+The coordinates may be computed as illustrated below:
+)
+   r0=:1 1 2
+   m=:1 2 1
+   r0+2*m
+3 5 4
+   r0+1*m
+2 3 3
+   r0+0*m
+1 1 2
+   r0+_1*m
+0 _1 1
+   r0 (+"1 1) 2 1 0 _1 (*"0 1) m
+3  5 4
+2  3 3
+1  1 2
+0 _1 1
+
+── ((1) 19 of 28) I. Examples for Chapter 7 (Equations of Lines and Planes) (ctd) 
+
+Vectors a and b are said to be parallel if b is a scalar
+multiple of a. For any non-parallel vectors, the points
+(s*a)+(t*b) are said to lie in a plane.
+
+Using a=:r0 and b=:m, compute and plot a number of points
+(s*a)+(t*b), and observe that they appear to lie in a plane:
+)
+   a=:1 1 2
+   b=:1 2 1
+   s=:2
+   t=:3
+   (s*a)+(t*b)
+5 8 7
+
+── ((1) 20 of 28) I. Examples for Chapter 7 (Equations of Lines and Planes) (ctd) 
+
+Convenient computation of points in a plane will be provided
+by an operator PLANE that produces a function afb=:a PLANE b
+for which s afb t produces a point in the plane of a and b.
+Thus:
+)
+   PLANE=:2 : 0
+:
+(x*m)+(y*n)
+)
+   
+   afb=:a PLANE b
+   
+   2 afb 3
+5 8 7
+   2 a PLANE b 3
+5 8 7
+   1 2 3 afb"0/ 3 4
+4  7  5
+5  9  6
+
+5  8  7
+6 10  8
+
+6  9  9
+7 11 10
+
+── ((1) 21 of 28) J. Examples for Chapter 8 (Linear Equations and Matrices) 
+
+Section 8.1 of ALG states: By a system of equations ... we
+mean a set consisting of one or more linear equations. And in
+Example 1 gives the three equations:
+
+   x+2y- z =  1  (1)
+   x- y+2z =  7  (2)
+  2x+3y+ z = 10  (3)
+
+We will treat this as a single fuction F of the vector x,y,z
+yielding a vector that is required (by giving suitable values
+to x and y and z) to equal the result 1 7 10.
+
+The function F can be obtained by applying the dot product
+dp=:+/@:*"1 to each row of the following matrix:
+)
+   M=:3 3 $ 1 2 _1,1 _1 2,2 3 1
+   M
+1  2 _1
+1 _1  2
+2  3  1
+   x=:1 [ y=:2 [z=:4
+   v=:x,y,z
+   v
+1 2 4
+   dp=:+/@:*"1
+   M dp v
+1 7 12
+   1 7 10 = M dp v  NB. x,y,z is not a solution
+1 1 0
+
+── ((1) 22 of 28) J. Examples for Chapter 8 (Linear Equations and Matrices) (ctd) 
+
+The inverse of the matrix M is a matrix that applied to the
+result r=:1 7 10 gives the values of a solution s. Methods
+for computng inverses are discussed in Section 9.10 of ALG;
+here we will use the fuction inv=:%. :
+)
+   r=:1 7 10
+   inv=:%.
+   N=:inv M
+   N
+  1.16667  0.833333 _0.5
+     _0.5      _0.5  0.5
+_0.833333 _0.166667  0.5
+   s=:N dp r
+   s
+2 1 3
+   M dp s
+1 7 10
+   r=M dp s
+1 1 1
+
+── ((1) 23 of 28) K. Examples for Chapter 9 (Matrices and Linear Transformations) 
+
+In the expression M dp v, the dot product function applies to
+each row of the matrix M to produce a vector result.
+Similarly, the expression M dp N gives the dot product of
+each row of M with each row of N, producing a matrix result.
+Thus:
+)
+   M;N
+┌───────┬────────────────────────┐
+│1  2 _1│  1.16667  0.833333 _0.5│
+│1 _1  2│     _0.5      _0.5  0.5│
+│2  3  1│_0.833333 _0.166667  0.5│
+└───────┴────────────────────────┘
+   dp=:+/@:*"1/
+   M dp N
+  3.33333 _2 _1.66667
+_0.666667  1 0.333333
+  4.33333 _2 _1.66667
+
+── ((1) 24 of 28) K. Examples for Chapter 9 (Matrices and Linear Transformations) (ctd) 
+
+The matrix product defined in Section 9.8 of ALG behaves
+similarly, but applies the dot product between each row of
+the left argument, and each COLUMN of the right argument.
+
+The ALG matrix product of M and N can therefore be expressed
+as M dp transpose N, where the the function transpose flips
+its argument about the diagonal (\), interchanging rows and
+columns. Thus:
+)
+   transpose=:|:
+   N ; transpose N
+┌────────────────────────┬───────────────────────┐
+│  1.16667  0.833333 _0.5│ 1.16667 _0.5 _0.833333│
+│     _0.5      _0.5  0.5│0.833333 _0.5 _0.166667│
+│_0.833333 _0.166667  0.5│    _0.5  0.5       0.5│
+└────────────────────────┴───────────────────────┘
+   M dp transpose N
+           1 _1.11022e_16 0
+           0            1 0
+_2.22045e_16 _2.22045e_16 1
+   mp=:[ dp |:@]     NB. matrix product
+   M mp N
+           1 _1.11022e_16 0
+           0            1 0
+_2.22045e_16 _2.22045e_16 1
+
+── ((1) 25 of 28) K. Examples for Chapter 9 (Matrices and Linear Transformations) (ctd) 
+
+The result of M mp N is the IDENTITY MATRIX because N is the
+inverse of M. It is called the identity matrix because its
+matrix product with any matrix or vector leaves it unchanged.
+Thus:
+)
+   I=:M mp N
+   I
+           1 _1.11022e_16 0
+           0            1 0
+_2.22045e_16 _2.22045e_16 1
+   M ; I mp M
+┌───────┬───────┐
+│1  2 _1│1  2 _1│
+│1 _1  2│1 _1  2│
+│2  3  1│2  3  1│
+└───────┴───────┘
+   I mp 2 3 5
+2 3 5
+
+── ((1) 26 of 28) L. Examples for Chapter 10 (Complex Numbers) 
+
+The square root of negative 1 is defined to have a result
+commonly called i (for i-maginary), and this new number is
+assumed to be subject to the same functions that apply to
+real numbers. For example:
+)
+   i=:%:_1                NB. Square root
+   *:i                    NB. Square
+_1
+   *:i+i
+_4
+   a=:3+4*i               NB. Complex number
+   |a                     NB. Magnitude or Absolute Value
+5
+   a                      NB. "standard" representation of a complex number
+3j4
+   3j4*3j4
+_7j24
+   +a                     NB. Conjugate
+3j_4
+   a * +a                 NB. Product with conjugate is real
+25
+   M=:2 2$3j4 2j5 0j3 5j2
+   M ; %. M               NB. Inverse of a complex matrix
+┌───────┬──────────────────────────────────────────┐
+│3j4 2j5│  0.169683j_0.0633484 _0.162896j_0.0791855│
+│0j3 5j2│_0.0678733j_0.0746606   0.165158j0.0316742│
+└───────┴──────────────────────────────────────────┘
+
+── ((1) 27 of 28) L. Examples for Chapter 10 (Complex Numbers) (ctd) 
+)
+   a
+3j4
+   +. a                       NB. Real and imaginary parts
+3 4
+   *. a                       NB. Polar representation: magnitude and (radian) angle
+5 0.927295
+   (] ; +. ; *.) M
+┌───────┬───┬────────────────┐
+│3j4 2j5│3 4│      5 0.927295│
+│0j3 5j2│2 5│5.38516  1.19029│
+│       │   │                │
+│       │0 3│      3   1.5708│
+│       │5 2│5.38516 0.380506│
+└───────┴───┴────────────────┘
+   
+   ]c=:i^0 1 2 3              NB. Powers of i
+1 0j1 _1 0j_1
+   
+   (+. ; *.) c
+┌─────┬─────────┐
+│ 1  0│1       0│
+│ 0  1│1  1.5708│
+│_1  0│1 3.14159│
+│ 0 _1│1 _1.5708│
+└─────┴─────────┘
+
+── ((1) 28 of 28) L. Examples for Chapter 10 (Complex Numbers) (ctd) 
+
+Express the following examples from Section 10.4 of ALG in
+the standard form used here:
+
+   2+i
+   ---
+   3+4i
+
+   (1+i)(4+5i)
+   -----------
+           2
+      (1-i)
+)
+   p=:(2+i)%(3+4*i)
+   q=:((1+i)*(4+5*i)) % *:(1-i)
+   
+   p;q;(p*q);(p*p);(q*q)
+┌────────┬─────────┬────────┬──────────┬──────┐
+│0.4j_0.2│_4.5j_0.5│_1.9j0.7│0.12j_0.16│20j4.5│
+└────────┴─────────┴────────┴──────────┴──────┘
+
+End of lab
+   

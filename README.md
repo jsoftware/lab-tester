@@ -10,7 +10,7 @@ Do not click the mouse or press the keyboard keys while the script is running.
 
 Before the first test, you should additionally call the following command to test the lab ```Shared Library (c) (dll/so/dylib) - writing a DLL```. You only need to do it once after installing J.
 
-```make -f /your_path_to_J/addons/labs/labs/examples/dllwrite/makefile_macos```
+```cd /your_path_to_J/addons/labs/labs/examples/dllwrite/ && make -f makefile_macos```
 
 The script is expected to run for 20 minutes. The result of the script is a report file with a name starting with ```report``` followed by current date. The format of the report file is as follows:
 ```
